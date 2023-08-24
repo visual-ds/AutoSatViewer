@@ -1,31 +1,31 @@
 var T = 0;
 
-var cdblight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
-            attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-            subdomains: 'abcd',
-            minZoom: 9,
-            maxZoom: 12,
-            //maxNativeZoom: 28,
+// var cdblight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+//             attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+//             subdomains: 'abcd',
+//             minZoom: 9,
+//             maxZoom: 12,
+//             //maxNativeZoom: 28,
             
-});
+// });
 
-var planet = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{ //'https://tileserver-mapbiomas.sccon.com.br/mapbiomas/tiles/1.0.0/planet_mosaic_2021_07/planet/{z}/{x}/{y}.png'
-            attribution: "",
-            subdomains: 'abcd',
-            minZoom: 9,
-            maxZoom: 12,
-            //maxNativeZoom: 28, 
-});
+// var planet = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{ //'https://tileserver-mapbiomas.sccon.com.br/mapbiomas/tiles/1.0.0/planet_mosaic_2021_07/planet/{z}/{x}/{y}.png'
+//             attribution: "",
+//             subdomains: 'abcd',
+//             minZoom: 9,
+//             maxZoom: 12,
+//             //maxNativeZoom: 28, 
+// });
 
 
-var cdblight2 = L.tileLayer('http://0.gusc.cartocdn.com/cemdevops/api/v1/map/7dc8c60e6ce81b15ab93873c65b74c8e:1527080869781/0/{z}/{x}/{y}.png', {
-            attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-            subdomains: 'abcd',
-            minZoom: 9,
-            maxZoom: 12,
-           // maxNativeZoom: 28,
+// var cdblight2 = L.tileLayer('http://0.gusc.cartocdn.com/cemdevops/api/v1/map/7dc8c60e6ce81b15ab93873c65b74c8e:1527080869781/0/{z}/{x}/{y}.png', {
+//             attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+//             subdomains: 'abcd',
+//             minZoom: 9,
+//             maxZoom: 12,
+//            // maxNativeZoom: 28,
             
-});
+// });
 
 
 const map = L.map('map').setView([-1, -50], 12);
@@ -51,11 +51,11 @@ var topographyAndPlaces = L.tileLayer.wms('https://production.alerta.mapbiomas.o
 
 var overlayMaps = {
   //"Sao Paulo": cdblight2,
-  "Estados": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_states-static-layer", transparent: true, format: "image/png",}),
-  "Municipios": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_cities-static-layer", transparent: true, format: "image/png",}),
-  "Biomes": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_biomes-static-layer", transparent: true, format: "image/png",}),
-  "Amazonia Legal": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_amazonia-legal-static-layer", transparent: true, format: "image/png",}),
-  "conservation_units": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_conservation-unit-static-layer", transparent: true, format: "image/png",}),
+  "Estados": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_states-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
+  "Municipios": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_cities-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
+  "Biomes": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_biomes-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
+  "Amazonia Legal": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_amazonia-legal-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
+  "conservation_units": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_conservation-unit-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
 };
 
 
