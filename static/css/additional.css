@@ -1,0 +1,57 @@
+.footbar {
+    width: calc(100% - 50px);
+    height: 35px;
+    z-index: 3000;
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+
+.footbar {
+    position: absolute;
+    bottom: 24px;
+    display: flex;
+    align-items: center;
+    width: calc(100% - 62px);
+    padding-left: 8px;
+    box-shadow: 0 1px 3px hsla(0,0%,58.8%,.12), 0 2px 7px hsla(0,0%,49%,.24);
+    transition: all .5s ease;
+    -webkit-transform: translateX(16px);
+    transform: translateX(16px);
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+*, :after, :before {
+    font-family: inherit;
+    box-sizing: inherit;
+}
+
+.temporalChartLine{
+    width: calc(100% - 20px);
+}
+
+
+.timeSlider {
+    position: relative;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 16px;
+    background-color: red;
+}
+
+
+.axis text,
+.slider text {
+  font-size: 0px;
+}
+
+.slider .axis {
+    font-size: 0px;
+    color:red;
+  }
+
+.tick{
+    opacity: 0;
+}

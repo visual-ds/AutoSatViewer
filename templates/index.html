@@ -9,13 +9,18 @@
 
      <!-- Charts-->
    <link href="../static/css/keen-dashboards.css" rel="stylesheet" type='text/css' />
-
+	<link href="../static/css/additional.css" rel="stylesheet" type='text/css' />
 
     <!-- Boostrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" />
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+	
    <style>
     body {
         padding:0px;
@@ -123,12 +128,17 @@
 </style>
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+   <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
    <!--Boostrap-->
    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
    <script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
    <!--easy button-->
    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+   <script src="https://d3js.org/d3.v7.min.js"></script>
+   <script src="https://unpkg.com/d3-simple-slider@2.0.0/dist/d3-simple-slider.min.js"></script>
+
 
 
 </head>
@@ -138,7 +148,8 @@
         const barchartclientHeigh = window.innerHeight*0.8-180;
 
         jQuery(function () {
-          $('div#temporalChartLine').width(window.innerWidth*0.95 + 'px');
+          $('div#temporalChartLine').width(window.innerWidth*0.96 + 'px');
+
           $('div#ChartBar').width(barchartclientWidth+ 'px');
           $('div#ChartBar').height(barchartclientHeigh+ 'px');
 
@@ -151,6 +162,7 @@
                   $( "#chart_bar" ).toggle('slow');
           });
 
+
             
       });
     </script> 
@@ -158,16 +170,18 @@
 
 
 <div id = "map">
+<camvas></camvas>
 </div>
     
 <script>
+/*
     var map = L.map('map').setView([-1, -50], 12);
     L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}.png", {
     //L.tileLayer("http://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         minZoom: 9,
         maxZoom: 12,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    }).addTo(map);*/
 </script>
 
 <div id="waze-menu" style="z-index: 1000;">
@@ -198,8 +212,8 @@
                     <div class="">
                         <div class="wz-language-selector" style=" margin-left:0px">
                                 <button class="wz" type="button" id="barchart2" style="position:relative"> <span style=" font-size: 0.8em; color:white;"><i class="glyphicon glyphicon-signal" style="position:absolute; vertical-align : bottom;  top: 50%;left: 50%; transform: translate(-50%, -50%);"></i></span></button>
-                                <ul class="" id="chart_area" style="display: none; float:left; position: relative; bottom: 100%; z-index: 1000;">
-                                    <div id="temporalChartLine" style="height: 130px;"></div>
+                                <ul class="" id="chart_area" style="display: none; float:left; position: relative; bottom: 100%; z-index: 3000;">
+                                    <div id="temporalChartLine" style="height: 130px; width: calc(100% - 20px);"></div>
                                     
                                 </ul>
                                 
@@ -208,8 +222,14 @@
            </div>
     </div>
 </div>
+<div class="footbar">
+    <div class="timeslider" id="timeslider" style="width: calc(100% - 20px);">
+
+    </div>
+</div>
 <script>
        
 </script>
+<script src="../static/js/map.js"></script>
 </body>
 </html>
