@@ -46,16 +46,13 @@ var baseMaps ={
 }
 
 
-
-
 var overlayMaps = {
-  "Sao Paulo": cdblight2,
+  //"Sao Paulo": cdblight2,
   "Estados": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_states-static-layer", transparent: true, format: "image/png",}),
   "Municipios": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_cities-static-layer", transparent: true, format: "image/png",}),
   "Biomes": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_biomes-static-layer", transparent: true, format: "image/png",}),
   "Amazonia Legal": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_amazonia-legal-static-layer", transparent: true, format: "image/png",}),
   "conservation_units": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_conservation-unit-static-layer", transparent: true, format: "image/png",}),
-
 };
 
 
@@ -73,7 +70,7 @@ scale.addTo(map); // Adding scale control to the map
 L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar região!';
 L.drawLocal.draw.toolbar.buttons.marker  = 'Marcar um ponto!';
 
-L.control.zoom({ position: 'bottomright'}).addTo(map);
+//L.control.zoom({ position: 'bottomright'}).addTo(map);
 var drawPluginOptions = {
     position: 'topleft',
     draw: {
