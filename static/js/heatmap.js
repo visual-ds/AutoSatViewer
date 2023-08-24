@@ -12,22 +12,11 @@ const svg = d3
     .append('g')
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// creating fake data
-var data = [];
-for(let t = 0; t < 20; t++) {
-    for(let i = 0; i < 1024; i++) {
-       data.push({
-            t: t,
-            i: i,
-            value: Math.random()
-        });
-    }
-}
 
 // Build X scales and axis:
 var x = d3.scaleBand()
   .range([ 0, width ])
-  .domain(data.map(d => d.i))
+  .domain(Array(1024).fill().map((_, i) => i))
   .padding(0.01);
 svg.append("g")
   .attr("transform", "translate(0," + height + ")")
@@ -36,57 +25,58 @@ svg.append("g")
 // Build X scales and axis:
 var y = d3.scaleBand()
   .range([ height, 0 ])
-  .domain(data.map(d => d.t))
+  .domain(Array(20).fill().map((_, i) => i))
   .padding(0.01);
 svg.append("g")
    .call(d3.axisLeft(y));
 
-// Build color scale
-var myColor = d3.scaleLinear()
-  .range(["white", "#69b3a2"])
-  .domain(d3.extent(data, d => d.value))
 
-// //Read the data
-// d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv", function(data) {
 
-  // create a tooltip
-  var tooltip = d3.select("div#temporalChartLine")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px")
-    .style("z-index", 5000)
-    //.style("position", "relative")
+// load csv from flask static folder
+d3.csv("/static/data/spatiotemporal_torque.csv", d3.autoType)
+    .then(function(data) {
 
-  // Three function that change the tooltip when user hover / move / leave a cell
-var mouseover = function(d) {
-    tooltip.style("opacity", 1)
-}
-var mousemove = function(event, d) {
-    tooltip
-        .html("The exact value of<br>this cell is: " + d.value)
-        .style("left", (d3.pointer(event)[0] + 40)+ "px")
-        .style("top", (d3.pointer(event)[1] + 5) + "px")
-    }
-var mouseleave = function(d) {
-    tooltip.style("opacity", 0)
-}
+        var tooltip = d3.select("div#temporalChartLine")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+            .style("z-index", 5000)
+            //.style("position", "relative")
 
-  // add the squares
-svg.selectAll()
-    .data(data)//, function(d) {return d.group+':'+d.variable;})
-    .enter()
-    .append("rect")
-    .attr("x", function(d) { return x(d.i) })
-    .attr("y", function(d) { return y(d.t) })
-    .attr("width", x.bandwidth() )
-    .attr("height", y.bandwidth() )
-    .style("fill", function(d) { return myColor(d.value)} )
-    .on("mouseover", mouseover)
-    .on("mousemove", mousemove)
-    .on("mouseleave", mouseleave)
-//})
+            // Three function that change the tooltip when user hover / move / leave a cell
+            var mouseover = function(d) {
+            tooltip.style("opacity", 1)
+            }
+            var mousemove = function(event, d) {
+                console.log("hi")
+            tooltip
+                .html("The exact value of<br>this cell is: " + d.value)
+                .style("left", (d3.pointer(event)[0] + 40)+ "px")
+                .style("top", (d3.pointer(event)[1] + 40) + "px")
+            }
+            var mouseleave = function(d) {
+            tooltip.style("opacity", 0)
+            }
+        
+        var myColor = d3.scaleLinear()
+            .range(["white", "#69b3a2"])
+            .domain(d3.extent(data, d => d.value))
+
+        svg.selectAll()
+            .data(data)//, function(d) {return d.group+':'+d.variable;})
+            .enter()
+            .append("rect")
+            .attr("x", function(d) { return x(d.pixel) })
+            .attr("y", function(d) { return y(d.t) })
+            .attr("width", x.bandwidth() )
+            .attr("height", y.bandwidth() )
+            .style("fill", function(d) { return myColor(d.value)} )
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave)
+    });
