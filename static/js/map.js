@@ -1,3 +1,5 @@
+var T = 0;
+
 var cdblight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
             attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
             subdomains: 'abcd',
@@ -27,10 +29,11 @@ var cdblight2 = L.tileLayer('http://0.gusc.cartocdn.com/cemdevops/api/v1/map/7dc
 
 
 const map = L.map('map').setView([-1, -50], 12);
-L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}.png", {
+var tiles = L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}/{time}.png", {
     minZoom: 9,
     maxZoom: 12,
     attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |',
+    time: () => T,
 }).addTo(map);
 
 /*
@@ -107,22 +110,25 @@ var drawPluginOptions = {
 //----------------------------------------- SLIDER
 //Getting slider width
 var slider_width = document.getElementById("timeslider").clientWidth;
-var dataTime = d3.range(0, 10).map(function(d) {
-    return new Date(1995 + d, 10, 3);
-  });
+var timesteps = 20;
+//var dataTime = d3.range(0, 20).map(function(d) {
+//    return new Date(1995 + d, 10, 3);
+//});
 
 var sliderTime = d3
     .sliderBottom()
-    .min(d3.min(dataTime))
-    .max(d3.max(dataTime))
-    .step(1000 * 60 * 60 * 24 * 365)
+    .min(0)
+    .max(timesteps)
+    .step(1) // 1000 * 60 * 60 * 24 * 365)
     .width(slider_width-80)
     .displayValue(false)
-    .tickFormat(d3.timeFormat('%Y'))
-    .tickValues(dataTime)
-    .default(new Date(1998, 10, 3))
+    //.tickFormat(d3.timeFormat('%Y'))
+    //.tickValues(dataTime)
+    .default(0) //new Date(1998, 10, 3))
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
     .on('onchange', val => {
+      T = val;
+      tiles.redraw();
       //d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
     });
 
@@ -136,7 +142,6 @@ var sliderTime = d3
 
   gTime.call(sliderTime);
 
-  d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
 
 
   var layerControl = L.control.layers(
