@@ -40,10 +40,10 @@ var topographyAndPlaces = L.tileLayer.wms('https://production.alerta.mapbiomas.o
 }).addTo(map);*/
 
 
-var baseMaps ={
-  "Carto BD": cdblight,
-  "Planet": planet
-}
+//var baseMaps ={
+//  "Carto BD": cdblight,
+//  "Planet": planet
+//}
 
 
 var overlayMaps = {
@@ -139,4 +139,8 @@ var sliderTime = d3
   d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
 
 
-  var layerControl = L.control.layers(baseMaps, overlayMaps,{position: 'topleft'}).addTo(map);
+  var layerControl = L.control.layers(
+    null, 
+    overlayMaps,
+    {position: 'topleft'}
+  ).addTo(map);
