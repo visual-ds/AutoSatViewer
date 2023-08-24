@@ -1,8 +1,8 @@
 var cdblight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
             attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
             subdomains: 'abcd',
-            minZoom: 0,
-            maxZoom: 19,
+            minZoom: 9,
+            maxZoom: 12,
             //maxNativeZoom: 28,
             
 });
@@ -10,8 +10,8 @@ var cdblight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/l
 var planet = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{ //'https://tileserver-mapbiomas.sccon.com.br/mapbiomas/tiles/1.0.0/planet_mosaic_2021_07/planet/{z}/{x}/{y}.png'
             attribution: "",
             subdomains: 'abcd',
-            minZoom: 0,
-            //maxZoom: 19,
+            minZoom: 9,
+            maxZoom: 12,
             //maxNativeZoom: 28, 
 });
 
@@ -19,32 +19,18 @@ var planet = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.
 var cdblight2 = L.tileLayer('http://0.gusc.cartocdn.com/cemdevops/api/v1/map/7dc8c60e6ce81b15ab93873c65b74c8e:1527080869781/0/{z}/{x}/{y}.png', {
             attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
             subdomains: 'abcd',
-            minZoom: 0,
-           // maxZoom: 19,
+            minZoom: 9,
+            maxZoom: 12,
            // maxNativeZoom: 28,
             
 });
 
 
-/*
-const map = new L.Map('map', {
- // renderer: L.canvas(),
-	layers: [cdblight], //[Hydda_Full],//[CartoDB_Positron],
-    center: new L.LatLng(-23.6, -46.55), //centro do Sao Paulo {lat: -23.6, lng: -46.55} (-23.548682, -46.634731)
-	zoom: 6,
-  minZoom:0,
-  maxZoom:40,
-	worldCopyJump: false,
-	zoomControl: false,
-	pitch: 80
-});*/
-
 const map = L.map('map').setView([-1, -50], 12);
 L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}.png", {
-//L.tileLayer("http://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     minZoom: 9,
     maxZoom: 12,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |',
 }).addTo(map);
 
 /*
@@ -80,22 +66,6 @@ map.addLayer(drawnItems);
 var scale = L.control.scale({position:'topleft'}); // Creating scale control
 scale.addTo(map); // Adding scale control to the map
 
-
-/*===================================================== ============================================= */
-/*===================================================== ============================================= */
-/*arraySAOPAULO =[]
-SP_latsAlgs.forEach(function(d){
-  arraySAOPAULO.push([d.lat,d.lng]);
-});
-L.polyline(arraySAOPAULO, {
-        id:'sp_markerwater',
-        color: 'red',
-        weight: 1,
-        opacity: 0.5,
-        dashArray: '5,5'
-}).addTo(map);*/
-/*===================================================== ============================================= */
-/*===================================================== ============================================= */
 
 //var bounds = new L.LatLngBounds({ lat: -23.1, lng: -46.5 }, { lat: -23.387136, lng: -46.410709 });
 //map.setMaxBounds(bounds);
