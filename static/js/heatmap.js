@@ -2,6 +2,7 @@ const total_width = document.getElementById("timeslider").clientWidth;
 const margin = {top: 5, right: 30, bottom: 5, left: 30};
 const width = total_width - margin.left - margin.right;
 const height = 120 - margin.top - margin.bottom;
+const VALUE = "spatiotemporal_coeff_1"
 
 // append the svg object to the body of the page
 const svg = d3
@@ -33,7 +34,7 @@ svg.append("g")
 
 
 // load csv from flask static folder
-d3.csv("/static/data/spatiotemporal_torque.csv", d3.autoType)
+d3.csv("/static/data/data.csv", d3.autoType)
     .then(function(data) {
 
         var tooltip = d3.select("div#temporalChartLine")
@@ -53,9 +54,8 @@ d3.csv("/static/data/spatiotemporal_torque.csv", d3.autoType)
             tooltip.style("opacity", 1)
             }
             var mousemove = function(event, d) {
-                console.log("hi")
             tooltip
-                .html("The exact value of<br>this cell is: " + d.value)
+                .html("The exact value of<br>this cell is: " + d[VALUE])
                 .style("left", (d3.pointer(event)[0] + 40)+ "px")
                 .style("top", (d3.pointer(event)[1] + 40) + "px")
             }
@@ -64,18 +64,18 @@ d3.csv("/static/data/spatiotemporal_torque.csv", d3.autoType)
             }
         
         var myColor = d3.scaleLinear()
-            .range(["white", "#69b3a2"])
-            .domain(d3.extent(data, d => d.value))
+            .range(["white", "#ee0000"])
+            .domain(d3.extent(data, d => d[VALUE]))
 
         svg.selectAll()
             .data(data)//, function(d) {return d.group+':'+d.variable;})
             .enter()
             .append("rect")
-            .attr("x", function(d) { return x(d.pixel) })
+            .attr("x", function(d) { return x(d.pos) })
             .attr("y", function(d) { return y(d.t) })
             .attr("width", x.bandwidth() )
             .attr("height", y.bandwidth() )
-            .style("fill", function(d) { return myColor(d.value)} )
+            .style("fill", function(d) { return myColor(d[VALUE])} )
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseleave", mouseleave)
