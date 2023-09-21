@@ -51,7 +51,11 @@ d3.csv("/static/data/data.csv", d3.autoType)
 
             // Three function that change the tooltip when user hover / move / leave a cell
             var mouseover = function(d) {
-            tooltip.style("opacity", 1)
+                d3.select(this)
+                    .style("stroke", "black")
+                    .attr("width", x.bandwidth() * 5)
+                    .attr("height", y.bandwidth() *5);
+                tooltip.style("opacity", 1)
             }
             var mousemove = function(event, d) {
             tooltip
@@ -60,6 +64,10 @@ d3.csv("/static/data/data.csv", d3.autoType)
                 .style("top", (d3.pointer(event)[1] + 40) + "px")
             }
             var mouseleave = function(d) {
+                d3.selectAll(".cell")
+                .style("stroke", "none")
+                .attr("width", x.bandwidth())
+                .attr("height", y.bandwidth());
             tooltip.style("opacity", 0)
             }
         
@@ -71,6 +79,7 @@ d3.csv("/static/data/data.csv", d3.autoType)
             .data(data)//, function(d) {return d.group+':'+d.variable;})
             .enter()
             .append("rect")
+            .attr("class", "cell")
             .attr("x", function(d) { return x(d.pos) })
             .attr("y", function(d) { return y(d.t) })
             .attr("width", x.bandwidth() )
@@ -79,4 +88,7 @@ d3.csv("/static/data/data.csv", d3.autoType)
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseleave", mouseleave)
+            .on("click", function(event, d) {
+                map.setView(new L.LatLng(d.lat, d.lon), 12);
+            })
     });
