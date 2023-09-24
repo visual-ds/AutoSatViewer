@@ -1,11 +1,11 @@
 const total_width_bottom = document.getElementById("timeslider").clientWidth;
-const margin = {top: 5, right: 30, bottom: 5, left: 30};
+const margin = {top: 10, right: 30, bottom: 10, left: 20};
 const width_bottom = total_width_bottom - margin.left - margin.right;
 const height_bottom = 120 - margin.top - margin.bottom;
 const HEATMAP_ATTR = "spatiotemporal_torque";
 
-const width_right = 200 - margin.left - margin.right;
-const height_right = 400 - margin.top - margin.bottom;
+const width_right = 450 - margin.left - margin.right;
+const height_right = 300 - margin.top - margin.bottom;
 const X_ATTR = "spatial_torque";
 const Y_ATTR = "temporal_torque";
 
@@ -29,10 +29,10 @@ const svg_right = d3.select("div#ChartBar")
 function draw_heatmap(data){
     var x = d3.scaleBand()
         .range([ 0, width_bottom ])
-        .domain([...new Set(data.map(d => d.pos))]);
+        .domain([...new Set(data.map(d => d.pos))].sort());
     var y = d3.scaleBand()
         .range([ height_bottom, 0 ])
-        .domain([...new Set(data.map(d => d.t))]);
+        .domain([...new Set(data.map(d => d.t))].sort());
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
@@ -68,7 +68,7 @@ function draw_heatmap(data){
         d3.selectAll(".cell").style("stroke", "none");
         tooltip.style("opacity", 0);
     }
-    var mouseclick = function(d) {
+    var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
         sliderTime.value(d.t * 2);
     }
@@ -99,10 +99,10 @@ function draw_scatterplot(data) {
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
-    svg_bottom.append("g")
-        .attr("transform", "translate(0," + height_bottom + ")")
+    svg_right.append("g")
+        .attr("transform", "translate(0," + height_right+ ")")
         .call(d3.axisBottom(x));
-    svg_bottom.append("g")
+    svg_right.append("g")
         .call(d3.axisLeft(y));
         
     // var tooltip = d3.select("div#temporalChartLine")
@@ -128,19 +128,19 @@ function draw_scatterplot(data) {
         //     .style("top", (d3.pointer(event)[1] + 40) + "px");
     }
     var mouseleave = function(d) {
-        d3.selectAll(".cell").style("stroke", "none");
+        d3.selectAll(".point").style("stroke", "none");
         //tooltip.style("opacity", 0);
     }
-    var mouseclick = function(d) {
+    var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
         sliderTime.value(d.t * 2);
     }
     
-    svg_bottom.selectAll()
+    svg_right.selectAll()
         .data(data)
         .enter()
-        .append("rect")
-        .attr("class", "cell")
+        .append("circle")
+        .attr("class", "point")
         .attr("cx", d => x(d[X_ATTR]))
         .attr("cy", d => y(d[Y_ATTR]))
         .attr("r", 4)
