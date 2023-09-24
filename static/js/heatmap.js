@@ -4,7 +4,7 @@ const width = total_width - margin.left - margin.right;
 const height = 120 - margin.top - margin.bottom;
 const VALUE = "spatiotemporal_torque"
 
-const svg = d3
+const svg_bottom = d3
     .select('div#temporalChartLine')
     .append('svg')
     .attr('width', total_width)
@@ -12,12 +12,14 @@ const svg = d3
     .append('g')
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+const svg_right = d3.select("div#ChartBar")
+
 
 var x = d3.scaleBand()
   .range([ 0, width ])
   .domain(Array(1024).fill().map((_, i) => i))
   .padding(0.01);
-svg.append("g")
+svg_bottom.append("g")
   .attr("transform", "translate(0," + height + ")")
   .call(d3.axisBottom(x))
 
@@ -28,7 +30,7 @@ d3.csv("/static/data/data_diff_half.csv", d3.autoType)
             .range([ height, 0 ])
             .domain([...new Set(data.map(d => d.t))]) 
             .padding(0.01);
-        svg.append("g")
+        svg_bottom.append("g")
             .call(d3.axisLeft(y));
         
         var tooltip = d3.select("div#temporalChartLine")
@@ -63,7 +65,7 @@ d3.csv("/static/data/data_diff_half.csv", d3.autoType)
             .range(["white", "#ee0000"])
             .domain(d3.extent(data, d => d[VALUE]))
 
-        svg.selectAll()
+        svg_bottom.selectAll()
             .data(data)//, function(d) {return d.group+':'+d.variable;})
             .enter()
             .append("rect")
