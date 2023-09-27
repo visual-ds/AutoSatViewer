@@ -1,11 +1,11 @@
 const total_width_bottom = document.getElementById("timeslider").clientWidth;
-const margin = {top: 10, right: 30, bottom: 10, left: 20};
+const margin = {top: 10, right: 30, bottom: 20, left: 30};
 const width_bottom = total_width_bottom - margin.left - margin.right;
-const height_bottom = 120 - margin.top - margin.bottom;
+const height_bottom = 140 - margin.top - margin.bottom;
 const HEATMAP_ATTR = "spatiotemporal_torque";
 
 const width_right = 450 - margin.left - margin.right;
-const height_right = 300 - margin.top - margin.bottom;
+const height_right = 280 - margin.top - margin.bottom;
 const X_ATTR = "spatial_torque";
 const Y_ATTR = "temporal_torque";
 
@@ -13,7 +13,7 @@ const svg_bottom = d3
     .select('div#temporalChartLine')
     .append('svg')
     .attr('width', total_width_bottom)
-    .attr('height', 120)
+    .attr('height', height_bottom + margin.top + margin.bottom)
     .append('g')
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -38,9 +38,9 @@ function draw_heatmap(data){
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
     svg_bottom.append("g")
         .attr("transform", "translate(0," + height_bottom + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x).tickValues([]));
     svg_bottom.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickValues([]));
         
     var tooltip = d3.select("div#temporalChartLine")
         .append("div")
@@ -70,7 +70,7 @@ function draw_heatmap(data){
     }
     var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
-        sliderTime.value(d.t * 2);
+        sliderTime.value(d.t);
     }
     
     svg_bottom.selectAll()
@@ -133,7 +133,7 @@ function draw_scatterplot(data) {
     }
     var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
-        sliderTime.value(d.t * 2);
+        sliderTime.value(d.t);
     }
     
     svg_right.selectAll()
@@ -152,7 +152,7 @@ function draw_scatterplot(data) {
 }
 
 
-d3.csv("/static/data/data_diff_half.csv", d3.autoType)
+d3.csv("/static/data/data_diff.csv", d3.autoType)
     .then(function(data) {
 
         // HEATMAP 
