@@ -1,225 +1,74 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoSatViewer</title>
-
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/livemap.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/mycss.css">
-
-     <!-- Charts-->
-   <link href="../static/css/keen-dashboards.css" rel="stylesheet" type='text/css' />
-	<link href="../static/css/additional.css" rel="stylesheet" type='text/css' />
-
-    <!-- Boostrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" />
-	
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoSatViewer</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
-	
-   <style>
-    body {
-        padding:0px;
-        margin: 0px;
-        background-color: #c5cdd2;
-        overflow: hidden; 
-    }
-    html, body, #map {
-        height: 100%;
-        width: 100%;
-    }
-
-    .info {
-        background: white;
-        background: rgba(255,255,255,0.8);
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        border-radius: 5px;
-        opacity: 0.9;
-    }
-    .info h4 {
-        margin: 0 0 5px;
-        color: #777;
-    }
-
-    .legend {
-        z-index: 1000;
-        width: 70px;
-        z-index: 1000;
-        margin-top: 50px;
-        margin-left: 15px;
-        border-color: #031F4B;
-        opacity: 1; 
-        border-width: 0.4px;
-        position:relative; 
-        background-color: white;
-        border-radius: 5px;
-    }
-    .legend i {
-       /* width: 18px;
-        height: 18px;
-        float: left;
-        margin-right: 8px;
-        opacity: 0.7; */
-    }
-
-    .legendPalette {
-      width: 103px;
-        z-index: 1000;
-        margin-top: 50px;
-        margin-left: 15px;
-        border-color: #031F4B;
-        opacity: 1; 
-        border-width: 0.4px;
-        position:relative; 
-        background-color: white;
-        border-radius: 5px;
-    }
-
-    #legend2 p{
-        font: 10px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
-        align:center;
-        color: black;
-        display: block;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        margin-right: 5px;
-    }
-
-    #legend0 p{
-        font: 10px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
-        align:center;
-        color: black;
-        display: block;
-        margin-top: 5px;
-        margin-bottom: 5px;
-    }
-
-
-
-    .dc-chart g.row text {
-            fill: #555;
-            font-size: 12px;
-            cursor: pointer;
-        }
-    
-        #secondSlider{
-            width: 70px;
-            z-index: 1000;
-            margin-top: 50px;
-            margin-left: 15px;
-            border-color: #031F4B;
-            opacity: 0.9;
-            border-color: gray;
-            border-style: solid;
-            border-width: 0.4px;
-            position:relative; 
-            background-color: white;
-            border-radius: 5px;
-        }
-        
-
-        .dc-chart path.line {
-            fill: none !important;
-        }
-</style>
-
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+  <link href="../static/css/style.css" rel="stylesheet" type='text/css' />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
    <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
    <!--Boostrap-->
-   <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
-   <script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-   <!--easy button-->
-   <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-
    <script src="https://d3js.org/d3.v7.min.js"></script>
-   <script src="https://unpkg.com/d3-simple-slider@2.0.0/dist/d3-simple-slider.min.js"></script>
-
-
+   <!-- <script src="https://unpkg.com/d3-simple-slider@2.0.0/dist/d3-simple-slider.min.js"></script> -->
+   <script src="../static/js/slider.js"></script>
 
 </head>
-<body>
-    <script type="text/javascript">
-        const barchartclientWidth=window.innerWidth*0.3 ;
-        const barchartclientHeigh = window.innerHeight*0.8-180;
+<body style="overflow: hidden;">
+  <div id="map">
+    <camvas></camvas>
+  </div>
+  <div id="footer">
+    <div class="mensaje" style="width: 90px; "> 
+        <p id="value-time" class="pp"></p>
+    </div>
+    <div class="timeslider" id="timeslider" style="width: calc(100%-95px);  flex-grow: 1;">    </div>
+  </div>
 
-        jQuery(function () {
-          $('div#temporalChartLine').width(window.innerWidth*0.96 + 'px');
-
-          $('div#ChartBar').width(barchartclientWidth+ 'px');
-          $('div#ChartBar').height(barchartclientHeigh+ 'px');
-
-          $( "#barchart2" ).click(function() {
-                  $( "#chart_area" ).toggle('slow');
-                  $( "#chart_bar" ).toggle('slow');
-          });
-          $( "#barchart" ).click(function() {
-                  $( "#chart_area" ).toggle('slow');
-                  $( "#chart_bar" ).toggle('slow');
-          });
-
-
-            
-      });
-    </script> 
-
-
-
-<div id = "map">
-<camvas></camvas>
-</div>
-
-<div id="waze-menu" style="z-index: 1000;">
-    <div class="wz-waze-menu"> 
-        <div class="wz-waze-menu__lang-selector">
-                <div class="wz-language-selector" style="margin-top: -10px; margin-right:-10px">
-                    <button class="wz" type="button" id="barchart"><span style=" font-size: 0.8em; color:white;"><i class="glyphicon glyphicon-signal" style="position:absolute; top: 50%;left: 50%; transform: translate(-40%, -40%);"></i></span></button>
-                    <ul class="" id="chart_bar" style="display: none; ">
-                            <div class="panel panel-info" style="margin: -15px;"> 
-                       
-                                <div class="panel-body" style="padding: 0px"> 
-                                    <div id="ChartBar" class="application">
-                                        <div class="container-fluid">
-                                        
-                                        </div>
-                                    </div>
-                                </div> 
-                            </div>                              
-                    </ul>
-                </div>
+  <button id="toggleTemporalButton" onclick="toggleDiv('temporalChartGroup'); toggleDiv('ChartBar');">+</button>
+  <button id="toggleBarButton" onclick="toggleDiv('ChartBar'); toggleDiv('temporalChartGroup')">+</button>
+  
+  <div id="temporalChartGroup" >
+        <div style="display: flex; width: 100%; height: 100%; ">
+            <div style="width: 150px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; "> 
+                <select class="select-box">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+                <button class="btn">Filter</button>
+            </div>
+            <div id="temporalChartLine"  style="width: calc(100%-155px); background-color: #3498db;  flex-grow: 1; height: 100%; display: inline-block; align-items: center;    justify-content: center;
+            font-size: 2em; border-radius: 8px;">   Additional Charts </div>
         </div>
-    </div>
-</div>
-
-<div class="leaflet-bottom leaflet-left">
-    <div class="leaflet-control">
-            <div class="wz-waze-menu__lang-selector">
-                    <div class="">
-                        <div class="wz-language-selector" style=" margin-left:0px">
-                                <button class="wz" type="button" id="barchart2" style="position:relative"> <span style=" font-size: 0.8em; color:white;"><i class="glyphicon glyphicon-signal" style="position:absolute; vertical-align : bottom;  top: 50%;left: 50%; transform: translate(-50%, -50%);"></i></span></button>
-                                <ul class="" id="chart_area" style="display: none; float:left; position: relative; bottom: 100%; z-index: 3000;">
-                                    <div id="temporalChartLine" style="height: 130px; width: calc(100% - 20px);"></div>
-                                    
-                                </ul>
-                                
-                    </div>
-                </div>
-           </div>
-    </div>
-</div>
-<div class="footbar">
-    <div class="timeslider" id="timeslider" style="width: calc(100% - 20px);">
+  </div>
+  <div id="ChartBar" style=" flex-direction: column;   align-items: center;">
+    <div class="box box1">Additional Charts</div>
+    <div class="box box2" id="ScatterPlot">
 
     </div>
-</div>
-<script>
-       
-</script>
-<script src="../static/js/map.js"></script>
-<script src="../static/js/extra_plots.js"></script>
+  </div>
+
+  <script>
+    function toggleDiv(divId) {
+      var div = document.getElementById(divId);
+      div.style.display = (div.style.display === 'none' || !div.style.display) ? 'block' : 'none';
+      adjustButtons();
+    }
+
+    function adjustButtons() {
+      var temporalChartGroup = document.getElementById('temporalChartGroup');
+      var toggleTemporalButton = document.getElementById('toggleTemporalButton');
+      toggleTemporalButton.style.bottom = (temporalChartGroup.style.display === 'block') ? '200px' : '65px';
+      // Adjust the #toggleBarButton similarly.
+    }
+  </script>
+    <script src="../static/js/Scatterplot.js"></script>
+  <script src="../static/js/map.js"></script>
+  <script src="../static/js/extra_plots.js"></script>
 </body>
 </html>

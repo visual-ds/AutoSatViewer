@@ -106,6 +106,11 @@ var drawPluginOptions = {
   map.addControl(drawControl);
 
 
+  function positionTooltip(x, y) {
+    tooltip.style("top", y + 10 + "px")
+      .style("left", x + 10 + "px");
+  }
+
 
 //----------------------------------------- SLIDER
 //Getting slider width
@@ -126,21 +131,50 @@ var sliderTime = d3
     //.tickValues(dataTime)
     .default(0) //new Date(1998, 10, 3))
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
-    .on('onchange', val => {
-      T = val;
+    .on('onchange', (d) => {
+      T = d;
       tiles.redraw();
-      //d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
-    });
+      d3.select('p#value-time').text(d);
+
+      /*
+     tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                tooltip.html("Soy un círculo rojo")
+                    .style("left",d3.pointer(d3.event,this)[0] + "px")
+                    .style("top", ( 28) + "px"); */
+        })
+    .on("end", function (d) {
+          tooltip.transition()
+              .duration(500)
+              .style("opacity", 0);
+      });
+   
+/*
+    var x = d3.scaleLinear()
+    .domain(d3.extent([1,2,3,4,5,6,7,8]))
+    .range([0, slider_width])
+    .clamp(true);*/
 
   var gTime = d3
     .select('div#timeslider')
     .append('svg')
     .attr('width', slider_width)
-    .attr('height', 100)
+    .attr('height', 30)
     .append('g')
-    .attr('transform', 'translate(30,50)');
+    .attr('transform', 'translate(15,15)')
+
+   /* var r = gTime.data([1,2,3,4,5,6,7,8])
+    .enter().append("circle")
+  .attr("cx", x)
+  .attr("cy", 20)
+  .attr("r", 30)
+  .attr("fill", "red");*/
+
+
 
   gTime.call(sliderTime);
+
 
 
 
@@ -149,3 +183,11 @@ var sliderTime = d3
     overlayMaps,
     {position: 'topleft'}
   ).addTo(map);
+
+
+
+
+
+
+
+  

@@ -1,5 +1,5 @@
 const total_width_bottom = document.getElementById("timeslider").clientWidth;
-const margin = {top: 10, right: 30, bottom: 10, left: 20};
+const margin = {top: 10, right: 30, bottom: 10, left: 1200};
 const width_bottom = total_width_bottom - margin.left - margin.right;
 const height_bottom = 120 - margin.top - margin.bottom;
 const HEATMAP_ATTR = "spatiotemporal_torque";

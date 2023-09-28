@@ -1,0 +1,166 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+  }
+
+  #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100%);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  #footer {
+    position: absolute;
+    bottom: 20px;
+    height: 35px;
+    width: calc(100% - 30px);
+    left: 15px;
+    background: lightgray;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 4;
+    display: flex;
+  }
+
+  #toggleTemporalButton, #toggleBarButton {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #009999;
+    color: white;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 4;
+    position: absolute;
+  }
+
+  #toggleTemporalButton {
+    bottom: 65px;
+    left: calc(50% - 25px);
+  }
+
+  #toggleBarButton {
+    top: 10px;
+    right: 10px;
+  }
+
+  #temporalChartGroup, #ChartBar {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    position: absolute;
+    z-index: 3;
+  }
+
+  #temporalChartGroup {
+    bottom: 65px;
+    left: 15px;
+    height: 130px;
+    width: calc(100% - 30px);
+  }
+
+  #ChartBar {
+    top: 35px;
+    right: 10px;
+    width: 30%;
+    height: calc(100% - 300px);
+  }
+
+  
+.timeSlider {
+    align-items: center;
+    height: 30px;
+    padding: 0px;
+    margin-top: 0px;
+}
+
+
+.axis text,
+.slider text {
+  font-size: 0px;
+}
+
+.slider .axis {
+    font-size: 0px;
+    color:red;
+  }
+
+.tick{
+    opacity: 0;
+}
+
+
+
+.mensaje {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .pp {
+    margin: 0;
+    font-size: 16px;
+    color:rgb(0, 153, 153); /* Puedes cambiar a tu color preferido */
+  }
+
+
+
+
+  .select-box {
+    width: 80%;
+    margin: 10px;
+    padding: 5px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 12px;
+    outline: none;
+    color: #009999;
+  }
+  
+  .btn {
+    padding: 5px;
+    border: none;
+    background-color: #009999;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px;
+    margin-top: 2px;
+   
+  }
+  
+  .btn:hover {
+    background-color: #033e3e;
+  }
+
+
+  .box {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: white;
+    border-radius: 8px;
+  }
+  
+  .box1 {
+background-color: #3498db;
+  }
+  
+  .box2 {
+    background-color: #e74c3c;
+  }
