@@ -1,11 +1,15 @@
 const total_width_bottom = document.getElementById("timeslider").clientWidth;
-const margin = {top: 10, right: 30, bottom: 10, left: 1200};
+const margin = {top: 10, right: 30, bottom: 20, left: 30};
 const width_bottom = total_width_bottom - margin.left - margin.right;
 const height_bottom = 120 - margin.top - margin.bottom;
 const HEATMAP_ATTR = "spatiotemporal_torque";
 
-const width_right = 450 - margin.left - margin.right;
-const height_right = 300 - margin.top - margin.bottom;
+
+const total_width_right = window.innerWidth * 0.27;
+const total_height_right = (window.innerHeight - 300) * 0.47;
+console.log(total_height_right, total_width_right);
+const width_right = total_width_right - margin.left - margin.right;
+const height_right = total_height_right - margin.top - margin.bottom;
 const X_ATTR = "spatial_torque";
 const Y_ATTR = "temporal_torque";
 
@@ -17,13 +21,12 @@ const svg_bottom = d3
     .append('g')
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-const svg_right = d3.select("div#ChartBar")
+const svg_right = d3.select("div#ScatterPlot")
     .append('svg')
     .attr('width', width_right + margin.left + margin.right)
     .attr('height', height_right + margin.top + margin.bottom)
     .append('g')
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
 
 function draw_heatmap(data){
@@ -155,9 +158,9 @@ function draw_scatterplot(data) {
 d3.csv("/static/data/data_diff_half.csv", d3.autoType)
     .then(function(data) {
 
-        // HEATMAP 
+       
         draw_heatmap(data);
         
-        // SCATTERPLOT
+    
         draw_scatterplot(data);
     });
