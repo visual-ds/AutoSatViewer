@@ -145,9 +145,9 @@ var sliderTime = d3
                     .style("top", ( 28) + "px"); */
         })
     .on("end", function (d) {
-          tooltip.transition()
-              .duration(500)
-              .style("opacity", 0);
+          //tooltip.transition()
+          //    .duration(500)
+          //    .style("opacity", 0);
       });
    
 /*

@@ -69,8 +69,8 @@ body {
   #ChartBar {
     top: 35px;
     right: 10px;
-    width: 30%;
-    height: calc(100% - 300px);
+    width: 20%;
+    height: calc(100% - 250px);
   }
 
   
@@ -151,7 +151,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2em;
     font-weight: bold;
     border-radius: 8px;
   }

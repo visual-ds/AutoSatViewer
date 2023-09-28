@@ -5,9 +5,8 @@ const height_bottom = 120 - margin.top - margin.bottom;
 const HEATMAP_ATTR = "spatiotemporal_torque";
 
 
-const total_width_right = window.innerWidth * 0.27;
-const total_height_right = (window.innerHeight - 300) * 0.47;
-console.log(total_height_right, total_width_right);
+const total_width_right = window.innerWidth * 0.17;
+const total_height_right = (window.innerHeight - 250) * 0.47;
 const width_right = total_width_right - margin.left - margin.right;
 const height_right = total_height_right - margin.top - margin.bottom;
 const X_ATTR = "spatial_torque";
@@ -32,18 +31,18 @@ const svg_right = d3.select("div#ScatterPlot")
 function draw_heatmap(data){
     var x = d3.scaleBand()
         .range([ 0, width_bottom ])
-        .domain([...new Set(data.map(d => d.pos))].sort());
+        .domain(Array(d3.max(data, d => d.pos) + 1).fill().map((_, i) => i));
     var y = d3.scaleBand()
         .range([ height_bottom, 0 ])
-        .domain([...new Set(data.map(d => d.t))].sort());
+        .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
     svg_bottom.append("g")
         .attr("transform", "translate(0," + height_bottom + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x).tickValues([]));
     svg_bottom.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickValues([0, 5, 10, 15]));
         
     var tooltip = d3.select("div#temporalChartLine")
         .append("div")
@@ -54,6 +53,7 @@ function draw_heatmap(data){
         .style("border-width", "2px")
         .style("border-radius", "5px")
         .style("padding", "5px")
+        .style("position", "absolute")
         .style("z-index", 5000)
 
 
@@ -65,7 +65,7 @@ function draw_heatmap(data){
         tooltip
             .html("Torque:" + Math.round(d[HEATMAP_ATTR] * 100) / 100 + "<br/>" + "Timestamp:" + Math.round(d.t))
             .style("left", (d3.pointer(event)[0] + 40)+ "px")
-            .style("top", (d3.pointer(event)[1] + 40) + "px");
+            .style("top", (d3.pointer(event)[1] + 20) + "px");
     }
     var mouseleave = function(d) {
         d3.selectAll(".cell").style("stroke", "none");
@@ -73,7 +73,7 @@ function draw_heatmap(data){
     }
     var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
-        sliderTime.value(d.t * 2);
+        sliderTime.value(d.t);
     }
     
     svg_bottom.selectAll()
@@ -136,7 +136,7 @@ function draw_scatterplot(data) {
     }
     var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
-        sliderTime.value(d.t * 2);
+        sliderTime.value(d.t);
     }
     
     svg_right.selectAll()
@@ -155,7 +155,7 @@ function draw_scatterplot(data) {
 }
 
 
-d3.csv("/static/data/data_diff_half.csv", d3.autoType)
+d3.csv("/static/data/data_diff.csv", d3.autoType)
     .then(function(data) {
 
        

@@ -201,8 +201,6 @@ function slider(orientation, scale) {
       .attr('stroke-width', 2)
       .attr('stroke-linecap', 'round');
 
-      //d3.range(0, 4, 1)
-      console.log(d3.range(scale.domain()[0],scale.domain()[1]+step,step))
 
       sliderEnter.selectAll('.r').data(d3.range(scale.domain()[0],scale.domain()[1]+step,step))
       .enter().append("circle")
