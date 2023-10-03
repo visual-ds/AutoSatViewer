@@ -22,17 +22,18 @@
   <div id="map">
     <camvas></camvas>
   </div>
-  <div id="footer">
-    <div class="mensaje" style="width: 90px; "> 
-        <p id="value-time" class="pp"></p>
+  <div id="timeline">
+    <div class="timestep_indicator"> 
+        <p id="value-time" class="pp">0</p>
     </div>
-    <div class="timeslider" id="timeslider" style="width: calc(100%-95px);  flex-grow: 1;">    </div>
+    <div class="timeslider" id="timeslider">
+    </div>
   </div>
 
   <button id="toggleTemporalButton" onclick="toggleDiv('temporalChartGroup'); toggleDiv('ChartBar');">+</button>
   <button id="toggleBarButton" onclick="toggleDiv('ChartBar'); toggleDiv('temporalChartGroup')">+</button>
   
-  <div id="temporalChartGroup" >
+  <!--<div id="temporalChartGroup" >
         <div style="display: flex; width: 100%; height: 100%; ">
             <div style="width: 150px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; "> 
                 <select class="select-box">
@@ -45,13 +46,11 @@
             <div id="temporalChartLine"  style="width: calc(100%-155px); flex-grow: 1; height: 100%; display: inline-block; align-items: center;    justify-content: center; border-radius: 8px;">  
             </div>
         </div>
-  </div>
-  <div id="ChartBar" style=" flex-direction: column;   align-items: center;">
+  </div>-->
+  <!--<div id="ChartBar" style=" flex-direction: column;   align-items: center;">
     <div class="box box1">Additional Charts</div>
-    <div class="box box2" id="ScatterPlot">
-
-    </div>
-  </div>
+    <div class="box box2" id="ScatterPlot"></div>
+  </div>-->
 
   <script>
     function toggleDiv(divId) {

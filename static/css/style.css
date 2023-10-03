@@ -14,18 +14,36 @@ body {
     z-index: 1;
   }
 
-  #footer {
-    position: absolute;
-    bottom: 20px;
-    height: 35px;
-    width: calc(100% - 30px);
-    left: 15px;
-    background: lightgray;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 4;
-    display: flex;
-  }
+#timeline {
+  position: absolute;
+  bottom: 20px;
+  width: 45px;
+  height: calc(100% - 80px);
+  left: calc(100% - 45px);
+  background: lightgray;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 4;
+  display:flex;
+  flex-direction: column;
+}
+
+.timeslider {
+  width: 100%;
+  height: 95%;
+}
+
+.timestep_indicator {
+  width: 100%;
+  height: 5%;
+}
+
+.pp {
+  margin: 0;
+  font-size: 16px;
+  color:rgb(0, 153, 153);
+}
+
 
   #toggleTemporalButton, #toggleBarButton {
     width: 20px;
@@ -74,12 +92,7 @@ body {
   }
 
   
-.timeSlider {
-    align-items: center;
-    height: 30px;
-    padding: 0px;
-    margin-top: 0px;
-}
+
 
 
 .axis text,
@@ -96,20 +109,6 @@ body {
     opacity: 1;
 }
 
-
-
-.mensaje {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-  }
-
-  .pp {
-    margin: 0;
-    font-size: 16px;
-    color:rgb(0, 153, 153); /* Puedes cambiar a tu color preferido */
-  }
 
 
 

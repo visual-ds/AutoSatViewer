@@ -50,7 +50,6 @@ var topographyAndPlaces = L.tileLayer.wms('https://production.alerta.mapbiomas.o
 
 
 var overlayMaps = {
-  //"Sao Paulo": cdblight2,
   "Estados": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_states-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
   "Municipios": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_cities-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
   "Biomes": L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {layers: "mapbiomas-alertas:dashboard_biomes-static-layer", transparent: true, format: "image/png", minZoom: 9, maxZoom: 12}),
@@ -93,12 +92,6 @@ var drawPluginOptions = {
       },
       editable: false,
       },
-    //edit: {
-    //    featureGroup: drawnItems, //REQUIRED!!
-     //   remove: false,
-       // buffer: {replacePolylines: false,
-        //separateBuffer: false}
-    //}
   };
   
   // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -113,23 +106,17 @@ var drawPluginOptions = {
 
 
 //----------------------------------------- SLIDER
-//Getting slider width
-var slider_width = document.getElementById("timeslider").clientWidth;
+var slider_height = document.getElementById("timeslider").clientHeight;
 var timesteps = 20;
-//var dataTime = d3.range(0, 20).map(function(d) {
-//    return new Date(1995 + d, 10, 3);
-//});
 
 var sliderTime = d3
-    .sliderBottom()
+    .sliderLeft()
     .min(0)
     .max(timesteps)
-    .step(1) // 1000 * 60 * 60 * 24 * 365)
-    .width(slider_width-80)
+    .step(1)
+    .height(slider_height-80)
     .displayValue(false)
-    //.tickFormat(d3.timeFormat('%Y'))
-    //.tickValues(dataTime)
-    .default(0) //new Date(1998, 10, 3))
+    .default(0) 
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
     .on('onchange', (d) => {
       T = d;
@@ -156,21 +143,12 @@ var sliderTime = d3
     .range([0, slider_width])
     .clamp(true);*/
 
-  var gTime = d3
-    .select('div#timeslider')
+  var gTime = d3.select('div#timeslider')
     .append('svg')
-    .attr('width', slider_width)
-    .attr('height', 30)
+    .attr('height', slider_height)
+    .attr('width', 45)
     .append('g')
-    .attr('transform', 'translate(15,15)')
-
-   /* var r = gTime.data([1,2,3,4,5,6,7,8])
-    .enter().append("circle")
-  .attr("cx", x)
-  .attr("cy", 20)
-  .attr("r", 30)
-  .attr("fill", "red");*/
-
+    .attr('transform', 'translate(15, 65)');
 
 
   gTime.call(sliderTime);
