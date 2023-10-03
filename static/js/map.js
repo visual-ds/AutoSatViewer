@@ -36,12 +36,6 @@ var tiles = L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}/{time}.png", {
     time: () => T,
 }).addTo(map);
 
-/*
-
-var topographyAndPlaces = L.tileLayer.wms('https://production.alerta.mapbiomas.org/geoserver/ows', {
-    layers: "mapbiomas-alertas:dashboard_states-static-layer",
-}).addTo(map);*/
-
 
 //var baseMaps ={
 //  "Carto BD": cdblight,
@@ -82,9 +76,9 @@ var drawPluginOptions = {
       rectangle: false,
       circlemarker: true,
       polygon: {
-          allowIntersection: false, // Restricts shapes to simple polygons
+          allowIntersection: false,
           drawError: {
-            color: '#e1e100', // Color the shape will turn when intersects
+            color: '#e1e100',
         },
           shapeOptions: {
             color: '#bada55'
@@ -94,7 +88,6 @@ var drawPluginOptions = {
       },
   };
   
-  // Initialise the draw control and pass it the FeatureGroup of editable layers
   var drawControl = new L.Control.Draw(drawPluginOptions);
   map.addControl(drawControl);
 
