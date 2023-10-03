@@ -69,7 +69,9 @@ function draw_heatmap(data){
     }
     var mouseleave = function(d) {
         d3.selectAll(".cell").style("stroke", "none");
-        tooltip.style("opacity", 0);
+        tooltip.style("opacity", 0)
+        .style("left", "0px")
+        .style("top", "0px");
     }
     var mouseclick = function(event, d) {
         map.setView(new L.LatLng(d.lat, d.lon), 9);
@@ -146,7 +148,8 @@ function draw_scatterplot(data) {
         .attr("class", "point")
         .attr("cx", d => x(d[X_ATTR]))
         .attr("cy", d => y(d[Y_ATTR]))
-        .attr("r", 4)
+        .attr("r", 5)
+        .attr("opacity", 0.5)
         .style("fill", d => myColor(d[HEATMAP_ATTR]))
         .on("mouseover", mouseover)
         .on("mousemove", mousemove)
