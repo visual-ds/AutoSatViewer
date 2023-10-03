@@ -204,8 +204,8 @@ function slider(orientation, scale) {
 
       sliderEnter.selectAll('.r').data(d3.range(scale.domain()[0],scale.domain()[1]+step,step))
       .enter().append("circle")
-    .attr("cx", scale)
-    .attr("cy", domain[0])
+    .attr("cy", scale)
+    .attr("cx", domain[0])
     .attr("r", 3)
     .attr('fill', '#009999')
 

@@ -111,15 +111,15 @@ var timesteps = 20;
 
 var sliderTime = d3
     .sliderLeft()
-    .min(0)
+    .min(1)
     .max(timesteps)
     .step(1)
     .height(slider_height-80)
     .displayValue(false)
-    .default(0) 
+    .default(1) 
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
     .on('onchange', (d) => {
-      T = d;
+      T = d - 1;
       tiles.redraw();
       d3.select('p#value-time').text(d);
 
@@ -148,7 +148,7 @@ var sliderTime = d3
     .attr('height', slider_height)
     .attr('width', 45)
     .append('g')
-    .attr('transform', 'translate(15, 65)');
+    .attr('transform', 'translate(25, 55)');
 
 
   gTime.call(sliderTime);
