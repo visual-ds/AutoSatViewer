@@ -159,3 +159,49 @@ body {
   border-radius: 8px;
 }
 
+
+
+
+
+
+.centered-div {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  width: 50vw;
+  height: 50vh;
+  transform: translate(-50%, -50%);
+  display: flex;
+  box-shadow: 2px 8px 16px 2px rgba(0,0,0,0.2); /* Add shadow to the div */
+  border-radius: 10px; /* Rounded corners */
+  overflow: hidden; /* Hide overflow content */
+  z-index: 100;
+}
+
+.inner-div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white; /* White text */
+  /*transition: all 0.3s ease;  Smooth transition for hover effect */
+  border: 1px solid #3498db; /* Border width, style, and color */
+}
+
+.left {
+  background-color: gray; /* Blue background */
+}
+
+.right {
+  background-color: gray; /* Red background */
+}
+
+.inner-div:hover {
+  /*transform: scale(1.1);  Slightly scale up the div on hover */
+}
+
+p {
+  margin: 0;
+  font-size: 1.5em;
+}
