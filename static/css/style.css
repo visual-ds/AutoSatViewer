@@ -175,7 +175,7 @@ body {
   box-shadow: 2px 8px 16px 2px rgba(0,0,0,0.2); /* Add shadow to the div */
   border-radius: 10px; /* Rounded corners */
   overflow: hidden; /* Hide overflow content */
-  z-index: 100;
+  z-index: 2;
 }
 
 .inner-div {
@@ -186,15 +186,15 @@ body {
   text-align: center;
   color: white; /* White text */
   /*transition: all 0.3s ease;  Smooth transition for hover effect */
-  border: 1px solid #3498db; /* Border width, style, and color */
+  border: 1px solid #009999; /* Border width, style, and color */
 }
 
 .left {
-  background-color: gray; /* Blue background */
+  background-color: white; /* Blue background */
 }
 
 .right {
-  background-color: gray; /* Red background */
+  background-color: white; /* Red background */
 }
 
 .inner-div:hover {
@@ -204,4 +204,16 @@ body {
 p {
   margin: 0;
   font-size: 1.5em;
+}
+
+.drag-btn {
+  position: absolute;
+  top: 50%;
+  right: calc(50% - 15px);
+  cursor: move;
+  background-color: #009999;
+  padding: 5px 8px;
+  color: #163333;
+  border-radius: 25px;
+  z-index: 1000;
 }
