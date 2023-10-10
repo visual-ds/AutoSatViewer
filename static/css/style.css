@@ -168,8 +168,8 @@ body {
   position: absolute;
   top: 35%;
   left: 50%;
-  width: 50vw;
-  height: 50vh;
+  width: 30vw;
+  height: 30vh;
   transform: translate(-50%, -50%);
   display: flex;
   box-shadow: 2px 8px 16px 2px rgba(0,0,0,0.2); /* Add shadow to the div */

@@ -1,4 +1,6 @@
 var T = 0;
+var center_lat = -1;
+var center_lon = -50;
 
 // var cdblight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
 //             attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |', //+' &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
@@ -29,12 +31,29 @@ var T = 0;
 
 
 const map = L.map('map').setView([-1, -50], 12);
+const map1 = L.map('mapa-left').setView([-1, -50], 12);
+const map2 = L.map('mapa-right').setView([-1, -50], 12);
+
 var tiles = L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}/{time}.png", {
     minZoom: 9,
     maxZoom: 12,
     attribution: 'Colaboradores: <a href="http://visualdslab.com/">Visual Data Science lab</a> & <a href="https://portal.fgv.br/">FGV</a> |',
     time: () => T,
 }).addTo(map);
+
+var tiles1 = L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}/{time}.png", {
+  minZoom: 9,
+  maxZoom: 12,
+  time: () => Math.max(T - 1, 0),
+}).addTo(map1);
+
+var tiles2 = L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}/{time}.png", {
+  minZoom: 9,
+  maxZoom: 12,
+  time: () => Math.min(T + 1, 19),
+}).addTo(map2);
+
+
 
 
 //var baseMaps ={
@@ -114,6 +133,8 @@ var sliderTime = d3
     .on('onchange', (d) => {
       T = d - 1;
       tiles.redraw();
+      tiles1.redraw();
+      tiles2.redraw();
       d3.select('p#value-time').text(d);
 
       /*
@@ -130,34 +151,34 @@ var sliderTime = d3
           //    .style("opacity", 0);
       });
    
-/*
-    var x = d3.scaleLinear()
-    .domain(d3.extent([1,2,3,4,5,6,7,8]))
-    .range([0, slider_width])
-    .clamp(true);*/
+var gTime = d3.select('div#timeslider')
+  .append('svg')
+  .attr('height', slider_height)
+  .attr('width', 45)
+  .append('g')
+  .attr('transform', 'translate(25, 55)');
 
-  var gTime = d3.select('div#timeslider')
-    .append('svg')
-    .attr('height', slider_height)
-    .attr('width', 45)
-    .append('g')
-    .attr('transform', 'translate(25, 55)');
+gTime.call(sliderTime);
 
 
-  gTime.call(sliderTime);
+var layerControl = L.control.layers(
+  null, 
+  overlayMaps,
+  {position: 'topleft'}
+).addTo(map);
 
+map.sync(map1);
+map.sync(map2);
+map1.sync(map2);
+map1.sync(map);
+map2.sync(map1);
+map2.sync(map);
 
-
-
-  var layerControl = L.control.layers(
-    null, 
-    overlayMaps,
-    {position: 'topleft'}
-  ).addTo(map);
-
-
-
-
+map.on("moveend", function(e) {
+  center_lat = map.getCenter().lat;
+  center_lon = map.getCenter().lng;
+  //redraw_heatmap();
+});
 
 
 

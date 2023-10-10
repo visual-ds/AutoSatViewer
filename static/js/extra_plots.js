@@ -79,7 +79,20 @@ function draw_heatmap(data){
         map.setView(new L.LatLng(d.lat, d.lon), 9);
         sliderTime.value(d.t);
     }
-    
+
+    const brush = d3.brushY()
+      .extent([[0, 0], [width_right, height_right]])
+      .on("end", brushended);
+
+    function brushended(event) {
+        const selection = event.selection;
+        if (!event.sourceEvent || !selection) return;
+        console.log(selection)
+        //const [x0, x1] = selection.map(d => interval.round(x.invert(d)));
+        //d3.select(this).transition().call(brush.move, x1 > x0 ? [x0, x1].map(x) : null);
+        }
+
+
     svg_right.selectAll()
         .data(data)
         .enter()
@@ -90,10 +103,14 @@ function draw_heatmap(data){
         .attr("width", x.bandwidth() )
         .attr("height", y.bandwidth() )
         .style("fill", d => myColor(d[HEATMAP_ATTR]))
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-        .on("click", mouseclick)
+        //.on("mouseover", mouseover)
+        //.on("mousemove", mousemove)
+        //.on("mouseleave", mouseleave)
+        //.on("click", mouseclick)
+
+    svg_right.append("g")
+        .attr("class", "brush")
+        .call(brush);
 }
 
 function draw_scatterplot(data) {
@@ -160,12 +177,9 @@ function draw_scatterplot(data) {
 }
 
 
-d3.csv("/static/data/data_diff.csv", d3.autoType)
-    .then(function(data) {
 
-       
+d3.csv(`/static/data/data_test_4.csv`, d3.autoType)
+    .then(function(data) {
         draw_heatmap(data);
-        
-    
-        draw_scatterplot(data);
+        //draw_scatterplot(data);
     });

@@ -18,6 +18,9 @@ def index():
 @app.route("/tiles/<int:z>/<int:x>/<int:y>/<int:T>.png")
 def tiles(z, x, y, T):
     tile = f"/media/giovani/DATA/gee-data/patches/image_{T}/patch_{x}_{y}_{z}.jpg"
+    # load prev
+    # rgb -> gray
+    # diff
     try:
         tile = open(tile, "rb").read()
         return tile, 200, {"Content-Type": "image/png"}
