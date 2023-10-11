@@ -31,18 +31,27 @@ const svg_bottom = d3.select("div#ScatterPlot")
 
 
 function draw_heatmap(data){
-    var x = d3.scaleBand()
-        .range([ 0, width_right ])
+    var x_overview = d3.scaleBand()
+        .range([ 0, width_right *0.3])
         .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
+    
+    var x_detail = d3.scaleBand()
+        .range([ 0, width_right *0.6])
+        .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
+    
     var y = d3.scaleBand()
         .range([ height_right, 0 ])
         .domain(Array(d3.max(data, d => d.pos) + 1).fill().map((_, i) => i));
+    var y_linear = d3.scaleLinear()
+        .range([ height_right, 0 ])
+        .domain([0, d3.max(data, d => d.pos)]);
+    
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
     svg_right.append("g")
         .attr("transform", "translate(0," + height_right + ")")
-        .call(d3.axisBottom(x).tickValues([0, 5, 10, 15]));
+        .call(d3.axisBottom(x_detail).tickValues([0, 5, 10, 15]));
     svg_right.append("g")
         .call(d3.axisLeft(y).tickValues([]));
         
@@ -81,16 +90,22 @@ function draw_heatmap(data){
     }
 
     const brush = d3.brushY()
-      .extent([[0, 0], [width_right, height_right]])
+      .extent([[0, 0], [width_right*0.3, height_right]])
       .on("end", brushended);
 
     function brushended(event) {
         const selection = event.selection;
         if (!event.sourceEvent || !selection) return;
-        console.log(selection)
-        //const [x0, x1] = selection.map(d => interval.round(x.invert(d)));
-        //d3.select(this).transition().call(brush.move, x1 > x0 ? [x0, x1].map(x) : null);
-        }
+
+        var div = 8;
+        var step = (y_linear.domain()[1] - y_linear.domain()[0] + 1)/div;
+        var selection_invert = selection
+            .map(d => y_linear.invert(d))   // convert to domain value
+            .map(d => Math.round(d / step) * step) // round to step
+            .map(d => y_linear(d))   // convert back to range value
+            .sort();
+        d3.select(this).call(brush.move, selection_invert);
+    }
 
 
     svg_right.selectAll()
@@ -98,15 +113,33 @@ function draw_heatmap(data){
         .enter()
         .append("rect")
         .attr("class", "cell")
-        .attr("x", d => x(d.t))
+        .attr("x", d => x_overview(d.t))
         .attr("y", d => y(d.pos))
-        .attr("width", x.bandwidth() )
+        .attr("width", x_overview.bandwidth() )
         .attr("height", y.bandwidth() )
         .style("fill", d => myColor(d[HEATMAP_ATTR]))
         //.on("mouseover", mouseover)
         //.on("mousemove", mousemove)
         //.on("mouseleave", mouseleave)
         //.on("click", mouseclick)
+
+    svg_right.append("g")
+        .attr("transform", "translate(" + width_right * 0.32 + ",0)")
+        .selectAll()
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("class", "cell")
+        .attr("x", d => x_detail(d.t))
+        .attr("y", d => y(d.pos))
+        .attr("width", x_detail.bandwidth() )
+        .attr("height", y.bandwidth() )
+        .style("fill", d => myColor(d[HEATMAP_ATTR]))
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave)
+        .on("click", mouseclick);
+
 
     svg_right.append("g")
         .attr("class", "brush")
