@@ -39,13 +39,17 @@ function draw_heatmap(data){
         .range([ 0, width_right *0.6])
         .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
     
-    var y = d3.scaleBand()
+    var y_overview = d3.scaleBand()
         .range([ height_right, 0 ])
         .domain(Array(d3.max(data, d => d.pos) + 1).fill().map((_, i) => i));
-    var y_linear = d3.scaleLinear()
+    var y_detail = d3.scaleBand()
+        .range([height_right, 0])
+        .domain(Array((d3.max(data, d => d.pos) + 1)/ 8).fill().map((_, i) => i));
+    var y_overview_linear = d3.scaleLinear()
         .range([ height_right, 0 ])
         .domain([0, d3.max(data, d => d.pos)]);
     
+
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
@@ -53,8 +57,8 @@ function draw_heatmap(data){
         .attr("transform", "translate(0," + height_right + ")")
         .call(d3.axisBottom(x_detail).tickValues([0, 5, 10, 15]));
     svg_right.append("g")
-        .call(d3.axisLeft(y).tickValues([]));
-        
+        .call(d3.axisLeft(y_overview_linear).tickValues(Array(8).fill().map((_, i) => i * 128)));
+
     var tooltip = d3.select("div#temporalChartLine")
         .append("div")
         .style("opacity", 0)
@@ -98,13 +102,27 @@ function draw_heatmap(data){
         if (!event.sourceEvent || !selection) return;
 
         var div = 8;
-        var step = (y_linear.domain()[1] - y_linear.domain()[0] + 1)/div;
+        var step = (y_overview_linear.domain()[1] - y_overview_linear.domain()[0] + 1)/div;
         var selection_invert = selection
-            .map(d => y_linear.invert(d))   // convert to domain value
+            .map(d => y_overview_linear.invert(d))   // convert to domain value
             .map(d => Math.round(d / step) * step) // round to step
-            .map(d => y_linear(d))   // convert back to range value
-            .sort();
+            .map(d => y_overview_linear(d))   // convert back to range value
+            .sort(function(a, b){return a - b});
+        // if they are the same, move one of them
+        if (selection_invert[0] == selection_invert[1]) {
+            if (selection_invert[1] >= y_overview_linear.range()[1]) {
+                selection_invert[0] -= step;
+            } else {
+                selection_invert[1] += step;
+            }
+        }
         d3.select(this).call(brush.move, selection_invert);
+
+        d3.selectAll(".cell_detail")
+            .filter(d => d.pos < selection_invert[0] || d.pos > selection_invert[1])
+
+        
+
     }
 
 
@@ -114,36 +132,41 @@ function draw_heatmap(data){
         .append("rect")
         .attr("class", "cell")
         .attr("x", d => x_overview(d.t))
-        .attr("y", d => y(d.pos))
+        .attr("y", d => y_overview(d.pos))
         .attr("width", x_overview.bandwidth() )
-        .attr("height", y.bandwidth() )
+        .attr("height", y_overview.bandwidth() )
         .style("fill", d => myColor(d[HEATMAP_ATTR]))
         //.on("mouseover", mouseover)
         //.on("mousemove", mousemove)
         //.on("mouseleave", mouseleave)
         //.on("click", mouseclick)
 
-    svg_right.append("g")
-        .attr("transform", "translate(" + width_right * 0.32 + ",0)")
-        .selectAll()
-        .data(data)
-        .enter()
-        .append("rect")
-        .attr("class", "cell")
-        .attr("x", d => x_detail(d.t))
-        .attr("y", d => y(d.pos))
-        .attr("width", x_detail.bandwidth() )
-        .attr("height", y.bandwidth() )
-        .style("fill", d => myColor(d[HEATMAP_ATTR]))
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-        .on("click", mouseclick);
+    d3.csv(`/static/data/data_test_1.csv`, d3.autoType)
+        .then(function(data) {
+            svg_right.append("g")
+                .attr("transform", "translate(" + width_right * 0.32 + ",0)")
+                .selectAll()
+                .data(data)
+                .filter(d => d.pos > (1024 - 128))
+                .enter()
+                .append("rect")
+                .attr("class", "cell_detail")
+                .attr("x", d => x_detail(d.t))
+                .attr("y", d => y_detail(d.pos))
+                .attr("width", x_detail.bandwidth() )
+                .attr("height", y_detail.bandwidth() )
+                .style("fill", d => myColor(d[HEATMAP_ATTR]))
+                // .on("mouseover", mouseover)
+                // .on("mousemove", mousemove)
+                // .on("mouseleave", mouseleave)
+                // .on("click", mouseclick);
+        });
 
 
     svg_right.append("g")
         .attr("class", "brush")
-        .call(brush);
+        .call(brush)
+        .call(brush.move, [y_overview_linear.range()[1], y_overview_linear.range()[1] + 128]);
 }
 
 function draw_scatterplot(data) {
@@ -211,7 +234,7 @@ function draw_scatterplot(data) {
 
 
 
-d3.csv(`/static/data/data_test_4.csv`, d3.autoType)
+d3.csv(`/static/data/data_test_3.csv`, d3.autoType)
     .then(function(data) {
         draw_heatmap(data);
         //draw_scatterplot(data);
