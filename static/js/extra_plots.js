@@ -54,10 +54,10 @@ function draw_heatmap(data){
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
     svg_right.append("g")
-        .attr("transform", "translate(0," + height_right + ")")
-        .call(d3.axisBottom(x_detail).tickValues([0, 5, 10, 15]));
+        .attr("transform", `translate(${width_right * 0.3}, ${height_right})`)
+        .call(d3.axisBottom(x_detail).tickValues([0, 5, 10, 15, 19]));
     svg_right.append("g")
-        .call(d3.axisLeft(y_overview_linear).tickValues(Array(8).fill().map((_, i) => i * 128)));
+        .call(d3.axisLeft(y_overview_linear).tickValues([]));
 
     var tooltip = d3.select("div#temporalChartLine")
         .append("div")
@@ -72,59 +72,10 @@ function draw_heatmap(data){
         .style("z-index", 5000)
 
 
-    var mouseover = function(d) {
-        d3.select(this).style("stroke", "black");
-        tooltip.style("opacity", 1);
-    }
-    var mousemove = function(event, d) {
-        tooltip
-            .html("Torque:" + Math.round(d[HEATMAP_ATTR] * 100) / 100 + "<br/>" + "Timestamp:" + Math.round(d.t))
-            .style("left", (d3.pointer(event)[0] + 40)+ "px")
-            .style("top", (d3.pointer(event)[1] + 20) + "px");
-    }
-    var mouseleave = function(d) {
-        d3.selectAll(".cell").style("stroke", "none");
-        tooltip.style("opacity", 0)
-        .style("left", "0px")
-        .style("top", "0px");
-    }
-    var mouseclick = function(event, d) {
-        map.setView(new L.LatLng(d.lat, d.lon), 9);
-        sliderTime.value(d.t);
-    }
-
-    const brush = d3.brushY()
-      .extent([[0, 0], [width_right*0.3, height_right]])
-      .on("end", brushended);
-
-    function brushended(event) {
-        const selection = event.selection;
-        if (!event.sourceEvent || !selection) return;
-
-        var div = 8;
-        var step = (y_overview_linear.domain()[1] - y_overview_linear.domain()[0] + 1)/div;
-        var selection_invert = selection
-            .map(d => y_overview_linear.invert(d))   // convert to domain value
-            .map(d => Math.round(d / step) * step) // round to step
-            .map(d => y_overview_linear(d))   // convert back to range value
-            .sort(function(a, b){return a - b});
-        // if they are the same, move one of them
-        if (selection_invert[0] == selection_invert[1]) {
-            if (selection_invert[1] >= y_overview_linear.range()[1]) {
-                selection_invert[0] -= step;
-            } else {
-                selection_invert[1] += step;
-            }
-        }
-        d3.select(this).call(brush.move, selection_invert);
-
-        d3.selectAll(".cell_detail")
-            .filter(d => d.pos < selection_invert[0] || d.pos > selection_invert[1])
-
-        
-
-    }
-
+    const g_detail = svg_right.append("g")
+        .attr("transform", "translate(" + width_right * 0.32 + ",0)")
+        .attr("class", "heatmap_detail");
+    
 
     svg_right.selectAll()
         .data(data)
@@ -135,38 +86,97 @@ function draw_heatmap(data){
         .attr("y", d => y_overview(d.pos))
         .attr("width", x_overview.bandwidth() )
         .attr("height", y_overview.bandwidth() )
-        .style("fill", d => myColor(d[HEATMAP_ATTR]))
-        //.on("mouseover", mouseover)
-        //.on("mousemove", mousemove)
-        //.on("mouseleave", mouseleave)
-        //.on("click", mouseclick)
+        .style("fill", d => myColor(d[HEATMAP_ATTR]));
 
     d3.csv(`/static/data/data_test_1.csv`, d3.autoType)
-        .then(function(data) {
-            svg_right.append("g")
-                .attr("transform", "translate(" + width_right * 0.32 + ",0)")
-                .selectAll()
-                .data(data)
-                .filter(d => d.pos > (1024 - 128))
-                .enter()
-                .append("rect")
-                .attr("class", "cell_detail")
-                .attr("x", d => x_detail(d.t))
-                .attr("y", d => y_detail(d.pos))
-                .attr("width", x_detail.bandwidth() )
-                .attr("height", y_detail.bandwidth() )
-                .style("fill", d => myColor(d[HEATMAP_ATTR]))
-                // .on("mouseover", mouseover)
-                // .on("mousemove", mousemove)
-                // .on("mouseleave", mouseleave)
+        .then(function(new_data) {
+            const brush = d3.brushY()
+                .extent([[0, 0], [width_right*0.3, height_right]])
+                .on("end", brushended);
+
+            function brushended(event) {
+                const selection = event.selection;
+                //if (!event.sourceEvent || !selection) return;
+
+                // CODE TO FIX INTO THE GRID
+                // var div = 8;
+                // var step = (y_overview_linear.domain()[1] - y_overview_linear.domain()[0] + 1)/div;
+                // var step_range = Math.abs((y_overview_linear.range()[1] - y_overview_linear.range()[0])/div);
+                // console.log(step_range)
+                // var selection_invert = selection
+                //     .map(d => y_overview_linear.invert(d))   // convert to domain value
+                //     .map(d => Math.round(d / step) * step) // round to step
+                //     .map(d => y_overview_linear(d))   // convert back to range value
+                //     .sort(function(a, b){return a - b});
+                // // if they are the same, move one of them
+                // if (selection_invert[0] == selection_invert[1]) {
+                //     if (selection_invert[1] >= y_overview_linear.range()[1]) {
+                //         selection_invert[0] = selection_invert[0] - step_range;
+                //     } else {
+                //         selection_invert[1] =  selection_invert[1] + step_range;
+                //     }
+                // }
+        
+                selection_invert = selection
+                    .map(y_overview_linear.invert)
+                    .map(d => d * 16)
+                    .sort(function(a, b){return a - b});
+                var filtered_data = new_data.filter(
+                    d => (d.pos >= selection_invert[0]) && (d.pos <= selection_invert[1])
+                );
+                var start_pos = d3.min(filtered_data.map(d => d.pos));
+                var end_pos = d3.max(filtered_data.map(d => d.pos));
+                
+                y_detail
+                    .domain([...Array(end_pos - start_pos + 1).keys()].map(i => i + start_pos));
+                
+                // remove everything from detail heatmap
+                g_detail.selectAll("*").remove();
+                
+                var mouseover = function(d) {
+                    d3.select(this).style("stroke", "black");
+                    tooltip.style("opacity", 1);
+                }
+                var mousemove = function(event, d) {
+                    tooltip
+                        .html("Torque:" + Math.round(d[HEATMAP_ATTR] * 100) / 100 + "<br/>" + "Timestamp:" + Math.round(d.t))
+                        .style("left", (d3.pointer(event)[0] + 40)+ "px")
+                        .style("top", (d3.pointer(event)[1] + 20) + "px");
+                }
+                var mouseleave = function(d) {
+                    d3.selectAll(".cell_detail").style("stroke", "none");
+                    tooltip.style("opacity", 0)
+                    .style("left", "0px")
+                    .style("top", "0px");
+                }
+                var mouseclick = function(event, d) {
+                    map.setView(new L.LatLng(d.lat, d.lon), 9);
+                    sliderTime.value(d.t);
+                }
+
+                // draw new heatmap
+                g_detail.selectAll()
+                    .data(filtered_data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "cell_detail")
+                    .attr("x", d => x_detail(d.t))
+                    .attr("y", d => y_detail(d.pos))
+                    .attr("width", x_detail.bandwidth() )
+                    .attr("height", y_detail.bandwidth() )
+                    .style("fill", d => myColor(d[HEATMAP_ATTR]))
+                    .on("mouseover", mouseover)
+                    .on("mousemove", mousemove)
+                    .on("mouseleave", mouseleave)
                 // .on("click", mouseclick);
+
+            };
+
+            svg_right.append("g")
+                .attr("class", "brush")
+                .call(brush)
+                .call(brush.move, [y_overview_linear(1024), y_overview_linear(1024 - 128)]);
         });
-
-
-    svg_right.append("g")
-        .attr("class", "brush")
-        .call(brush)
-        .call(brush.move, [y_overview_linear.range()[1], y_overview_linear.range()[1] + 128]);
 }
 
 function draw_scatterplot(data) {
