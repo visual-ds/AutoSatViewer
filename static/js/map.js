@@ -118,15 +118,15 @@ var drawPluginOptions = {
 
 
 //----------------------------------------- SLIDER
-var slider_height = document.getElementById("timeslider").clientHeight;
+var slider_width = document.getElementById("timeslider").clientWidth * 0.95;
 var timesteps = 20;
 
 var sliderTime = d3
-    .sliderLeft()
+    .sliderBottom()
     .min(1)
     .max(timesteps)
     .step(1)
-    .height(slider_height-80)
+    .width(slider_width)
     .displayValue(false)
     .default(1) 
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
@@ -136,27 +136,14 @@ var sliderTime = d3
       tiles1.redraw();
       tiles2.redraw();
       d3.select('p#value-time').text(d);
-
-      /*
-     tooltip.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                tooltip.html("Soy un círculo rojo")
-                    .style("left",d3.pointer(d3.event,this)[0] + "px")
-                    .style("top", ( 28) + "px"); */
-        })
-    .on("end", function (d) {
-          //tooltip.transition()
-          //    .duration(500)
-          //    .style("opacity", 0);
-      });
+    });
    
 var gTime = d3.select('div#timeslider')
   .append('svg')
-  .attr('height', slider_height)
-  .attr('width', 45)
+  .attr('height', 40)
+  .attr('width', slider_width)
   .append('g')
-  .attr('transform', 'translate(25, 55)');
+  .attr('transform', 'translate(10, 20)');
 
 gTime.call(sliderTime);
 
@@ -177,7 +164,6 @@ map2.sync(map);
 map.on("moveend", function(e) {
   center_lat = map.getCenter().lat;
   center_lon = map.getCenter().lng;
-  //redraw_heatmap();
 });
 
 

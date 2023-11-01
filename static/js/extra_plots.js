@@ -1,6 +1,6 @@
-const margin = {top: 10, right: 30, bottom: 20, left: 30};
+const margin = {top: 20, right: 30, bottom: 20, left: 30};
 
-const total_height_right = document.getElementById("timeslider").offsetHeight * 0.9;
+const total_height_right = (window.innerHeight - 100) * 0.9;
 const total_width_right = 250;
 const width_right = total_width_right - margin.left - margin.right;
 const height_right = total_height_right - margin.top - margin.bottom;
