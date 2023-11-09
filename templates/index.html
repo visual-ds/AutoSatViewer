@@ -46,12 +46,11 @@
   <button id="toggleTemporalButton" onclick="toggleDiv('temporalChartGroup'); toggleDiv('ChartBar');">+</button>
   <div id="temporalChartGroup" >
     <div id = "temporal_selector"> 
-      <select class="select-box">
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+      <select class="select-box" id = "data_source">
+          <option value="spatiotemporal_coeff_0">Spatiotemporal coeff. 0</option>
+          <option value="spatiotemporal_torque">Spatiotemporal torque</option>
       </select>
-      <button class="btn">Filter</button>
+      <button class="btn" id = "update_data_source">Update</button>
     </div>
     <div id="temporalChartLine"></div>
   </div>

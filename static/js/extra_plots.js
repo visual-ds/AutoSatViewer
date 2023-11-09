@@ -93,7 +93,7 @@ function draw_heatmap(data){
         .attr("height", y_overview.bandwidth() )
         .style("fill", d => myColor(d[HEATMAP_ATTR]));
 
-    d3.csv(`/static/data/data_test_1.csv`, d3.autoType)
+    d3.csv(`/static/data/data_diff_spatiotemporal_torque_small.csv`, d3.autoType)
         .then(function(new_data) {
             const brush = d3.brushY()
                 .extent([[0, 0], [width_right*0.3, height_right]])
@@ -265,7 +265,7 @@ function draw_scatterplot(data) {
 
 
 
-d3.csv(`/static/data/data_test_3.csv`, d3.autoType)
+d3.csv(`/static/data/data_diff_spatiotemporal_torque.csv`, d3.autoType)
     .then(function(data) {
         draw_heatmap(data);
         //draw_scatterplot(data);
