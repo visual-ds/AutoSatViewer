@@ -4,7 +4,7 @@ const total_height_right = (window.innerHeight - 100) * 0.9;
 const total_width_right = 250;
 const width_right = total_width_right - margin.left - margin.right;
 const height_right = total_height_right - margin.top - margin.bottom;
-const HEATMAP_ATTR = "spatiotemporal_torque";
+var HEATMAP_ATTR = "spatiotemporal_torque";
 
 
 const total_width_bottom = window.innerWidth * 0.17;
@@ -48,8 +48,7 @@ function draw_heatmap(data){
         .range([ height_right, 0 ])
         .domain(Array(d3.max(data, d => d.pos) + 1).fill().map((_, i) => i));
     var y_detail = d3.scaleBand()
-        .range([height_right, 0])
-        .domain(Array((d3.max(data, d => d.pos) + 1)/ 8).fill().map((_, i) => i));
+        .range([height_right, 0]);
     var y_overview_linear = d3.scaleLinear()
         .range([ height_right, 0 ])
         .domain([0, d3.max(data, d => d.pos)]);
@@ -93,7 +92,7 @@ function draw_heatmap(data){
         .attr("height", y_overview.bandwidth() )
         .style("fill", d => myColor(d[HEATMAP_ATTR]));
 
-    d3.csv(`/static/data/data_diff_spatiotemporal_torque_small.csv`, d3.autoType)
+    d3.csv(`/static/data/data_${HEATMAP_ATTR}.csv`, d3.autoType)
         .then(function(new_data) {
             const brush = d3.brushY()
                 .extent([[0, 0], [width_right*0.3, height_right]])
@@ -138,7 +137,6 @@ function draw_heatmap(data){
                 var lat_min = d3.min(filtered_data.map(d => d.lat));
                 var lat_max = d3.max(filtered_data.map(d => d.lat));
 
-                console.log(lon_min, lon_max, lat_min, lat_max)
                 // remove the boudingbox
                 map.removeLayer(bbox_layer);
                 // add new boudingbox
@@ -147,7 +145,6 @@ function draw_heatmap(data){
                 map.addLayer(bbox_layer);
                 // center map to the center of the bbox
                 map.setView(new L.LatLng((lat_min + lat_max)/2, (lon_min + lon_max)/2));
-                console.log((lat_min + lat_max) / 2, (lon_min + lon_max) / 2)
                 
                 y_detail
                     .domain([...Array(end_pos - start_pos + 1).keys()].map(i => i + start_pos));
@@ -265,8 +262,19 @@ function draw_scatterplot(data) {
 
 
 
-d3.csv(`/static/data/data_diff_spatiotemporal_torque.csv`, d3.autoType)
+d3.csv(`/static/data/data_spatiotemporal_torque_small.csv`, d3.autoType)
     .then(function(data) {
         draw_heatmap(data);
-        //draw_scatterplot(data);
     });
+
+
+// add interaction to data_source button
+var data_source_button = document.getElementById("update_data_source");
+data_source_button.addEventListener("click", function() {
+    HEATMAP_ATTR = document.getElementById("data_source").value;
+    svg_right.selectAll("*").remove();
+    d3.csv(`/static/data/data_${HEATMAP_ATTR}_small.csv`, d3.autoType)
+    .then(function(data) {
+        draw_heatmap(data);
+    });
+});
