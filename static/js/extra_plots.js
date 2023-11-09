@@ -31,6 +31,11 @@ const svg_bottom = d3.select("div#ScatterPlot")
 
 
 function draw_heatmap(data){
+    // add empty rectangle to the map
+    var bbox = [[-90, -180], [90, 180]];
+    var bbox_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
+    map.addLayer(bbox_layer);
+
     var x_overview = d3.scaleBand()
         .range([ 0, width_right *0.3])
         .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
@@ -126,6 +131,23 @@ function draw_heatmap(data){
                 );
                 var start_pos = d3.min(filtered_data.map(d => d.pos));
                 var end_pos = d3.max(filtered_data.map(d => d.pos));
+
+                // get bouding box of filtered_data
+                var lon_min = d3.min(filtered_data.map(d => d.lon));
+                var lon_max = d3.max(filtered_data.map(d => d.lon));
+                var lat_min = d3.min(filtered_data.map(d => d.lat));
+                var lat_max = d3.max(filtered_data.map(d => d.lat));
+
+                console.log(lon_min, lon_max, lat_min, lat_max)
+                // remove the boudingbox
+                map.removeLayer(bbox_layer);
+                // add new boudingbox
+                bbox = [[lat_min, lon_min], [lat_max, lon_max]];
+                bbox_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
+                map.addLayer(bbox_layer);
+                // center map to the center of the bbox
+                map.setView(new L.LatLng((lat_min + lat_max)/2, (lon_min + lon_max)/2));
+                console.log((lat_min + lat_max) / 2, (lon_min + lon_max) / 2)
                 
                 y_detail
                     .domain([...Array(end_pos - start_pos + 1).keys()].map(i => i + start_pos));
@@ -168,8 +190,7 @@ function draw_heatmap(data){
                     .on("mouseover", mouseover)
                     .on("mousemove", mousemove)
                     .on("mouseleave", mouseleave)
-                // .on("click", mouseclick);
-
+                    .on("click", mouseclick);
             };
 
             svg_right.append("g")
