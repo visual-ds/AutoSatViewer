@@ -26,6 +26,17 @@ def tiles(z, x, y, T):
         return tile, 200, {"Content-Type": "image/png"}
     except:
         return "", 204
+    
+@app.route("/data_source/<string:source>")
+def load_data_source(source):
+    df = pd.read_csv("/home/giovani/Documents/amazonia_project/data/vis_tool/data_diff.csv")
+    df_overview = pd.read_csv("/home/giovani/Documents/amazonia_project/data/vis_tool/data_diff_overview.csv")
+    df = df[["t", "pos", "lon_min", "lon_max", "lat_min", "lat_max", source]]
+    df_overview = df_overview[["t", "pos", "lon_min", "lon_max", "lat_min", "lat_max", source]]
+    df = df.to_json(orient="records")
+    df_overview = df_overview.to_json(orient="records")
+    return jsonify(data = df, data_overview = df_overview)
+    
 
 
 if __name__ == "__main__":

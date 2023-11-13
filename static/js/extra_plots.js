@@ -30,7 +30,7 @@ const svg_bottom = d3.select("div#ScatterPlot")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-function draw_heatmap(data){
+function draw_heatmap(data_overview, data){
     // add empty rectangle to the map
     var bbox = [[-90, -180], [90, 180]];
     var bbox_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
@@ -38,28 +38,27 @@ function draw_heatmap(data){
 
     var x_overview = d3.scaleBand()
         .range([ 0, width_right *0.3])
-        .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
-    
-    var x_detail = d3.scaleBand()
+        .domain(Array(d3.max(data_overview, d => d.t) + 1).fill().map((_, i) => i));
+    var x = d3.scaleBand()
         .range([ 0, width_right *0.6])
         .domain(Array(d3.max(data, d => d.t) + 1).fill().map((_, i) => i));
     
     var y_overview = d3.scaleBand()
         .range([ height_right, 0 ])
-        .domain(Array(d3.max(data, d => d.pos) + 1).fill().map((_, i) => i));
-    var y_detail = d3.scaleBand()
-        .range([height_right, 0]);
+        .domain(Array(d3.max(data_overview, d => d.pos) + 1).fill().map((_, i) => i));
     var y_overview_linear = d3.scaleLinear()
         .range([ height_right, 0 ])
-        .domain([0, d3.max(data, d => d.pos)]);
-    
+        .domain([0, d3.max(data_overview, d => d.pos)]);
+    var y = d3.scaleBand()
+        .range([height_right, 0]);
+   
 
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
     svg_right.append("g")
         .attr("transform", `translate(${width_right * 0.3}, ${height_right})`)
-        .call(d3.axisBottom(x_detail).tickValues([0, 5, 10, 15, 19]));
+        .call(d3.axisBottom(x).tickValues([0, 5, 10, 15, 19]));
     svg_right.append("g")
         .call(d3.axisLeft(y_overview_linear).tickValues([]));
 
@@ -76,126 +75,124 @@ function draw_heatmap(data){
         .style("z-index", 5000)
 
 
-    const g_detail = svg_right.append("g")
+    const g = svg_right.append("g")
         .attr("transform", "translate(" + width_right * 0.32 + ",0)")
-        .attr("class", "heatmap_detail");
+        .attr("class", "heatmap");
     
 
     svg_right.selectAll()
-        .data(data)
+        .data(data_overview)
         .enter()
         .append("rect")
-        .attr("class", "cell")
+        .attr("class", "cell_overview")
         .attr("x", d => x_overview(d.t))
         .attr("y", d => y_overview(d.pos))
         .attr("width", x_overview.bandwidth() )
         .attr("height", y_overview.bandwidth() )
         .style("fill", d => myColor(d[HEATMAP_ATTR]));
 
-    d3.csv(`/static/data/data_${HEATMAP_ATTR}.csv`, d3.autoType)
-        .then(function(new_data) {
-            const brush = d3.brushY()
-                .extent([[0, 0], [width_right*0.3, height_right]])
-                .on("end", brushended);
+    
+    const brush = d3.brushY()
+        .extent([[0, 0], [width_right*0.3, height_right]])
+        .on("end", brushended);
 
-            function brushended(event) {
-                const selection = event.selection;
-                //if (!event.sourceEvent || !selection) return;
+    function brushended(event) {
+        const selection = event.selection;
+        //if (!event.sourceEvent || !selection) return;
 
-                // CODE TO FIX INTO THE GRID
-                // var div = 8;
-                // var step = (y_overview_linear.domain()[1] - y_overview_linear.domain()[0] + 1)/div;
-                // var step_range = Math.abs((y_overview_linear.range()[1] - y_overview_linear.range()[0])/div);
-                // console.log(step_range)
-                // var selection_invert = selection
-                //     .map(d => y_overview_linear.invert(d))   // convert to domain value
-                //     .map(d => Math.round(d / step) * step) // round to step
-                //     .map(d => y_overview_linear(d))   // convert back to range value
-                //     .sort(function(a, b){return a - b});
-                // // if they are the same, move one of them
-                // if (selection_invert[0] == selection_invert[1]) {
-                //     if (selection_invert[1] >= y_overview_linear.range()[1]) {
-                //         selection_invert[0] = selection_invert[0] - step_range;
-                //     } else {
-                //         selection_invert[1] =  selection_invert[1] + step_range;
-                //     }
-                // }
+        // CODE TO FIX INTO THE GRID
+        // var div = 8;
+        // var step = (y_overview_linear.domain()[1] - y_overview_linear.domain()[0] + 1)/div;
+        // var step_range = Math.abs((y_overview_linear.range()[1] - y_overview_linear.range()[0])/div);
+        // console.log(step_range)
+        // var selection_invert = selection
+        //     .map(d => y_overview_linear.invert(d))   // convert to domain value
+        //     .map(d => Math.round(d / step) * step) // round to step
+        //     .map(d => y_overview_linear(d))   // convert back to range value
+        //     .sort(function(a, b){return a - b});
+        // // if they are the same, move one of them
+        // if (selection_invert[0] == selection_invert[1]) {
+        //     if (selection_invert[1] >= y_overview_linear.range()[1]) {
+        //         selection_invert[0] = selection_invert[0] - step_range;
+        //     } else {
+        //         selection_invert[1] =  selection_invert[1] + step_range;
+        //     }
+        // }
+
+        selection_invert = selection
+            .map(y_overview_linear.invert)
+            .map(d => d * 16)
+            .sort(function(a, b){return a - b});
+        var filtered_data = data.filter(
+            d => (d.pos >= selection_invert[0]) && (d.pos <= selection_invert[1])
+        );
+        var start_pos = d3.min(filtered_data.map(d => d.pos));
+        var end_pos = d3.max(filtered_data.map(d => d.pos));
+
+        // get bouding box of filtered_data
+        var lon_min = d3.min(filtered_data.map(d => d.lon_min));
+        var lon_max = d3.max(filtered_data.map(d => d.lon_max));
+        var lat_min = d3.min(filtered_data.map(d => d.lat_min));
+        var lat_max = d3.max(filtered_data.map(d => d.lat_max));
+
+        // remove the boudingbox
+        map.removeLayer(bbox_layer);
+        // add new boudingbox
+        bbox = [[lat_min, lon_min], [lat_max, lon_max]];
+        bbox_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
+        map.addLayer(bbox_layer);
+        // center map to the center of the bbox
+        map.setView(new L.LatLng((lat_min + lat_max)/2, (lon_min + lon_max)/2));
         
-                selection_invert = selection
-                    .map(y_overview_linear.invert)
-                    .map(d => d * 16)
-                    .sort(function(a, b){return a - b});
-                var filtered_data = new_data.filter(
-                    d => (d.pos >= selection_invert[0]) && (d.pos <= selection_invert[1])
-                );
-                var start_pos = d3.min(filtered_data.map(d => d.pos));
-                var end_pos = d3.max(filtered_data.map(d => d.pos));
+        y.domain([...Array(end_pos - start_pos + 1).keys()].map(i => i + start_pos));
+        
+        // remove everything from heatmap
+        g.selectAll("*").remove();
+        
+        var mouseover = function(d) {
+            d3.select(this).style("stroke", "black");
+            tooltip.style("opacity", 1);
+        }
+        var mousemove = function(event, d) {
+            tooltip
+                .html("Torque:" + Math.round(d[HEATMAP_ATTR] * 100) / 100 + "<br/>" + "Timestamp:" + Math.round(d.t))
+                .style("left", (d3.pointer(event)[0] + 40)+ "px")
+                .style("top", (d3.pointer(event)[1] + 20) + "px");
+        }
+        var mouseleave = function(d) {
+            d3.selectAll(".cell").style("stroke", "none");
+            tooltip.style("opacity", 0)
+            .style("left", "0px")
+            .style("top", "0px");
+        }
+        var mouseclick = function(event, d) {
+            //map.setView(new L.LatLng(d.lat, d.lon), 9);
+            sliderTime.value(d.t);
+        }
 
-                // get bouding box of filtered_data
-                var lon_min = d3.min(filtered_data.map(d => d.lon));
-                var lon_max = d3.max(filtered_data.map(d => d.lon));
-                var lat_min = d3.min(filtered_data.map(d => d.lat));
-                var lat_max = d3.max(filtered_data.map(d => d.lat));
+        // draw new heatmap
+        g.selectAll()
+            .data(filtered_data)
+            .enter()
+            .append("rect")
+            .attr("class", "cell")
+            .attr("x", d => x(d.t))
+            .attr("y", d => y(d.pos))
+            .attr("width", x.bandwidth() )
+            .attr("height", y.bandwidth() )
+            .style("fill", d => myColor(d[HEATMAP_ATTR]))
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave)
+            .on("click", mouseclick);
+    };
 
-                // remove the boudingbox
-                map.removeLayer(bbox_layer);
-                // add new boudingbox
-                bbox = [[lat_min, lon_min], [lat_max, lon_max]];
-                bbox_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
-                map.addLayer(bbox_layer);
-                // center map to the center of the bbox
-                map.setView(new L.LatLng((lat_min + lat_max)/2, (lon_min + lon_max)/2));
-                
-                y_detail
-                    .domain([...Array(end_pos - start_pos + 1).keys()].map(i => i + start_pos));
-                
-                // remove everything from detail heatmap
-                g_detail.selectAll("*").remove();
-                
-                var mouseover = function(d) {
-                    d3.select(this).style("stroke", "black");
-                    tooltip.style("opacity", 1);
-                }
-                var mousemove = function(event, d) {
-                    tooltip
-                        .html("Torque:" + Math.round(d[HEATMAP_ATTR] * 100) / 100 + "<br/>" + "Timestamp:" + Math.round(d.t))
-                        .style("left", (d3.pointer(event)[0] + 40)+ "px")
-                        .style("top", (d3.pointer(event)[1] + 20) + "px");
-                }
-                var mouseleave = function(d) {
-                    d3.selectAll(".cell_detail").style("stroke", "none");
-                    tooltip.style("opacity", 0)
-                    .style("left", "0px")
-                    .style("top", "0px");
-                }
-                var mouseclick = function(event, d) {
-                    map.setView(new L.LatLng(d.lat, d.lon), 9);
-                    sliderTime.value(d.t);
-                }
-
-                // draw new heatmap
-                g_detail.selectAll()
-                    .data(filtered_data)
-                    .enter()
-                    .append("rect")
-                    .attr("class", "cell_detail")
-                    .attr("x", d => x_detail(d.t))
-                    .attr("y", d => y_detail(d.pos))
-                    .attr("width", x_detail.bandwidth() )
-                    .attr("height", y_detail.bandwidth() )
-                    .style("fill", d => myColor(d[HEATMAP_ATTR]))
-                    .on("mouseover", mouseover)
-                    .on("mousemove", mousemove)
-                    .on("mouseleave", mouseleave)
-                    .on("click", mouseclick);
-            };
-
-            svg_right.append("g")
-                .attr("class", "brush")
-                .call(brush)
-                .call(brush.move, [y_overview_linear(1024), y_overview_linear(1024 - 128)]);
-        });
+    svg_right.append("g")
+        .attr("class", "brush")
+        .call(brush)
+        .call(brush.move, [y_overview_linear(1024), y_overview_linear(1024 - 128)]);
 }
+
 
 function draw_scatterplot(data) {
     var x = d3.scaleLinear()
@@ -261,10 +258,13 @@ function draw_scatterplot(data) {
 }
 
 
+fetch("http://127.0.0.1:5000/data_source/" + HEATMAP_ATTR)
+    .then(response => response.json())
+    .then(response => {
+        var data = JSON.parse(response.data);
+        var data_overview = JSON.parse(response.data_overview);
+        draw_heatmap(data_overview, data);
 
-d3.csv(`/static/data/data_spatiotemporal_torque_small.csv`, d3.autoType)
-    .then(function(data) {
-        draw_heatmap(data);
     });
 
 
@@ -273,8 +273,13 @@ var data_source_button = document.getElementById("update_data_source");
 data_source_button.addEventListener("click", function() {
     HEATMAP_ATTR = document.getElementById("data_source").value;
     svg_right.selectAll("*").remove();
-    d3.csv(`/static/data/data_${HEATMAP_ATTR}_small.csv`, d3.autoType)
-    .then(function(data) {
-        draw_heatmap(data);
+    // make query to the flask server in the address /data_source
+    fetch("http://127.0.0.1:5000/data_source/" + HEATMAP_ATTR)
+    .then(response => response.json())
+    .then(response => {
+        var data = JSON.parse(response.data);
+        var data_overview = JSON.parse(response.data_overview);
+        draw_heatmap(data_overview, data);
     });
+
 });
