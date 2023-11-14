@@ -36,6 +36,9 @@ function draw_heatmap(data_overview, data){
     var bbox_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
     map.addLayer(bbox_layer);
 
+    var cursos_layer = L.rectangle(bbox, {color: "#ff7800", weight: 4, fill : false})
+    map.addLayer(cursos_layer);
+
     var x_overview = d3.scaleBand()
         .range([ 0, width_right *0.3])
         .domain(Array(d3.max(data_overview, d => d.t) + 1).fill().map((_, i) => i));
@@ -165,7 +168,12 @@ function draw_heatmap(data_overview, data){
             .style("top", "0px");
         }
         var mouseclick = function(event, d) {
-            //map.setView(new L.LatLng(d.lat, d.lon), 9);
+            var lon = (d.lon_min + d.lon_max)/2;
+            var lat = (d.lat_min + d.lat_max)/2;
+            map.setView(new L.LatLng(lat, lon), 9);
+            map.removeLayer(cursos_layer);
+            cursos_layer = L.rectangle([[d.lat_min, d.lon_min], [d.lat_max, d.lon_max]], {color: "#ff7800", weight: 4, fill : false})
+            map.addLayer(cursos_layer);
             sliderTime.value(d.t);
         }
 
