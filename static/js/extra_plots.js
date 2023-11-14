@@ -52,13 +52,12 @@ function draw_heatmap(data_overview, data){
     var y = d3.scaleBand()
         .range([height_right, 0]);
    
-
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
         .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
     svg_right.append("g")
         .attr("transform", `translate(${width_right * 0.3}, ${height_right})`)
-        .call(d3.axisBottom(x).tickValues([0, 5, 10, 15, 19]));
+        .call(d3.axisBottom(x).tickValues([0, 5, 10, 15]));
     svg_right.append("g")
         .call(d3.axisLeft(y_overview_linear).tickValues([]));
 
