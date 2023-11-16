@@ -1,0 +1,24 @@
+#container {
+    display: flex;
+    height: 100%;
+    z-index: 100;
+}
+
+#container {
+    display: flex;
+    height: 100%;
+}
+
+.panel {
+    flex-grow: 1;
+    background: #ddd;
+    padding: 10px;
+    border: 1px solid #888;
+}
+
+.resizer {
+    background: #666;
+    cursor: ew-resize;
+    width: 5px;
+    height: 100%;
+}

@@ -9,6 +9,7 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
   <link href="../static/css/style.css" rel="stylesheet" type='text/css' />
+  <link href="../static/css/maps.css" rel="stylesheet" type='text/css' />
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
    <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
@@ -17,12 +18,22 @@
    <script src="https://d3js.org/d3.v7.min.js"></script>
    <!-- <script src="https://unpkg.com/d3-simple-slider@2.0.0/dist/d3-simple-slider.min.js"></script> -->
    <script src="../static/js/slider.js"></script>
+   
 
 </head>
 <body style="overflow: hidden;">
+  <div id="container">
+    <div id="mapa-left" class="panel"></div>
+    <div id="resizer-left" class="resizer"></div>
+    <div id="map" class="panel">  <camvas></camvas></div>
+    <div id="resizer-right" class="resizer"></div>
+    <div id="mapa-right" class="panel"></div>
+  
+
+<!--
   <div id="map">
     <camvas></camvas>
-  </div>
+  </div> -->
   <div id="timeline">
     <div class="timestep_indicator"> 
         <p id="value-time" class="pp">1</p>
@@ -31,7 +42,7 @@
     </div>
   </div>
 
-  <div class="centered-div" id="draggable">
+  <!-- <div class="centered-div" id="draggable">
     <div id="drag-btn" class="drag-btn">☰</div>
     <div class="inner-div left" id="mapa-left">
        
@@ -39,7 +50,7 @@
     <div class="inner-div right" id="mapa-right">
       
     </div>
-  </div>
+  </div> -->
   
   <!--<button id="toggleBarButton" onclick="toggleDiv('ChartBar'); toggleDiv('temporalChartGroup')">+</button>-->
   
@@ -78,6 +89,7 @@
       <button class="btn" id = "update_data_source">Update</button>
     </div>
     <div id="temporalChartLine"></div>
+  </div>
   </div>
   <!--<div id="ChartBar" style=" flex-direction: column;   align-items: center;">
     <div class="box box1">Additional Charts</div>
@@ -122,8 +134,9 @@
       map2.sync(map3);
       map3.sync(map1);
   </script> -->
-  <script src="../static/js/drag.js"></script>
   <script src="../static/js/map.js"></script>
+  <script src="../static/js/drag.js"></script>
+  
   <script src="../static/js/extra_plots.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-#map {
+#container {
   position: absolute;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@ body {
   height: calc(100%);
   border-radius: 8px;
   overflow: hidden;
-  z-index: 1;
+  z-index: -1000;
 }
 
 #timeline {
