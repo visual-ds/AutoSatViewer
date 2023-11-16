@@ -2,9 +2,9 @@ var T = 0;
 var center_lat = -1;
 var center_lon = -50;
 
-// const map = L.map('map').setView([-1, -50], 12);
-// const map1 = L.map('mapa-left').setView([-1, -50], 12);
-// const map2 = L.map('mapa-right').setView([-1, -50], 12);
+const map = L.map('map').setView([-1, -50], 12);
+const map1 = L.map('mapa-left').setView([-1, -50], 12);
+const map2 = L.map('mapa-right').setView([-1, -50], 12);
 
 var tiles = L.tileLayer("http://127.0.0.1:5000/tiles/{z}/{x}/{y}/{time}.png", {
     minZoom: 9,
@@ -46,7 +46,6 @@ scale.addTo(map); // Adding scale control to the map
 // Adding some controls
 L.drawLocal.draw.toolbar.buttons.polygon = 'Desenhar região!';
 L.drawLocal.draw.toolbar.buttons.marker  = 'Marcar um ponto!';
-
 
 var drawPluginOptions = {
     position: 'topleft',

@@ -57,7 +57,7 @@ function draw_heatmap(data_overview, data){
    
     var myColor = d3.scaleLinear()
         .range(["white", "#ee0000"])
-        .domain(d3.extent(data, d => d[HEATMAP_ATTR]));
+        .domain(d3.extent(data, d => Math.abs(d[HEATMAP_ATTR])));
     svg_right.append("g")
         .attr("transform", `translate(${width_right * 0.3}, ${height_right})`)
         .call(d3.axisBottom(x).tickValues([0, 5, 10, 15]));
@@ -170,7 +170,7 @@ function draw_heatmap(data_overview, data){
         var mouseclick = function(event, d) {
             var lon = (d.lon_min + d.lon_max)/2;
             var lat = (d.lat_min + d.lat_max)/2;
-            map.setView(new L.LatLng(lat, lon), 9);
+            map.setView(new L.LatLng(lat, lon), 12);
             map.removeLayer(cursos_layer);
             cursos_layer = L.rectangle([[d.lat_min, d.lon_min], [d.lat_max, d.lon_max]], {color: "#ff7800", weight: 4, fill : false})
             map.addLayer(cursos_layer);
