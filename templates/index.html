@@ -30,10 +30,6 @@
     <div id="mapa-right" class="panel"></div>
   
 
-<!--
-  <div id="map">
-    <camvas></camvas>
-  </div> -->
   <div id="timeline">
     <div class="timestep_indicator"> 
         <p id="value-time" class="pp">1</p>
@@ -111,29 +107,6 @@
       // Adjust the #toggleBarButton similarly.
     }
   </script>
-  <!-- <script>
-      var map1 = L.map('map').setView([-1, -50], 13);
-      var map2 = L.map('mapa-left').setView([-1, -50], 13);
-      var map3 = L.map('mapa-right').setView([-1, -50], 13);
-
-      // Añade capas a los mapas (por ejemplo, un mapa base)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map1);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map2);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map3);
-
-      // Sincroniza los mapas
-      map1.sync(map2);
-      map2.sync(map3);
-      map3.sync(map1);
-  </script> -->
   <script src="../static/js/map.js"></script>
   <script src="../static/js/drag.js"></script>
   
