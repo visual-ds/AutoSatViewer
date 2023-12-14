@@ -38,6 +38,10 @@ def load_data_source(source):
     return jsonify(data = df, data_overview = df_overview)
     
 
+@app.route("/temporal_graph")
+def load_temporal_graph():
+    res = json.load(open("/home/giovani/Documents/amazonia_project/data/vis_tool/data_temporal_graph.json"))
+    return jsonify(res)
 
 if __name__ == "__main__":
     app.run(debug=True)
