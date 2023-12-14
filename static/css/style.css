@@ -219,3 +219,17 @@ p {
   border-radius: 25px;
   z-index: 1000;
 }
+
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+  stroke-dasharray: 2,2;
+}
+.grid path {
+  stroke-width: 0;
+}
+.node {
+  stroke: #56beac;
+}
