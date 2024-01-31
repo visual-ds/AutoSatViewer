@@ -115,12 +115,32 @@ var layerControl = L.control.layers(
   {position: 'topleft'}
 ).addTo(map);
 
+/*
 map.sync(map1);
 map.sync(map2);
 map1.sync(map2);
 map1.sync(map);
 map2.sync(map1);
-map2.sync(map);
+map2.sync(map);*/
+// Función para sincronizar los mapas
+function syncMaps(mainMap, maps) {
+  mainMap.on('move', () => {
+      maps.forEach(map => map.setView(mainMap.getCenter(), mainMap.getZoom()));
+  });
+}
+
+// Sincronizar los mapas entre sí
+syncMaps(map, [map1, map2]);
+syncMaps(map1, [map, map2]);
+syncMaps(map2, [map, map1]);
+
+// Inicializar Split.js para ajuste de ancho de paneles
+Split(['#mapa-left', '#map', '#mapa-right'], {
+  direction: 'horizontal',
+  gutterSize: 8,
+  cursor: 'col-resize',
+  onDragEnd: () => [map,map1, map2].forEach(map => map.invalidateSize()), // Ajustar el tamaño del mapa después del cambio de ancho
+});
 
 map.on("moveend", function(e) {
   center_lat = map.getCenter().lat;

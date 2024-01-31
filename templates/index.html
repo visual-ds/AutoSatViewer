@@ -14,6 +14,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
    <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
    <script src="https://unpkg.com/leaflet.sync/L.Map.Sync.js"></script>
+   <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+
    <!--Boostrap-->
    <script src="https://d3js.org/d3.v7.min.js"></script>
    <!-- <script src="https://unpkg.com/d3-simple-slider@2.0.0/dist/d3-simple-slider.min.js"></script> -->
@@ -23,12 +25,15 @@
 </head>
 <body style="overflow: hidden;">
   <div id="container">
+    <!--
     <div id="mapa-left" class="panel"></div>
     <div id="resizer-left" class="resizer"></div>
     <div id="map" class="panel">  <camvas></camvas></div>
     <div id="resizer-right" class="resizer"></div>
-    <div id="mapa-right" class="panel"></div>
-  
+    <div id="mapa-right" class="panel"></div> -->
+    <div id="mapa-left" class="map-container"></div>
+    <div id="map" class="map-container"></div>
+    <div id="mapa-right" class="map-container"></div>
 
   <div id="timeline">
     <div class="timestep_indicator"> 
