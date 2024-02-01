@@ -4,6 +4,10 @@
     z-index: 100;
 }
 
+.map-container {
+    z-index: 1;
+}
+
 
 .panel {
     flex-grow: 1;

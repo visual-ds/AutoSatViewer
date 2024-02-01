@@ -1,6 +1,6 @@
 function draw_Temporal_Graph(data){
-    const total_height_right = (window.innerHeight - 100) ;//* 0.9;
-    const total_width_right = 250;
+    const total_height_right = (window.innerHeight - 180) ;//* 0.9;
+    const total_width_right = 450;
 
     const margin = { top: 50, right: 20, bottom: 20, left: 30 },
     width = total_width_right - margin.left - margin.right,

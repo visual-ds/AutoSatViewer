@@ -59,9 +59,9 @@ body {
 
 #temporalChartGroup {
   top: 20px;
-  left: calc(100% - 320px);
+  left: calc(100% - 460px);
   height: calc(100% - 90px);
-  width: 250px;
+  width: 450px;
   background: lightgray;
   display:none;
   flex-direction: column;
