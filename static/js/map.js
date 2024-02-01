@@ -164,6 +164,7 @@ Split(['#mapa-left', '#map', '#mapa-right'], {
   onDragEnd: () => [map,map1, map2].forEach(map => map.invalidateSize()), // Ajustar el tamaño del mapa después del cambio de ancho
 });
 
+
 map.on("moveend", function(e) {
   center_lat = map.getCenter().lat;
   center_lon = map.getCenter().lng;

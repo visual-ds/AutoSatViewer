@@ -112,4 +112,4 @@ fetch("http://127.0.0.1:5000/temporal_graph")
 d3.json("https://raw.githubusercontent.com/germaingarcia/diplomadoFiles/main/data_temporal_graph_light.json").then(function(GraphData) {
 
     draw_Temporal_Graph(GraphData);
- })
+ })     
