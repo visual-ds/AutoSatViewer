@@ -78,7 +78,9 @@ var drawPluginOptions = {
   }
 
 
-//----------------------------------------- SLIDER
+/************************************************** TIME SLIDER *********************** */
+var slider_width = document.getElementById("timeslider").clientWidth * 0.99;
+/*
 var slider_width = document.getElementById("timeslider").clientWidth * 0.95;
 var timesteps = 20;
 
@@ -106,8 +108,28 @@ var gTime = d3.select('div#timeslider')
   .append('g')
   .attr('transform', 'translate(10, 20)');
 
-gTime.call(sliderTime);
+gTime.call(sliderTime);*/
+$('#timeslider')
+.width(slider_width)
+.offset({left: 50 - 10, bottom:-20});
 
+var slider = $("#slider").ionRangeSlider({
+type: 'single',
+skin: 'round',
+min: 1,
+max: 10,
+ticks:true,
+value:1,
+onChange: function(newRange){
+  d = newRange['from'];
+  T = d - 1;
+  console.log(T);
+  tiles.redraw();
+  tiles1.redraw();
+  tiles2.redraw();
+}
+});
+/************************************************** TIME SLIDER *********************** */
 
 var layerControl = L.control.layers(
   null, 

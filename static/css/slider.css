@@ -1,0 +1,72 @@
+.irs--round .irs-line {
+    top: 36px;
+    height: 4px;
+    background-color: #009999;
+    border-radius: 4px;
+ }
+ .irs--round .irs-bar {
+    top: 36px;
+    height: 4px;
+    background-color: #009999;
+ }
+ .irs--round .irs-handle {
+    top: 28px;
+    width: 22px;
+    height: 22px;
+    border: 4px solid #009999;
+    background-color: white;
+    border-radius: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 255, 0.3);
+ }
+ .irs--round .irs-handle.state_hover,
+ .irs--round .irs-handle:hover {
+   background-color: #b3cde0;
+ }
+ .irs--square .irs-min,
+ .irs--square .irs-max {
+   color: #333;
+   font-family: Baloo Thambi;
+   font-size: 14px;
+   line-height: 1;
+   top: 0;
+   padding: 3px 5px;
+   background-color: rgba(0, 0, 0, 0.1);
+ }
+ .irs--round .irs-from,
+ .irs--round .irs-to,
+ .irs--round .irs-single {
+    font-family: Baloo Thambi;
+    font-size: 14px;
+    line-height: 1;
+    text-shadow: none;
+    padding: 3px 5px;
+    background-color: #009999;
+    color: white;
+    border-radius: 4px;
+ }
+ .ion-range::part(tick-active) {
+  background: #bde0fe;
+}
+ 
+ text {
+   font-family: Baloo Thambi;
+ }
+
+ label {
+   font-family: Baloo Thambi;
+   margin-left: 10px;
+ }
+
+ select {
+   font-family: Baloo Thambi;
+ }
+
+ .show_label {
+   font-family: Baloo Thambi;
+ }
+
+ .legend_label {
+   fill: #009999;
+   text-anchor: middle;
+   font-family: Baloo Thambi;                     
+ }
