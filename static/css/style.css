@@ -235,3 +235,19 @@ p {
   stroke: #56beac;
 }
 */
+
+.node {
+  fill: steelblue;
+  stroke: black;
+  stroke-width: 0.5px;
+}
+.link {
+  stroke: #aaa;
+  stroke-opacity: 0.1;
+}
+/* Estilo para resaltar aristas */
+.highlighted {
+  stroke: #009999;
+  stroke-opacity: 1;  
+  stroke-width: 2px;
+}
