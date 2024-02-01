@@ -17,31 +17,51 @@ def index():
 
 @app.route("/tiles/<int:z>/<int:x>/<int:y>/<int:T>.png")
 def tiles(z, x, y, T):
-    tile = f"/media/giovani/DATA/gee-data/patches/image_{T}/patch_{x}_{y}_{z}.jpg"
-    # load prev
-    # rgb -> gray
-    # diff
-    try:
-        tile = open(tile, "rb").read()
-        return tile, 200, {"Content-Type": "image/png"}
-    except:
-        return "", 204
-    
+    load_from_github = True
+    if load_from_github:
+        import requests
+
+        tile = f"https://raw.githubusercontent.com/visual-ds/AutoSatViewer/main/static/tiles/image_0/patch_{x}_{y}_{z}.jpg"
+        try:
+            tile = requests.get(tile).content
+            return tile, 200, {"Content-Type": "image/png"}
+        except:
+            return "", 204
+    else:
+        tile = f"/media/giovani/DATA/gee-data/patches/image_{T}/patch_{x}_{y}_{z}.jpg"
+        try:
+            tile = open(tile, "rb").read()
+            return tile, 200, {"Content-Type": "image/png"}
+        except:
+            return "", 204
+
+
 @app.route("/data_source/<string:source>")
 def load_data_source(source):
-    df = pd.read_csv("/home/giovani/Documents/amazonia_project/data/vis_tool/data_diff.csv")
-    df_overview = pd.read_csv("/home/giovani/Documents/amazonia_project/data/vis_tool/data_diff_overview.csv")
+    df = pd.read_csv(
+        "/home/giovani/Documents/amazonia_project/data/vis_tool/data_diff.csv"
+    )
+    df_overview = pd.read_csv(
+        "/home/giovani/Documents/amazonia_project/data/vis_tool/data_diff_overview.csv"
+    )
     df = df[["t", "pos", "lon_min", "lon_max", "lat_min", "lat_max", source]]
-    df_overview = df_overview[["t", "pos", "lon_min", "lon_max", "lat_min", "lat_max", source]]
+    df_overview = df_overview[
+        ["t", "pos", "lon_min", "lon_max", "lat_min", "lat_max", source]
+    ]
     df = df.to_json(orient="records")
     df_overview = df_overview.to_json(orient="records")
-    return jsonify(data = df, data_overview = df_overview)
-    
+    return jsonify(data=df, data_overview=df_overview)
+
 
 @app.route("/temporal_graph")
 def load_temporal_graph():
-    res = json.load(open("/home/giovani/Documents/amazonia_project/data/vis_tool/data_temporal_graph.json"))
+    res = json.load(
+        open(
+            "/home/giovani/Documents/amazonia_project/data/vis_tool/data_temporal_graph.json"
+        )
+    )
     return jsonify(res)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

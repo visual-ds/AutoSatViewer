@@ -153,8 +153,8 @@ function syncMaps(mainMap, maps) {
 
 // Sincronizar los mapas entre sí
 syncMaps(map, [map1, map2]);
-syncMaps(map1, [map, map2]);
-syncMaps(map2, [map, map1]);
+//syncMaps(map1, [map, map2]);
+//syncMaps(map2, [map, map1]);
 
 // Inicializar Split.js para ajuste de ancho de paneles
 Split(['#mapa-left', '#map', '#mapa-right'], {
