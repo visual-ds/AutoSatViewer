@@ -11,12 +11,18 @@ dependencies:
   - asttokens=2.0.5
   - blas=1.0
   - bleach=4.1.0
+  - blosc=1.21.3
+  - boost-cpp=1.82.0
   - brotli-bin=1.0.9
   - brotli-python=1.0.9
   - bzip2=1.0.8
   - c-ares=1.19.1
   - ca-certificates=2023.12.12
+  - cairo=1.16.0
+  - cfitsio=3.470
   - charset-normalizer=2.0.4
+  - click-plugins=1.1.1
+  - cligj=0.7.2
   - cycler=0.11.0
   - cyrus-sasl=2.1.28
   - dbus=1.13.18
@@ -27,14 +33,20 @@ dependencies:
   - fontconfig=2.14.1
   - fonttools=4.25.0
   - freetype=2.12.1
-  - geos=3.12.1
+  - freexl=2.0.0
+  - geopandas-base=0.14.2
+  - geos=3.8.0
+  - geotiff=1.7.0
   - giflib=5.2.1
   - glib=2.69.1
   - gst-plugins-base=1.14.1
   - gstreamer=1.14.1
+  - hdf4=4.2.13
+  - hdf5=1.12.1
   - icu=73.1
   - intel-openmp=2023.1.0
   - jpeg=9e
+  - json-c=0.16
   - json5=0.9.6
   - jupyter_client=8.6.0
   - jupyter_console=6.6.3
@@ -45,10 +57,12 @@ dependencies:
   - jupyterlab_pygments=0.1.2
   - jupyterlab_server=2.25.1
   - jupyterlab_widgets=3.0.9
+  - kealib=1.5.0
   - krb5=1.20.1
   - lcms2=2.12
   - ld_impl_linux-64=2.38
   - lerc=3.0
+  - libboost=1.82.0
   - libbrotlicommon=1.0.9
   - libbrotlidec=1.0.9
   - libbrotlienc=1.0.9
@@ -61,11 +75,19 @@ dependencies:
   - libev=4.33
   - libffi=3.4.4
   - libgcc-ng=13.2.0
+  - libgdal=3.6.2
+  - libgfortran-ng=11.2.0
+  - libgfortran5=11.2.0
+  - libiconv=1.16
+  - libkml=1.3.0
   - libllvm14=14.0.6
+  - libnetcdf=4.8.1
   - libnghttp2=1.57.0
   - libpng=1.6.39
   - libpq=12.17
   - libsodium=1.0.18
+  - libspatialindex=1.9.3
+  - libspatialite=5.1.0
   - libssh2=1.10.0
   - libstdcxx-ng=13.2.0
   - libtiff=4.5.1
@@ -75,28 +97,37 @@ dependencies:
   - libxcb=1.15
   - libxkbcommon=1.0.1
   - libxml2=2.10.4
+  - libzip=1.8.0
   - llvm-openmp=14.0.6
   - lz4-c=1.9.4
   - matplotlib-base=3.8.0
+  - minizip=4.0.3
   - mkl=2023.1.0
   - mkl_fft=1.3.8
   - mkl_random=1.2.4
   - munkres=1.1.4
   - mysql=5.7.24
   - ncurses=6.4
+  - nspr=4.35
+  - nss=3.89.1
   - numpy-base=1.26.3
   - openjpeg=2.4.0
   - openssl=3.0.13
   - pandocfilters=1.5.0
   - parso=0.8.3
   - pcre=8.45
+  - pcre2=10.42
   - pexpect=4.8.0
+  - pixman=0.40.0
+  - poppler=22.12.0
+  - poppler-data=0.4.11
   - proj=9.3.1
   - prometheus_client=0.14.1
   - prompt_toolkit=3.0.43
   - ptyprocess=0.7.0
   - pure_eval=0.2.2
   - pycparser=2.21
+  - pygsp=0.5.1
   - pyqt=5.15.10
   - pyshp=2.1.3
   - python=3.10.13
@@ -104,16 +135,21 @@ dependencies:
   - python-fastjsonschema=2.16.2
   - python-tzdata=2023.3
   - python_abi=3.10
+  - qhull=2020.2
   - qt-main=5.15.2
   - readline=8.2
   - six=1.16.0
   - sqlite=3.41.2
   - stack_data=0.2.0
   - tbb=2021.8.0
+  - threadpoolctl=2.2.0
+  - tiledb=2.3.3
   - tk=8.6.12
   - typing_extensions=4.9.0
   - tzdata=2023d
+  - uriparser=0.9.7
   - wcwidth=0.2.5
+  - xerces-c=3.2.4
   - xz=5.4.5
   - yaml=0.2.5
   - zeromq=4.3.5
@@ -127,21 +163,28 @@ dependencies:
     - babel==2.11.0
     - beautifulsoup4==4.12.2
     - bottleneck==1.3.5
+    - branca==0.6.0
     - brotli==1.0.9
-    - certifi==2023.11.17
+    - certifi==2024.2.2
     - cffi==1.16.0
+    - click==8.1.7
     - comm==0.1.2
     - contourpy==1.2.0
     - cryptography==41.0.7
     - debugpy==1.6.7
     - exceptiongroup==1.2.0
     - fastjsonschema==2.16.2
+    - fiona==1.9.5
+    - folium==0.14.0
+    - gdal==3.6.2
+    - geopandas==0.14.2
     - idna==3.4
     - ipykernel==6.28.0
     - ipython==8.20.0
     - ipywidgets==8.0.4
     - jedi==0.18.1
     - jinja2==3.1.3
+    - joblib==1.2.0
     - jsonschema==4.19.2
     - jsonschema-specifications==2023.7.1
     - jupyter==1.0.0
@@ -156,6 +199,7 @@ dependencies:
     - jupyterlab-server==2.25.1
     - jupyterlab-widgets==3.0.9
     - kiwisolver==1.4.4
+    - mapclassify==2.5.0
     - markupsafe==2.1.3
     - matplotlib==3.8.0
     - matplotlib-inline==0.1.6
@@ -167,6 +211,7 @@ dependencies:
     - nbconvert==7.10.0
     - nbformat==5.9.2
     - nest-asyncio==1.5.6
+    - networkx==3.1
     - notebook==7.0.6
     - notebook-shim==0.2.3
     - numexpr==2.8.7
@@ -199,9 +244,12 @@ dependencies:
     - rfc3339-validator==0.1.4
     - rfc3986-validator==0.1.1
     - rpds-py==0.10.6
+    - rtree==1.0.1
+    - scikit-learn==1.3.0
+    - scipy==1.11.4
     - send2trash==1.8.2
     - setuptools==68.2.2
-    - shapely==2.0.2
+    - shapely==2.0.1
     - sip==6.7.12
     - sniffio==1.3.0
     - soupsieve==2.5
@@ -217,5 +265,6 @@ dependencies:
     - websocket-client==0.58.0
     - wheel==0.41.2
     - widgetsnbextension==4.0.5
+    - xyzservices==2022.9.0
 prefix: /home/giovani/anaconda3/envs/wavelet_code
 
