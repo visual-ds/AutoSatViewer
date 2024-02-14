@@ -1,9 +1,12 @@
 import numpy as np
+from tqdm import tqdm
 import geopandas as gpd
 from shapely.geometry import Polygon
+from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('Agg')
+
+matplotlib.use("Agg")
 
 
 def create_graph(shapefile):
@@ -13,15 +16,17 @@ def create_graph(shapefile):
     n = len(shapefile)
     adj = np.zeros((n, n))
     polygons = shapefile.geometry
-    for i in range(n):
-        for j in range(n):
+    centers = np.array([polygon.centroid.coords for polygon in polygons]).reshape(n, 2)
+    nbrs = NearestNeighbors(n_neighbors=30, algorithm="ball_tree").fit(centers)
+    distances, indices = nbrs.kneighbors(centers)
+
+    for i in tqdm(range(n)):
+        for j in indices[i]:
             if i != j:
                 if polygons[i].intersects(polygons[j]):
                     adj[i, j] = 1
                     adj[j, i] = 1
     return adj
-    
-
 
 
 if __name__ == "__main__":
