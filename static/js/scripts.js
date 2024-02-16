@@ -42,3 +42,12 @@ function shrinkDiv3() {
         shrinkButton.textContent = '+';
     }
 }
+
+window.onload = function () {
+    // make flask request to get the data
+    fetch('http://127.0.0.1:8080/get_heatmap_data')
+        .then(response => response.json())
+        .then(data => {
+            DrawOverview(data);
+        })
+}
