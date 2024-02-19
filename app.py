@@ -2,8 +2,8 @@ from flask import Flask, render_template, jsonify
 import numpy as np
 import pandas as pd
 
-POLY = "SpDistricts"
-TIME = "Month"
+POLY = ["SpCenterCensus10k", "SpDistricts"][0]
+TIME = ["Day", "Month"][0]
 SIGNAL_TYPES = ["RouboCelular", "FurtoCelular", "WazeAlerts"]
 N_SIGNALS = len(SIGNAL_TYPES)
 N_FREQS = 4
@@ -40,7 +40,9 @@ def get_heatmap_data():
                     "freq" : j,
                     "value" : float(high_freq[i, j])
                 })
-    return data
+
+    return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
