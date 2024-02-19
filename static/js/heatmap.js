@@ -18,7 +18,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
     //    .call(d3.axisLeft(y));
 }
 
-const SIGNAL_TYPES = ["WazeAlerts", "FurtoCelular", "RouboCelular"];
+const SIGNAL_TYPES = ["WazeJAM", "FurtoCelular", "RouboCelular"];
 const TIME_INTERVAL = "Month";
 const POLY = "SpDistricts";
 const N_SIGNALS = SIGNAL_TYPES.length;
@@ -44,7 +44,7 @@ function DrawOverview(data) {
         .domain([0, d3.max(data, d => d.value)])
         .range(["#ffffff", "#ff0000"]);
 
-    var svg = d3.select("#overview").append("svg")
+    var svg = d3.select("#heatmap").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom);
 

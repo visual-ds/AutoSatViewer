@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 
 POLY = ["SpCenterCensus10k", "SpDistricts"][0]
-TIME = ["Day", "Month"][0]
-SIGNAL_TYPES = ["RouboCelular", "FurtoCelular", "WazeAlerts"]
+TIME = ["Day", "Month"][1]
+SIGNAL_TYPES = ["RouboCelular", "FurtoCelular", "WazeJAM"]
 N_SIGNALS = len(SIGNAL_TYPES)
 N_FREQS = 4
 THRESHOLD = 0.6
@@ -20,27 +20,28 @@ def index():
 def get_heatmap_data():
     data = []
     for typ in SIGNAL_TYPES:
-        coeffs = np.load(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.npy")
-        
-        n_f = coeffs.shape[2] // N_FREQS
-        dom_freq = np.zeros((coeffs.shape[0], coeffs.shape[1], N_FREQS))
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
+
+        n_f = 32 // N_FREQS
         for i in range(N_FREQS):
-            dom_freq[:, :, i] = np.mean(coeffs[:, :, i * n_f : (i + 1) * n_f], axis=-1)
+            columns = [f"{typ}_coeff_{j}" for j in range(i * n_f, (i + 1) * n_f)]
+            coeffs["mean_freq" + str(i)] = coeffs[columns].mean(axis=1)
+            coeffs.drop(columns, axis=1, inplace=True)
 
-        high_freq = dom_freq > THRESHOLD
-        high_freq = high_freq.sum(axis = 0)
-
-        print(high_freq.shape)
+        def get_high_count(df):
+            return (df.iloc[:, 2:] > THRESHOLD).sum(axis=0)
         
-        for i in range(high_freq.shape[0]):
-            for j in range(high_freq.shape[1]):
-                data.append({
-                    "type": typ,
-                    "timestamp": i,
-                    "freq" : j,
-                    "value" : float(high_freq[i, j])
-                })
-
+        coeffs = coeffs.groupby("date").apply(get_high_count)
+        coeffs["type"] = typ
+        coeffs = coeffs.reset_index(drop=True)
+        coeffs = coeffs.reset_index()
+        coeffs.columns = ["timestamp"] + list(range(N_FREQS)) + ["type"]
+        # transform freq columns to new rows
+        coeffs = pd.melt(coeffs, id_vars=["timestamp", "type"], value_vars=list(range(N_FREQS)), var_name="freq", value_name="value")
+        data.append(coeffs)
+    
+    data = pd.concat(data)
+    data = data.to_dict(orient="records")
     return jsonify(data)
 
 
