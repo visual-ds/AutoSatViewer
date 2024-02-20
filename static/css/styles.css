@@ -28,16 +28,9 @@ body {
 
 }
 
-.signalContainer{
-    border: solid 1px #a5a5aa; 
-    background-color: white;
-    width: calc(100% -2px);
-    height: calc(23vh - 45px);
-}
-
 
 .middle-container {
-    height: calc(54vh + 26px);
+    height: calc(47vh + 26px);
     margin: 5px;
     background-color: #ffffff;
     z-index: 1000;
@@ -58,9 +51,13 @@ body {
 }
 
 
-.top-container.shrink, .bottom-container.shrink, .middle-container.shrink {
-    width: 40px;/*3%; /* Shrunk width */
-    height: 40px;/*5%;*/
+.top-container.shrink,
+.bottom-container.shrink,
+.middle-container.shrink {
+    width: 40px;
+    /*3%; /* Shrunk width */
+    height: 40px;
+    /*5%;*/
 }
 
 .shrink-button,
@@ -119,9 +116,9 @@ body {
 
 
 .shrinkContainer {
-    width: 40px; 
-    height: 40px; 
-    position: absolute;  
-    background-color: white; 
-    border: solid 1px #a5a5aa; 
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    background-color: white;
+    border: solid 1px #a5a5aa;
 }
