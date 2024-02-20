@@ -1,0 +1,19 @@
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #8FA2AC;
+    shape-rendering: crispEdges;
+}
+
+.axis text{
+    fill: #8FA2AC;
+    text-anchor: middle;
+    font-family: Baloo Thambi;
+
+}
+.legend {
+    font-family: Baloo Thambi;
+    font-size: 12px;
+    fill: #8FA2AC;
+      text-anchor: middle;
+}

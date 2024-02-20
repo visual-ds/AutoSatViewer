@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template,json,request, jsonify
 import numpy as np
 import pandas as pd
 
@@ -10,6 +10,9 @@ N_FREQS = 4
 THRESHOLD = 0.6
 
 app = Flask(__name__)
+
+#APAGAR
+df = pd.read_csv('D:\\FGV\\testFunctionalities\\teste\\SpCenterCensus10k_Month.csv')
 
 @app.route('/')
 def index():
@@ -43,6 +46,13 @@ def get_heatmap_data():
 
     return jsonify(data)
 
+#INICIO APAGAR-------------------------------
+@app.route("/Iniciar",methods=["GET","POST"])
+def Iniciar():
+    block_id = int(request.form['block_id'])
+    temporal = df[df['id_poly']==block_id][['date','FurtoCelular','RouboCelular','temperature','precipitation']]
+    return json.dumps({'temporal': json.loads(temporal.to_json(orient='records',index=True)),'columns':temporal.columns.values.tolist()[1:]})
+#FIN APAGAR-------------------------------------
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8000)
