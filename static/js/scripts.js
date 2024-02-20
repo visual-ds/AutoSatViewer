@@ -44,7 +44,7 @@ function shrinkDiv3() {
 }
 
 window.onload = function () {
-    var signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROAD_CLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
+    var signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROADCLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
     var chekedSignalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM"];
     for (let i = 0; i < signalTypes.length; i++) {
         var type = signalTypes[i];

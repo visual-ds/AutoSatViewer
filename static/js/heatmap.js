@@ -1,4 +1,4 @@
-const signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROAD_CLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
+const signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROADCLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
 
 function LoadOverview() {
     var N_FREQS = $("#nFreqs").val();
