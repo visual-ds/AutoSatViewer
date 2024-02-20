@@ -11,7 +11,7 @@ function LoadOverview() {
         }
     });
 
-    var url = `http://127.0.0.1:8080/get_heatmap_data/${N_FREQS}_${THRESHOLD}`
+    var url = `/get_heatmap_data/${N_FREQS}_${THRESHOLD}`
     for (let i = 0; i < selectedSignals.length; i++) {
         url += `_${selectedSignals[i]}`;
     }
@@ -98,7 +98,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
             var freq = d.freq;
             var type = d.type;
             $.ajax({
-                url: `http://127.0.0.1:8080/get_high_coefficients/${d.type}_${d.timestamp}_${d.freq}`,
+                url: `/get_high_coefficients/${d.type}_${d.timestamp}_${d.freq}`,
                 type: "GET",
                 success: function (data) {
                     console.log(data)

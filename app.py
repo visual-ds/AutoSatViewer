@@ -11,8 +11,6 @@ configs = {
 
 app = Flask(__name__)
 
-#APAGAR
-df = pd.read_csv('D:\\FGV\\testFunctionalities\\teste\\SpCenterCensus10k_Month.csv')
 
 @app.route('/')
 def index():
@@ -73,19 +71,14 @@ def get_high_coefficients(request):
     return jsonify(coeffs.to_dict(orient="records"))
 
     
-
-
-
-
-
-
-#INICIO APAGAR-------------------------------
-@app.route("/Iniciar",methods=["GET","POST"])
-def Iniciar():
+@app.route('/get_time_series', methods=["GET", "POST"])
+def get_time_series():
     block_id = int(request.form['block_id'])
-    temporal = df[df['id_poly']==block_id][['date','FurtoCelular','RouboCelular','temperature','precipitation']]
-    return json.dumps({'temporal': json.loads(temporal.to_json(orient='records',index=True)),'columns':temporal.columns.values.tolist()[1:]})
-#FIN APAGAR-------------------------------------
+    selected_signals = request.form.getlist('signals[]')
+    df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
+    return json.dumps({'temporal': json.loads(temporal.to_json(orient='records')), 'columns': temporal.columns.values.tolist()[1:]})
+
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=8080)
