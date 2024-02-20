@@ -63,12 +63,20 @@
         </div>
         <!--  </div>  -->
         <div id="overview" style="width: 100%; height: calc(100% - 40px); border-radius: 5px; background-color: white;">
-            <div id="heatmap_menu"></div>
-            <label for="n_freqs">Nº freqs</label>
-            <input type="range" id="n_freqs" min="0" max="2" step="1" value="1">
-            <label for="threshold">Threshold</label>
-            <input type="range" id="threshold" min="0" max="1" step="0.01" value="0.7">
-            <div id="heatmap"></div>
+            <div id="heatmapMenu"
+                style="margin: 15px 0px 0px 15px; width: 250px; border: solid 1px black; float: left;">
+                <form>
+                    <div id="signalTypes" style="height: 60px; overflow-y: scroll;"></div>
+                    <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 80px;">Nº freqs.:
+                        2</label><input type="range" id="nFreqs" min="0" max="3" step="1" value="1"></br>
+                    <label for="threshold" id="thresholdValue" style="display: inline-block; width: 80px;">Thresh.:
+                        0.7</label><input type="range" id="threshold" min="0" max="1" step="0.01" value="0.7"></br>
+                    <input type="button" value="Update" id="heatmapUpdate" style="float:left;" onclick="LoadOverview()">
+                </form>
+            </div>
+            <div id="heatmap" style="float: left;">
+                <svg id="heatmapSVG"></svg>
+            </div>
         </div>
 
     </div>

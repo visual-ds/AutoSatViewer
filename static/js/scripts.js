@@ -44,10 +44,31 @@ function shrinkDiv3() {
 }
 
 window.onload = function () {
-    // make flask request to get the data
-    fetch('http://127.0.0.1:8080/get_heatmap_data')
-        .then(response => response.json())
-        .then(data => {
-            DrawOverview(data);
-        })
+    var signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROAD_CLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
+    var chekedSignalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM"];
+    for (let i = 0; i < signalTypes.length; i++) {
+        var type = signalTypes[i];
+        var checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.id = type;
+        checkbox.value = type;
+        if (chekedSignalTypes.includes(type)) {
+            checkbox.checked = true;
+        }
+        var label = document.createElement('label');
+        label.htmlFor = type;
+        label.appendChild(document.createTextNode(type));
+        document.querySelector('#signalTypes').appendChild(checkbox);
+        document.querySelector('#signalTypes').appendChild(label);
+        document.querySelector('#signalTypes').appendChild(document.createElement('br'));
+    }
+
+    $("#nFreqs").on('input', function () {
+        $("#nFreqsValue").text("Nº freqs.:" + Math.pow(2, $(this).val()));
+    });
+    $("#threshold").on('input', function () {
+        $("#thresholdValue").text("Thresh.:" + $(this).val());
+    });
+    // call a click on the update button
+    document.querySelector('#heatmapUpdate').click();
 }

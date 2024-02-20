@@ -11,17 +11,24 @@ body {
 }
 
 
-.top-container,
-.bottom-container {
+.top-container {
     width: calc(100% - 10px);
     height: calc(23vh - 2px);
     margin-top: 5px;
     margin-left: 5px;
-    
+
+}
+
+.bottom-container {
+    width: calc(100% - 10px);
+    height: calc(30vh - 2px);
+    margin-top: 5px;
+    margin-left: 5px;
+
 }
 
 .middle-container {
-    height: calc(57vh);
+    height: calc(50vh);
     margin: 5px;
     background-color: #ffffff;
     z-index: 1000;
@@ -33,17 +40,26 @@ body {
     box-sizing: border-box;
 }
 
-.top-container, .bottom-container, .middle-container {
+.top-container,
+.bottom-container,
+.middle-container {
     overflow: hidden;
-    transition: 0.5s ease; /* Apply transition effect */
+    transition: 0.5s ease;
+    /* Apply transition effect */
 }
 
-.top-container.shrink, .bottom-container.shrink, .middle-container.shrink {
-    width: 50px;/*3%; /* Shrunk width */
-    height: 50px;/*5%;*/
+.top-container.shrink,
+.bottom-container.shrink,
+.middle-container.shrink {
+    width: 50px;
+    /*3%; /* Shrunk width */
+    height: 50px;
+    /*5%;*/
 }
 
-.shrink-button, .shrink-button2, .shrink-button3  {
+.shrink-button,
+.shrink-button2,
+.shrink-button3 {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -74,7 +90,7 @@ body {
 
 .middle-container {
     position: absolute;
-    top: calc(23vh + 2px); 
+    top: calc(23vh + 2px);
     bottom: calc(23vh + 2px);
     width: 40%;
     right: 0;
