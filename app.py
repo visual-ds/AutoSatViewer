@@ -1,6 +1,7 @@
 from flask import Flask, render_template,json,request, jsonify
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 
 POLY = ["SpCenterCensus10k", "SpDistricts"][0]
 TIME = ["Day", "Month"][1]
@@ -68,6 +69,7 @@ def get_high_coefficients(request):
     coeffs = coeffs[coeffs["date"] == selected_date]
     idx_high = coeffs.iloc[:, 2 + freq] > configs["threshold"]
     coeffs = coeffs[idx_high]
+    coeffs["value"] = coeffs[f"mean_freq{freq}"]
     return jsonify(coeffs.to_dict(orient="records"))
 
     

@@ -1,22 +1,21 @@
 var data = null;
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF1cm9kaWF6NyIsImEiOiJjbG8yem91N2sxc2NiMm9qeWt2M2JraTBuIn0.YIX7-YY7VR0AsiK97_vRLA';
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v9',
+  center: [-46.63296863559315, -23.550705484971235],
+  zoom: 12,
+  antialias: true,
+  bearing: 0,
+  pitch: 0,
+  attributionControl: false
+});
+
 async function loadFile() {
   try {
     const response = await fetch('./static/data/SpCenterCensus10k.geojson');
     const data = await response.json();
-    // Create map features after data is loaded
-
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/light-v9',
-      center: [-46.63296863559315, -23.550705484971235],
-      zoom: 12,
-      antialias: true,
-      bearing: 0,
-      pitch: 0,
-      attributionControl: false
-    });
-
+    
     const layer = new deck.GeoJsonLayer({
       id: 'geojson-layer',
       data,
@@ -26,8 +25,8 @@ async function loadFile() {
       extruded: false,
       pointType: 'circle',
       lineWidthScale: 1,
-      getFillColor: [65, 105, 225, 50],
-      getLineColor: d => [255, 255, 255, 250],
+      getFillColor: [65, 105, 225, 3],
+      getLineColor: d => [0, 0, 0, 250],
       getPointRadius: 100,
       getLineWidth: 4
     });
@@ -37,7 +36,7 @@ async function loadFile() {
       layers: [
         layer
       ],
-      onClick: ({ object }) => Test_Ajax(object.properties.id_poly),
+      onClick: ({ object }) => LoadTimeSeries(object.properties.id_poly),
       getTooltip: ({ object }) => object && {
         html: `<h2>${object.properties.id_poly}</h2><p>id poly</p>`,
         style: {

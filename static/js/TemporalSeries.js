@@ -75,7 +75,7 @@ function MultivariateTimeSeries_Real(DivID, data, columns) {
         .text(d => d);
 }
 
-function Test_Ajax(id) {
+function LoadTimeSeries(id) {
     var selectedSignals = [];
     signalTypes.forEach(signal => {
         if (document.getElementById(signal).checked) {
