@@ -86,19 +86,18 @@
 
 #timeline {
   top: 10px;
-  width: calc(100% - 30% - 50px);
+  width: calc(60vw - 30px);
   height: 40px;
-  margin-left: 45px;
+  margin-left: 15px;
 
   border-radius: 0px;
   flex-direction: row;
 }
 
 .timeslider {
-  width: calc(100% - 30% - 70px) !important;
-  ;
+  width: calc(60vw - 100px) !important;
   /*height: 100%;*/
-  padding-left: 20px;
+  padding-left: 10px;
   padding-right: 520px;
   top: -6px;
 

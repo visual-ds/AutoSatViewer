@@ -17,3 +17,22 @@
     fill: #8FA2AC;
       text-anchor: middle;
 }
+
+.chart {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10px;
+}
+
+.chart text{
+    fill: #8FA2AC;
+    text-anchor: middle;
+}
+
+.simpleTemporalChart{
+    /*border: solid 0.5px #8FA2AC;*/
+    width: 300px;
+    margin: 10px 2px 10px 0px;
+    height: calc(100% - 20px);
+    display:inline-block;
+    box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1);
+}

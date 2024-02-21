@@ -13,7 +13,7 @@ body {
 
 
 .top-container {
-    width: calc(100% - 10px);
+    width: calc(60vw - 10px);
     height: calc(23vh - 2px);
     margin-top: 5px;
     margin-left: 5px;
@@ -21,8 +21,8 @@ body {
 }
 
 .bottom-container {
-    width: calc(100% - 10px);
-    height: calc(30vh - 2px);
+    width: calc(60vw - 10px);
+    
     margin-top: 5px;
     margin-left: 5px;
 
@@ -30,7 +30,7 @@ body {
 
 
 .middle-container {
-    height: calc(47vh + 26px);
+    height: calc(100vh - 10px);
     margin: 5px;
     background-color: #ffffff;
     z-index: 1000;
@@ -81,6 +81,7 @@ body {
 }
 
 .top-container {
+    padding-left: 35px;
     background-color: #ffffff;
     position: fixed;
     top: 0;
@@ -94,9 +95,7 @@ body {
 
 .middle-container {
     position: absolute;
-    top: calc(23vh + 2px);
-    bottom: calc(23vh + 2px);
-    width: 30%;
+    width: calc(40vw - 5px);
     right: 0;
 }
 
@@ -122,3 +121,20 @@ body {
     background-color: white;
     border: solid 1px #a5a5aa;
 }
+
+
+
+#control-panel {
+    font-family: Helvetica, Arial, sans-serif;
+    position: absolute;
+    background: #fff;
+    border: solid 1px #a5a5aa;
+    top: calc(23vh - 5px );
+    left: -7px;
+    margin: 12px;
+    padding: 20px;
+    z-index: 1;
+    width: 250px;
+    height: 60px;
+  }
+  
