@@ -96,6 +96,7 @@ var slider = $("#slider").ionRangeSlider({
 function updateSpatialFill(data) {
   var max = d3.max(data, d => d.value);
   var min = d3.min(data, d => d.value);
+  console.log(min, max);
   if (max == min) {
     max = max + 1;
   }
