@@ -118,7 +118,7 @@ function updateSpatialHighlight(data) {
     type: 'FeatureCollection',
     features: data.map((d, i) => {
       var feature = map.getSource('spatial-data')._data.features[i];
-      feature.properties.value = d.value;
+      //feature.properties.value = d.value;
       feature.properties.highlight = d.highlight;
       return feature;
     })
