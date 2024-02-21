@@ -101,36 +101,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                 url: `/get_high_coefficients/${d.type}_${d.timestamp}_${d.freq}`,
                 type: "GET",
                 success: async function (data) {
-                    const response = await fetch('./static/data/SpCenterCensus10k.geojson');
-                    var map_data = await response.json();
-                    var selected_poly = data.map(d => d.id_poly);
-                    console.log(data.map(d => d.value))
-                    map_data.features = map_data.features.filter(d => selected_poly.includes(d.properties.id_poly));
-                    map_data.features.forEach((d, i) => {
-                        d.properties.freq = data[i].value;
-                    })
-                    // check if layer already exists
-                    if (map.getLayer('selected_poly')) {
-                        map.removeLayer('selected_poly');
-                        map.removeSource('selected_poly');
-                    }
-                    map.addSource('selected_poly', {
-                        type: 'geojson',
-                        data: {
-                            type: 'FeatureCollection',
-                            features: map_data.features.filter(d => selected_poly.includes(d.properties.id_poly))
-                        }
-                    });
-                    map.addLayer({
-                        id: 'selected_poly',
-                        type: 'fill',
-                        source: 'selected_poly',
-                        paint: {
-                            //'fill-color': '#088',
-                            'fill-color': ['interpolate-hcl', ['linear'], ['get', 'freq'], d3.min(data.map(d => d.value)), 'white', d3.max(data.map(d => d.value)), 'blue'],
-                            'fill-opacity': 0.5
-                        }
-                    });
+                    updateSpatialHighlight(data);
                 }
             });
         });

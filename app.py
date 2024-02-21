@@ -68,7 +68,7 @@ def get_high_coefficients(request):
     selected_date = dates[timestamp]
     coeffs = coeffs[coeffs["date"] == selected_date]
     idx_high = coeffs.iloc[:, 2 + freq] > configs["threshold"]
-    coeffs = coeffs[idx_high]
+    coeffs["highlight"] = idx_high
     coeffs["value"] = coeffs[f"mean_freq{freq}"]
     return jsonify(coeffs.to_dict(orient="records"))
 
@@ -80,6 +80,18 @@ def get_time_series():
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
     return json.dumps({'temporal': json.loads(temporal.to_json(orient='records')), 'columns': temporal.columns.values.tolist()[1:]})
+
+@app.route('/get_spatial_data/<string:request>')
+def get_spatial_data(request):
+    timestamp, signal = request.split("_")
+    timestamp = int(timestamp)
+    df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    dates = df["date"].unique()
+    selected_date = dates[timestamp]
+    df = df[df["date"] == selected_date]
+    df["value"] = df[signal]
+    return jsonify(df.to_dict(orient="records"))
+
 
 
 if __name__ == '__main__':

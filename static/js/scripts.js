@@ -61,7 +61,23 @@ window.onload = function () {
         document.querySelector('#signalTypes').appendChild(checkbox);
         document.querySelector('#signalTypes').appendChild(label);
         document.querySelector('#signalTypes').appendChild(document.createElement('br'));
+
+        var option = document.createElement('option');
+        option.value = type;
+        option.text = type;
+        document.querySelector('#signalMap').appendChild(option);
     }
+
+
+    $("#signalMap").on('change', function () {
+        // move slider to 0 without  calling the onChange function
+        var slider = $("#slider").data("ionRangeSlider");
+        slider.update({ from: 0 });
+
+        var type = $("#signalMap").val();
+        var signal_data = fetch(`/get_spatial_data/0_${type}`);
+        signal_data.then(data => data.json()).then(data => updateSpatialFill(data));
+    });
 
     $("#nFreqs").on('input', function () {
         $("#nFreqsValue").text("Nº freqs.:" + Math.pow(2, $(this).val()));
