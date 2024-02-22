@@ -70,14 +70,7 @@ window.onload = function () {
 
 
     $("#mapUpdateFill").on('click', function () {
-        // move slider to 0 without  calling the onChange function
-        var slider = $("#slider").data("ionRangeSlider");
-        slider.update({ from: 0 });
-
-        var type = $("#signalMap").val();
-        var value = $("#valueType").val();
-        var signal_data = fetch(`/get_spatial_data/0_${type}_${value}`);
-        signal_data.then(data => data.json()).then(data => updateSpatialFill(data));
+        updateSpatialFill();
     });
 
     $("#nFreqs").on('input', function () {

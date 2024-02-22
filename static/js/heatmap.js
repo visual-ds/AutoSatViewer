@@ -20,7 +20,7 @@ function LoadOverview() {
         url: url,
         type: "GET",
         success: function (data) {
-            d3.select("#heatmapSVG").selectAll("*").remove();
+            d3.select("#heatmap").selectAll("*").remove();
             DrawOverview(data);
         }
     })
@@ -53,7 +53,9 @@ function DrawOverview(data) {
         .domain([0, d3.max(data, d => d.value)])
         .range(["#ffffff", "#ff0000"]);
 
-    var svg = d3.select("#heatmapSVG")
+    var svg = d3.select("#heatmap")
+        .append("svg")
+        .attr("id", "heatmapSVG")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom);
 
@@ -80,6 +82,17 @@ function DrawOverview(data) {
                 .text("Timestamp");
         }
     }
+
+    // add legend
+    var legendNode = legend({
+        color: colorScale,
+        title: "Value",
+        width: 200,
+        marginLeft: 20,
+    });
+
+    var heatmapDiv = document.getElementById("heatmap");
+    heatmapDiv.appendChild(legendNode);
 }
 
 function DrawOverviewHeatmap(g, data, x, y, colorScale) {
@@ -95,9 +108,6 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .style("stroke", "#000000")
         .style("stroke-width", "1px")
         .on("click", function (event, d) {
-            var timestamp = d.timestamp;
-            var freq = d.freq;
-            var type = d.type;
             $.ajax({
                 url: `/get_high_coefficients/${d.type}_${d.timestamp}_${d.freq}`,
                 type: "GET",

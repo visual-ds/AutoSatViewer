@@ -13,7 +13,7 @@ const map = new mapboxgl.Map({
 
 async function loadFile() {
   try {
-    const response = await fetch('./static/data/SpCenterCensus10k.geojson');
+    const response = await fetch('/get_map');
     const data = await response.json();
 
     map.addSource('spatial-data', {
@@ -58,11 +58,7 @@ async function loadFile() {
       LoadTimeSeries(id);
     });
 
-    var type = $("#signalMap").val();
-    var value = $("#valueType").val();
-    var signal_data = await fetch(`/get_spatial_data/0_${type}_${value}`);
-    signal_data = await signal_data.json();
-    updateSpatialFill(signal_data);
+    updateSpatialFill();
 
   } catch (error) {
     console.error('Error fetching GeoJSON file:', error);
@@ -85,35 +81,52 @@ var slider = $("#slider").ionRangeSlider({
   ticks: true,
   value: 1,
   onChange: function (newRange) {
-    d = newRange['from'];
-    T = d - 1;
-    var type = $("#signalMap").val();
-    var value = $("#valueType").val();
-    var signal_data = fetch(`/get_spatial_data/${T}_${type}_${value}`);
-    signal_data.then(data => data.json()).then(data => updateSpatialFill(data));
+    updateSpatialFill();
   }
 });
 /************************************************** TIME SLIDER *********************** */
 
-function updateSpatialFill(data) {
-  var max = d3.max(data, d => d.value);
-  var min = d3.min(data, d => d.value);
-  console.log(min, max);
-  if (max == min) {
-    max = max + 1;
-  }
-  map.getSource('spatial-data').setData({
-    type: 'FeatureCollection',
-    features: data.map((d, i) => {
-      var feature = map.getSource('spatial-data')._data.features[i];
-      feature.properties.value = d.value;
-      return feature;
-    })
-  });
+function updateSpatialFill() {
+  var T = $("#slider").data("ionRangeSlider").old_from;
+  var type = $("#signalMap").val();
+  var value = $("#valueType").val();
+  fetch(`/get_spatial_data/${T}_${type}_${value}`)
+    .then(data => data.json())
+    .then(data => {
+      var max = d3.max(data, d => d.value);
+      var min = d3.min(data, d => d.value);
+      if (max == min) {
+        max = max + 1;
+      }
+      map.getSource('spatial-data').setData({
+        type: 'FeatureCollection',
+        features: data.map((d, i) => {
+          var feature = map.getSource('spatial-data')._data.features[i];
+          feature.properties.value = d.value;
+          return feature;
+        })
+      });
 
-  map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['linear'], ['get', 'value'], min, '#ffffff', max, '#ff0000']);
-  map.setPaintProperty('spatial-data', 'fill-opacity', 0.5);
-  map.setPaintProperty('spatial-data', 'fill-outline-color', '#000000');
+      map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['linear'], ['get', 'value'], min, '#ffffff', max, '#ff0000']);
+      map.setPaintProperty('spatial-data', 'fill-opacity', 0.5);
+      map.setPaintProperty('spatial-data', 'fill-outline-color', '#000000');
+
+      var colorScale = d3.scaleLinear()
+        .domain([min, max])
+        .range(["#ffffff", "#ff0000"]);
+
+      var svg_node = legend({
+        color: colorScale,
+        title: "Value",
+        ticks: 5,
+        tickFormat: ".2f",
+        width: 200,
+      });
+
+      var legendDiv = document.getElementById('mapLegend');
+      legendDiv.innerHTML = '';
+      legendDiv.appendChild(svg_node);
+    })
 }
 
 function updateSpatialHighlight(data) {

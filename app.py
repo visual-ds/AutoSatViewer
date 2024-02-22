@@ -1,9 +1,10 @@
 from flask import Flask, render_template,json,request, jsonify
+import json 
 import numpy as np
 import pandas as pd
 import geopandas as gpd
 
-POLY = ["SpCenterCensus10k", "SpDistricts"][0]
+POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts"][0]
 TIME = ["Day", "Month"][1]
 configs = {
     "n_freqs": 4,
@@ -25,6 +26,12 @@ def average_coeffs(n_freqs, typ, coeffs):
         coeffs["mean_freq" + str(i)] = coeffs[columns].mean(axis=1)
         coeffs.drop(columns, axis=1, inplace=True)
     return coeffs
+
+@app.route('/get_map')
+def get_map():
+    with open(f"static/data/{POLY}.geojson") as f:
+        data = json.load(f)
+    return jsonify(data)
 
 
 @app.route('/get_heatmap_data/<string:request>')
