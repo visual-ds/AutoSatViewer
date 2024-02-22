@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Version</title>
+    <title>Spatiotemporal Vis</title>
     <link rel="stylesheet" href="./static/css/styles.css">
     <link rel="stylesheet" href="./static/css/charts.css">
 
@@ -37,31 +37,32 @@
     <div id="control-panel">
         <label for="signalMap">Map fill:</label><select id="signalMap"></select></br>
         <label for="valueType">Value:</label>
-        <select id = "valueType">
-            <option value = "signal" selected="selected">Signal</option>
-            <option value = "coeff0">Coeff 0</option>
-            <option value = "coeff1">Coeff 1</option>
-            <option value = "coeff2">Coeff 2</option>
-            <option value = "coeff3">Coeff 3</option>
+        <select id="valueType">
+            <option value="signal" selected="selected">Signal</option>
+            <option value="coeff0">Coeff 0</option>
+            <option value="coeff1">Coeff 1</option>
+            <option value="coeff2">Coeff 2</option>
+            <option value="coeff3">Coeff 3</option>
         </select>
         <input type="button" value="Update" id="mapUpdateFill">
     </div>
-   
-        <div class="container top-container">
-            <div class="shrink-button sign" onclick="shrinkDiv()">-</div>
-            <div class="content" id="TemporalMultivariateDiv" style="height: 99%;">
 
-            </div>
-        </div>
-    
-    
+    <div class="container top-container">
+        <div class="shrink-button sign" onclick="shrinkDiv()">-</div>
+        <div class="content" id="TemporalMultivariateDiv" style="height: 99%;"></div>
+    </div>
+
+
 
     <div class="container middle-container">
         <div class="shrink-button2 sign" onclick="shrinkDiv2()">-</div>
-        <div id="heatmapMenu"
-                style="margin: 15px 0px 0px 35px; width: 250px; border: solid 1px black; float: left;">
+        <div id="heatmapMenu" style="margin: 15px 0px 20px 35px; width: 100%; float: left; height: 100px">
+            <div id="signalTypes" style="height: 100%; overflow-y: scroll; float: left;">
+                <p>Signal Types</p>
+            </div>
+            <div id="heatmapControl" style="margin: 0px 0px 0px 20px; float: left;">
+                <p>Heatmap Control</p>
                 <form>
-                    <div id="signalTypes" style="height: 65px; overflow-y: scroll;"></div>
                     <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 80px;">Nº freqs.:
                         1</label><input type="range" id="nFreqs" min="0" max="3" step="1" value="0"></br>
                     <label for="threshold" id="thresholdValue" style="display: inline-block; width: 80px;">Thresh.:
@@ -69,9 +70,10 @@
                     <input type="button" value="Update" id="heatmapUpdate" style="float:left;" onclick="LoadOverview()">
                 </form>
             </div>
-            <div  id="heatmap" class="chart" style="float: left;">
-                <svg id="heatmapSVG"></svg>
-            </div>
+        </div>
+        <div id="heatmap" class="chart">
+            <svg id="heatmapSVG"></svg>
+        </div>
     </div>
 
     <div class="container bottom-container">
@@ -110,9 +112,8 @@
     </div> -->
 
 </body>
-<script src="./static/js/TemporalSeriesSMultiples.js"></script> 
-<!-- <script src="./static/js/TemporalSeries.js"></script> -->
-<script src="./static/js/heatmap.js"></script> 
-<script src="./static/js/map.js"></script> 
+<script src="./static/js/TemporalSeriesSMultiples.js"></script>
+<script src="./static/js/heatmap.js"></script>
+<script src="./static/js/map.js"></script>
 
 </html>

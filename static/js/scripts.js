@@ -45,7 +45,7 @@ function shrinkDiv3() {
 
 window.onload = function () {
     var signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROADCLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
-    var chekedSignalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM"];
+    var chekedSignalTypes = ["WazeACCIDENT", "WazeJAM", "FurtoCelular", "RouboCelular"];
     for (let i = 0; i < signalTypes.length; i++) {
         var type = signalTypes[i];
         var checkbox = document.createElement('input');
