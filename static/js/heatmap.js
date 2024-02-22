@@ -30,7 +30,7 @@ function DrawOverview(data) {
     var N_FREQS = [...new Set(data.map(d => d.freq))].length;
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
-    var fullHeight = Math.min(60 * N_SIGNALS, 650);
+    var fullHeight = Math.min(60 * N_SIGNALS, 550);
 
     var margin = { top: 20, right: 20, bottom: 30, left: 130 },
         width = 600 - margin.left - margin.right,
@@ -86,9 +86,9 @@ function DrawOverview(data) {
     // add legend
     var legendNode = legend({
         color: colorScale,
-        title: "Value",
-        width: 200,
-        marginLeft: 20,
+        title: "Nº with changes",
+        width: 330,
+        marginLeft: margin.left,
     });
 
     var heatmapDiv = document.getElementById("heatmap");
@@ -107,7 +107,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .style("fill", d => colorScale(d.value))
         .style("stroke", "#000000")
         .style("stroke-width", "1px")
-        .on("click", function (event, d) {
+        .on("mousemove", function (event, d) {
             $.ajax({
                 url: `/get_high_coefficients/${d.type}_${d.timestamp}_${d.freq}`,
                 type: "GET",
@@ -115,6 +115,9 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                     updateSpatialHighlight(data);
                 }
             });
+        })
+        .on("mouseleave", function (event, d) {
+            updateSpatialHighlight([]);
         });
 
     g.append("g")

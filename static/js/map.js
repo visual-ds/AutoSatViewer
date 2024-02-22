@@ -44,6 +44,7 @@ async function loadFile() {
       popup.setLngLat(e.lngLat)
         .setHTML(id)
         .addTo(map);
+      //LoadTimeSeries(id);
     });
     map.on("mouseleave", "spatial-data", () => {
       popup.remove();
@@ -130,6 +131,11 @@ function updateSpatialFill() {
 }
 
 function updateSpatialHighlight(data) {
+  // if data is empty, set all opacity to 0.5
+  if (data.length == 0) {
+    map.setPaintProperty('spatial-data', 'fill-opacity', 0.5);
+    return;
+  }
   map.getSource('spatial-data').setData({
     type: 'FeatureCollection',
     features: data.map((d, i) => {
@@ -139,5 +145,7 @@ function updateSpatialHighlight(data) {
       return feature;
     })
   });
-  map.setPaintProperty('spatial-data', 'fill-outline-color', ['case', ['get', 'highlight'], '#000000', '#ffffff']);
+
+  //update opacity based in highlight boolean
+  map.setPaintProperty('spatial-data', 'fill-opacity', ['case', ['get', 'highlight'], 0.5, 0.1]);
 }

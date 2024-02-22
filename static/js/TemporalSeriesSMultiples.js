@@ -1,4 +1,4 @@
-function MultivariateTimeSeries_Individual(DivID, data, Column, color) {
+function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, color) {
     const miDiv = document.getElementById(DivID);
 
     const viz_width = miDiv.offsetWidth,
@@ -8,7 +8,8 @@ function MultivariateTimeSeries_Individual(DivID, data, Column, color) {
         width = viz_width - margin.left - margin.right,
         height = viz_height - margin.top - margin.bottom;
 
-    data.forEach(d => { d.date = new Date(d.date) })
+    data.forEach(d => { d.date = new Date(d.date) });
+    dataNeighbors.forEach(d => { d.date = new Date(d.date) });
     d3.select("#" + DivID).selectAll("svg").remove();
 
     const svg = d3.select("#" + DivID).append("svg")
@@ -19,7 +20,7 @@ function MultivariateTimeSeries_Individual(DivID, data, Column, color) {
 
 
     const x = d3.scaleTime().range([0, width]).domain(d3.extent(data, d => d.date)),
-        y = d3.scaleLinear().range([height, 0]).domain([0, d3.max(data, d => d[Column])]);
+        y = d3.scaleLinear().range([height, 0]).domain([0, Math.max(d3.max(data, d => d[Column]), d3.max(dataNeighbors, d => d[Column]))]);
 
     const line = d3.line()
         .x(d => x(d.date))
@@ -42,6 +43,14 @@ function MultivariateTimeSeries_Individual(DivID, data, Column, color) {
         .append("line") // Añadir líneas verticales
         .style('stroke', '#E3E9ED')
         .attr("x2", width);
+
+    svg.append("path")
+        .data([dataNeighbors])
+        .attr("class", "line")
+        .style("stroke", "#606060")
+        .style("fill", "none")
+        .style('stroke-width', 2)
+        .attr("d", line.y(d => y(d[Column])));
 
     svg.append("path")
         .data([data])
@@ -72,7 +81,7 @@ function MultivariateTimeSeries_Individual(DivID, data, Column, color) {
 
 }
 
-function MultivariateTimeSeriesSmallMultiples(DivID, data, columns) {
+function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, columns) {
     const container = d3.select('#' + DivID);
 
     container.selectAll('*').remove();
@@ -89,7 +98,7 @@ function MultivariateTimeSeriesSmallMultiples(DivID, data, columns) {
         .attr('id', d => 'id_temporal' + d)
         .attr('class', 'simpleTemporalChart')
         .each(function (d, i) {
-            MultivariateTimeSeries_Individual('id_temporal' + d, data, d, color(d));
+            MultivariateTimeSeries_Individual('id_temporal' + d, data, dataNeighbors, d, color(d));
         })
 }
 
@@ -106,7 +115,8 @@ function LoadTimeSeries(id) {
         type: 'POST',
         success: function (response) {
             var data = JSON.parse(response);
-            MultivariateTimeSeriesSmallMultiples('TemporalMultivariateDiv', data.temporal, data.columns)
+            console.log(data)
+            MultivariateTimeSeriesSmallMultiples('TemporalMultivariateDiv', data.temporal, data.neighbors, data.columns)
         },
         error: function (error) {
             console.log(error);

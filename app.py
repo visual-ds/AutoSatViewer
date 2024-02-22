@@ -3,8 +3,9 @@ import json
 import numpy as np
 import pandas as pd
 import geopandas as gpd
+import scipy.sparse
 
-POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts"][0]
+POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][2]
 TIME = ["Day", "Month"][1]
 configs = {
     "n_freqs": 4,
@@ -29,7 +30,7 @@ def average_coeffs(n_freqs, typ, coeffs):
 
 @app.route('/get_map')
 def get_map():
-    with open(f"static/data/{POLY}.geojson") as f:
+    with open(f"wavelet_code/data/shapefiles/{POLY}.geojson") as f:
         data = json.load(f)
     return jsonify(data)
 
@@ -85,8 +86,18 @@ def get_time_series():
     block_id = int(request.form['block_id'])
     selected_signals = request.form.getlist('signals[]')
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    # get the neighbors of the selected block
+    adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
+    neighbors = adj_matrix[block_id].nonzero()[1]
+    neighbors = list(neighbors)
     temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
-    return json.dumps({'temporal': json.loads(temporal.to_json(orient='records')), 'columns': temporal.columns.values.tolist()[1:]})
+    temporal_neigh = df[df['id_poly'].isin(neighbors)][['date'] + selected_signals]
+    temporal_neigh = temporal_neigh.groupby('date').mean().reset_index()
+    return json.dumps({
+        'temporal': json.loads(temporal.to_json(orient='records')), 
+        'columns': temporal.columns.values.tolist()[1:], 
+        'neighbors': json.loads(temporal_neigh.to_json(orient='records'))
+    })
 
 @app.route('/get_spatial_data/<string:request>')
 def get_spatial_data(request):
