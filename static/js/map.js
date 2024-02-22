@@ -59,7 +59,8 @@ async function loadFile() {
     });
 
     var type = $("#signalMap").val();
-    var signal_data = await fetch(`/get_spatial_data/0_${type}`);
+    var value = $("#valueType").val();
+    var signal_data = await fetch(`/get_spatial_data/0_${type}_${value}`);
     signal_data = await signal_data.json();
     updateSpatialFill(signal_data);
 
@@ -87,7 +88,8 @@ var slider = $("#slider").ionRangeSlider({
     d = newRange['from'];
     T = d - 1;
     var type = $("#signalMap").val();
-    var signal_data = fetch(`/get_spatial_data/${T}_${type}`);
+    var value = $("#valueType").val();
+    var signal_data = fetch(`/get_spatial_data/${T}_${type}_${value}`);
     signal_data.then(data => data.json()).then(data => updateSpatialFill(data));
   }
 });

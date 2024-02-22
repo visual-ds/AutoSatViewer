@@ -30,10 +30,11 @@ function DrawOverview(data) {
     var N_FREQS = [...new Set(data.map(d => d.freq))].length;
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
+    var fullHeight = Math.min(60 * N_SIGNALS, 650);
 
     var margin = { top: 20, right: 20, bottom: 30, left: 130 },
-        width = 960 - margin.left - margin.right,
-        height = 150 - margin.top - margin.bottom;
+        width = 600 - margin.left - margin.right,
+        height = fullHeight - margin.top - margin.bottom;
 
     var heatmapPadding = 3;
     var heatmapHeight = (height - N_SIGNALS * heatmapPadding) / N_SIGNALS;

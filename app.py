@@ -83,13 +83,23 @@ def get_time_series():
 
 @app.route('/get_spatial_data/<string:request>')
 def get_spatial_data(request):
-    timestamp, signal = request.split("_")
+    timestamp, typ, value = request.split("_")
     timestamp = int(timestamp)
-    df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    if value == "signal":
+        df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    else:
+        df = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
+        df = average_coeffs(4, typ, df)
+        coeff_idx = int(value[-1])
+        df["value"] = df[f"mean_freq{coeff_idx}"]
+    df["date"] = pd.to_datetime(df["date"])
     dates = df["date"].unique()
     selected_date = dates[timestamp]
     df = df[df["date"] == selected_date]
-    df["value"] = df[signal]
+    if value == "signal":
+        df["value"] = df[typ]
+    else:
+        df["value"] = df[f"mean_freq{coeff_idx}"]
     return jsonify(df.to_dict(orient="records"))
 
 
