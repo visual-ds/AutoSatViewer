@@ -108,9 +108,10 @@ function updateSpatialFill() {
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
     .then(data => {
-      console.log(data)
-      var max = d3.max(data, d => d.value);
-      var min = d3.min(data, d => d.value);
+      //var max = d3.max(data, d => d.value);
+      //var min = d3.min(data, d => d.value);
+      var min = d3.quantile(data.map(d => d.value), 0.025);
+      var max = d3.quantile(data.map(d => d.value), 0.975);
       if (max == min) {
         max = max + 1;
       }

@@ -110,6 +110,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .data(data)
         .enter()
         .append("rect")
+        .attr("class", "heatmapRect")
         .attr("x", d => x(d.date))
         .attr("y", d => y(d.freq))
         .attr("width", x(minDistance) - x(0))
@@ -117,28 +118,52 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .style("fill", d => colorScale(d.value))
         .style("stroke", "#000000")
         .style("stroke-width", "1px")
+        .on("click", function (event, d) {
+            d3.select(this).classed("click", !d3.select(this).classed("click"));
+        })
         .on("mouseover", function (event, d) {
+            // verify that there isn't any other rect with the click class
+            var clicked = d3.selectAll(".heatmapRect").filter(".click");
+            if (clicked.size() > 0) {
+                if (!d3.select(this).classed("click")) {
+                    return;
+                }
+            }
+
             clearTimeout(hoverTimeout);
-            // change date to %Y-%m-%d
             var date = d.date.toISOString().split("T")[0];
             hoverTimeout = setTimeout(() => {
                 $.ajax({
                     url: `/get_high_coefficients/${d.type}_${date}_${d.freq}`,
                     type: "GET",
                     success: async function (data) {
-                        // get idx of date
                         var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
-                        // update slider
                         $("#slider").data("ionRangeSlider").update({
                             from: idx
                         });
+                        $("#signalMap").val(d.type);
                         updateSpatialHighlight(data);
                     }
                 });
-            }, 300);
+            }, 1000);
+
+            // create an animation of 0.5s of the height increasing
+            d3.select(this)
+                .transition()
+                .duration(1000)
+                .attr("y", d => y(d.freq) - 5)
+                .attr("height", y.bandwidth() + 10);
         })
-        .on("mouseout", function (event, d) {
-            updateSpatialHighlight([]);
+        .on("mouseleave", function (event, d) {
+            if (d3.select(this).classed("click")) {
+                console.log("entrou aqui")
+                return;
+            }
+            d3.select(this).interrupt();
+            d3.select(this)
+                .attr("y", d => y(d.freq))
+                .attr("height", y.bandwidth());
+            //updateSpatialHighlight([]);
             clearTimeout(hoverTimeout);
         });
 
