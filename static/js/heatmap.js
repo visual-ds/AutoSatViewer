@@ -1,4 +1,4 @@
-const signalTypes = ["WazeACCIDENT", "WazeHAZARD", "WazeJAM", "WazeROADCLOSED", "WazeWEATHERHAZARD", "FurtoCelular", "RouboCelular", "temperature", "precipitation"];
+const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
 
 function LoadOverview() {
     var N_FREQS = $("#nFreqs").val();
@@ -37,7 +37,7 @@ function DrawOverview(data) {
 
     setSlider(data);
 
-    var margin = { top: 20, right: 20, bottom: 30, left: 130 },
+    var margin = { top: 20, right: 20, bottom: 30, left: 100 },
         width = 600 - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
@@ -126,6 +126,12 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                     url: `/get_high_coefficients/${d.type}_${date}_${d.freq}`,
                     type: "GET",
                     success: async function (data) {
+                        // get idx of date
+                        var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
+                        // update slider
+                        $("#slider").data("ionRangeSlider").update({
+                            from: idx
+                        });
                         updateSpatialHighlight(data);
                     }
                 });

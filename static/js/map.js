@@ -96,7 +96,13 @@ function setSlider(data) {
 /************************************************** TIME SLIDER *********************** */
 
 function updateSpatialFill() {
-  var T = $("#slider").data("ionRangeSlider").old_from - 1;
+  // check if slider is defined
+  var T;
+  if ($("#slider").data("ionRangeSlider") == undefined) {
+    T = 0;
+  } else {
+    T = $("#slider").data("ionRangeSlider").old_from - 1;
+  }
   var type = $("#signalMap").val();
   var value = $("#valueType").val();
   fetch(`/get_spatial_data/${T}_${type}_${value}`)

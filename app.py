@@ -45,6 +45,7 @@ def get_heatmap_data(request):
     configs["n_freqs"] = n_freqs
     configs["threshold"] = threshold
     for typ in SIGNAL_TYPES:
+        typ = typ.replace("%20", " ")
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
         coeffs = average_coeffs(n_freqs, typ, coeffs)
 
@@ -66,6 +67,7 @@ def get_heatmap_data(request):
 @app.route('/get_high_coefficients/<string:request>')
 def get_high_coefficients(request):
     typ, date, freq = request.split("_")
+    typ = typ.replace("%20", " ")
     freq = int(freq)
     date = pd.to_datetime(date)
     coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
@@ -82,6 +84,8 @@ def get_high_coefficients(request):
 def get_time_series():
     block_id = int(request.form['block_id'])
     selected_signals = request.form.getlist('signals[]')
+    selected_signals = [s.replace("%20", " ") for s in selected_signals]
+    print(selected_signals)
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     try:
         adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
@@ -102,6 +106,7 @@ def get_time_series():
 @app.route('/get_spatial_data/<string:request>')
 def get_spatial_data(request):
     date, typ, value = request.split("_")
+    typ = typ.replace("%20", " ")
     if value == "signal":
         df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     else:

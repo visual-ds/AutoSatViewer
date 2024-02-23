@@ -61,20 +61,19 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("d", line.y(d => y(d[Column])));
 
 
-    // Leyenda
     const legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", "translate(0," + 10 + ")");
+    //.attr("transform", "translate(0," + + ")");
 
-    legend.append("rect")
-        .attr("x", width - 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
+    // legend.append("rect")
+    //     .attr("x", width - 18)
+    //     .attr("width", 18)
+    //     .attr("height", 18)
+    //     .style("fill", color);
 
     legend.append("text")
-        .attr("x", width - 24)
-        .attr("y", 9)
+        .attr("x", width - 30)
+        .attr("y", 5)
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(d => d);
@@ -88,17 +87,17 @@ function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, column
 
     const color = d3.scaleOrdinal()
         .domain(columns)
-        .range(["#2CA599", "#1DA2D0", "#EF8C38", "#C74F61"]);
+        .range(["#2CA599"]); //, "#1DA2D0", "#EF8C38", "#C74F61"]);
 
     // Crea nuevos divs para cada elemento en la lista de datos
     const divs = container.selectAll('div')
         .data(columns) // Enlaza los datos a los nuevos divs que se crearán
         .enter() // Por cada dato sin un div correspondiente, prepara la creación de un div
         .append('div') // Agrega un div por cada dato
-        .attr('id', d => 'id_temporal' + d)
+        .attr('id', d => 'id_temporal' + d.replace(/\s/g, ''))
         .attr('class', 'simpleTemporalChart')
         .each(function (d, i) {
-            MultivariateTimeSeries_Individual('id_temporal' + d, data, dataNeighbors, d, color(d));
+            MultivariateTimeSeries_Individual('id_temporal' + d.replace(/\s/g, ''), data, dataNeighbors, d, color(d));
         })
 }
 
