@@ -5,7 +5,7 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][2]
+POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][1]
 TIME = ["Day", "Month"][1]
 configs = {
     "n_freqs": 4,
@@ -53,11 +53,10 @@ def get_heatmap_data(request):
         
         coeffs = coeffs.groupby("date").apply(get_high_count)
         coeffs["type"] = typ
-        coeffs = coeffs.reset_index(drop=True)
         coeffs = coeffs.reset_index()
-        coeffs.columns = ["timestamp"] + list(range(n_freqs)) + ["type"]
+        coeffs.columns = ["date"] + list(range(n_freqs)) + ["type"]
         # transform freq columns to new rows
-        coeffs = pd.melt(coeffs, id_vars=["timestamp", "type"], value_vars=list(range(n_freqs)), var_name="freq", value_name="value")
+        coeffs = pd.melt(coeffs, id_vars=["date", "type"], value_vars=list(range(n_freqs)), var_name="freq", value_name="value")
         data.append(coeffs)
     
     data = pd.concat(data)
@@ -66,15 +65,13 @@ def get_heatmap_data(request):
 
 @app.route('/get_high_coefficients/<string:request>')
 def get_high_coefficients(request):
-    typ, timestamp, freq = request.split("_")
+    typ, date, freq = request.split("_")
     freq = int(freq)
-    timestamp = int(timestamp)
+    date = pd.to_datetime(date)
     coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
     coeffs = average_coeffs(configs["n_freqs"], typ, coeffs)
     coeffs["date"] = pd.to_datetime(coeffs["date"])
-    dates = coeffs["date"].unique()
-    selected_date = dates[timestamp]
-    coeffs = coeffs[coeffs["date"] == selected_date]
+    coeffs = coeffs[coeffs["date"] == date]
     idx_high = coeffs.iloc[:, 2 + freq] > configs["threshold"]
     coeffs["highlight"] = idx_high
     coeffs["value"] = coeffs[f"mean_freq{freq}"]
@@ -86,9 +83,12 @@ def get_time_series():
     block_id = int(request.form['block_id'])
     selected_signals = request.form.getlist('signals[]')
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
-    # get the neighbors of the selected block
-    adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
-    neighbors = adj_matrix[block_id].nonzero()[1]
+    try:
+        adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
+        neighbors = np.where(adj_matrix[block_id] > 0)[0]
+    except:
+        adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
+        neighbors = adj_matrix[block_id].nonzero()[1]
     neighbors = list(neighbors)
     temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
     temporal_neigh = df[df['id_poly'].isin(neighbors)][['date'] + selected_signals]
@@ -101,8 +101,7 @@ def get_time_series():
 
 @app.route('/get_spatial_data/<string:request>')
 def get_spatial_data(request):
-    timestamp, typ, value = request.split("_")
-    timestamp = int(timestamp)
+    date, typ, value = request.split("_")
     if value == "signal":
         df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     else:
@@ -110,10 +109,10 @@ def get_spatial_data(request):
         df = average_coeffs(4, typ, df)
         coeff_idx = int(value[-1])
         df["value"] = df[f"mean_freq{coeff_idx}"]
-    df["date"] = pd.to_datetime(df["date"])
+    df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
     dates = df["date"].unique()
-    selected_date = dates[timestamp]
-    df = df[df["date"] == selected_date]
+    date = dates[int(date)]
+    df = df[df["date"] == date]
     if value == "signal":
         df["value"] = df[typ]
     else:

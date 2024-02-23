@@ -74,26 +74,35 @@ $('#timeslider')
   .width(slider_width)
   .offset({ left: 50 - 10, bottom: -20 });
 
-var slider = $("#slider").ionRangeSlider({
-  type: 'single',
-  skin: 'round',
-  min: 1,
-  max: 10,
-  ticks: true,
-  value: 1,
-  onChange: function (newRange) {
-    updateSpatialFill();
-  }
-});
+function setSlider(data) {
+  var date = data.map(d => new Date(d.date).toDateString());
+  date = date.filter((v, i, a) => a.indexOf(v) === i);
+  var nDates = date.length;
+
+  var slider = $("#slider").ionRangeSlider({
+    type: 'single',
+    skin: 'round',
+    min: 1,
+    max: nDates,
+    ticks: true,
+    value: 1,
+    onChange: function (newRange) {
+      updateSpatialFill();
+    }
+  });
+}
+
+
 /************************************************** TIME SLIDER *********************** */
 
 function updateSpatialFill() {
-  var T = $("#slider").data("ionRangeSlider").old_from;
+  var T = $("#slider").data("ionRangeSlider").old_from - 1;
   var type = $("#signalMap").val();
   var value = $("#valueType").val();
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
     .then(data => {
+      console.log(data)
       var max = d3.max(data, d => d.value);
       var min = d3.min(data, d => d.value);
       if (max == min) {
@@ -107,6 +116,8 @@ function updateSpatialFill() {
           return feature;
         })
       });
+
+
 
       map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['linear'], ['get', 'value'], min, '#ffffff', max, '#ff0000']);
       map.setPaintProperty('spatial-data', 'fill-opacity', 0.5);

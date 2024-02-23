@@ -21,6 +21,9 @@ function LoadOverview() {
         type: "GET",
         success: function (data) {
             d3.select("#heatmap").selectAll("*").remove();
+            data.forEach(d => {
+                d.date = new Date(d.date);
+            })
             DrawOverview(data);
         }
     })
@@ -32,6 +35,8 @@ function DrawOverview(data) {
     var N_SIGNALS = SIGNAL_TYPES.length;
     var fullHeight = Math.min(60 * N_SIGNALS, 550);
 
+    setSlider(data);
+
     var margin = { top: 20, right: 20, bottom: 30, left: 130 },
         width = 600 - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
@@ -39,11 +44,9 @@ function DrawOverview(data) {
     var heatmapPadding = 3;
     var heatmapHeight = (height - N_SIGNALS * heatmapPadding) / N_SIGNALS;
 
-    var x = d3.scaleBand()
+    var x = d3.scaleTime()
         .range([0, width])
-        .domain(data.map(d => d.timestamp));
-
-
+        .domain(d3.extent(data, d => d.date));
 
     var y = d3.scaleBand()
         .range([heatmapHeight, 0])
@@ -65,7 +68,6 @@ function DrawOverview(data) {
         var dataSignal = data.filter(d => d.type == SIGNAL_TYPES[i]);
         DrawOverviewHeatmap(g, dataSignal, x, y, colorScale, heatmapHeight);
 
-        // add name of signal at the left
         g.append("text")
             .attr("y", heatmapHeight / 2)
             .attr("x", -10)
@@ -75,11 +77,11 @@ function DrawOverview(data) {
         if (i == N_SIGNALS - 1) {
             g.append("g")
                 .attr("transform", "translate(0," + heatmapHeight + ")")
-                .call(d3.axisBottom(x));
+                .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%Y")).ticks(3));
             g.append("text")
                 .attr("transform", "translate(" + (width / 2) + "," + (heatmapHeight + 30) + ")")
                 .style("text-anchor", "middle")
-                .text("Timestamp");
+                .text("Date");
         }
     }
 
@@ -89,6 +91,7 @@ function DrawOverview(data) {
         title: "Nº with changes",
         width: 330,
         marginLeft: margin.left,
+        ticks: 6
     });
 
     var heatmapDiv = document.getElementById("heatmap");
@@ -96,28 +99,41 @@ function DrawOverview(data) {
 }
 
 function DrawOverviewHeatmap(g, data, x, y, colorScale) {
+    var datesArray = data.map(d => d.date);
+    datesArray = datesArray.filter((date, i, self) =>
+        self.findIndex(d => d.getTime() === date.getTime()) === i
+    );
+    var minDistance = datesArray[1] - datesArray[0];
+
+    var hoverTimeout;
     g.selectAll("rect")
         .data(data)
         .enter()
         .append("rect")
-        .attr("x", d => x(d.timestamp))
+        .attr("x", d => x(d.date))
         .attr("y", d => y(d.freq))
-        .attr("width", x.bandwidth())
+        .attr("width", x(minDistance) - x(0))
         .attr("height", y.bandwidth())
         .style("fill", d => colorScale(d.value))
         .style("stroke", "#000000")
         .style("stroke-width", "1px")
-        .on("mousemove", function (event, d) {
-            $.ajax({
-                url: `/get_high_coefficients/${d.type}_${d.timestamp}_${d.freq}`,
-                type: "GET",
-                success: async function (data) {
-                    updateSpatialHighlight(data);
-                }
-            });
+        .on("mouseover", function (event, d) {
+            clearTimeout(hoverTimeout);
+            // change date to %Y-%m-%d
+            var date = d.date.toISOString().split("T")[0];
+            hoverTimeout = setTimeout(() => {
+                $.ajax({
+                    url: `/get_high_coefficients/${d.type}_${date}_${d.freq}`,
+                    type: "GET",
+                    success: async function (data) {
+                        updateSpatialHighlight(data);
+                    }
+                });
+            }, 300);
         })
-        .on("mouseleave", function (event, d) {
+        .on("mouseout", function (event, d) {
             updateSpatialHighlight([]);
+            clearTimeout(hoverTimeout);
         });
 
     g.append("g")

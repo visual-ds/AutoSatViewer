@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="./static/css/styles.css">
     <link rel="stylesheet" href="./static/css/charts.css">
 
+    <!--Google Font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+
     <!--Boostrap-->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- <script src="https://unpkg.com/d3-simple-slider@2.0.0/dist/d3-simple-slider.min.js"></script> -->
@@ -45,7 +52,7 @@
             <option value="coeff3">Coeff 3</option>
         </select>
         <input type="button" value="Update" id="mapUpdateFill">
-        <div id = "mapLegend"></div>
+        <div id="mapLegend"></div>
     </div>
 
     <div class="container top-container">
@@ -64,9 +71,9 @@
             <div id="heatmapControl" style="margin: 0px 0px 0px 20px; float: left;">
                 <p>Heatmap Control</p>
                 <form>
-                    <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 80px;">Nº freqs.:
+                    <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 90px;">Nº freqs.:
                         1</label><input type="range" id="nFreqs" min="0" max="3" step="1" value="0"></br>
-                    <label for="threshold" id="thresholdValue" style="display: inline-block; width: 80px;">Thresh.:
+                    <label for="threshold" id="thresholdValue" style="display: inline-block; width: 90px;">Thresh.:
                         0.7</label><input type="range" id="threshold" min="0" max="1" step="0.01" value="0.7"></br>
                     <input type="button" value="Update" id="heatmapUpdate" style="float:left;" onclick="LoadOverview()">
                 </form>
