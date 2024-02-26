@@ -137,10 +137,12 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                     url: `/get_high_coefficients/${d.type}_${date}_${d.freq}`,
                     type: "GET",
                     success: async function (data) {
-                        var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
+                        var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime()); + 1
                         $("#slider").data("ionRangeSlider").update({
                             from: idx
                         });
+                        // trigger slider change
+                        $('#slider').data('ionRangeSlider').options.onChange();
                         $("#signalMap").val(d.type);
                         updateSpatialHighlight(data);
                     }
@@ -156,15 +158,17 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         })
         .on("mouseleave", function (event, d) {
             if (d3.select(this).classed("click")) {
-                console.log("entrou aqui")
                 return;
             }
             d3.select(this).interrupt();
             d3.select(this)
                 .attr("y", d => y(d.freq))
                 .attr("height", y.bandwidth());
-            //updateSpatialHighlight([]);
             clearTimeout(hoverTimeout);
+            var clicked = d3.selectAll(".heatmapRect").filter(".click");
+            if (clicked.size() == 0) {
+                updateSpatialHighlight([]);
+            }
         });
 
     g.append("g")

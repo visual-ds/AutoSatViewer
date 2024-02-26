@@ -85,7 +85,6 @@ def get_time_series():
     block_id = int(request.form['block_id'])
     selected_signals = request.form.getlist('signals[]')
     selected_signals = [s.replace("%20", " ") for s in selected_signals]
-    print(selected_signals)
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     try:
         adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")

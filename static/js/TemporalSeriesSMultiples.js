@@ -10,6 +10,10 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
 
     data.forEach(d => { d.date = new Date(d.date) });
     dataNeighbors.forEach(d => { d.date = new Date(d.date) });
+    var datesArray = data.map(d => d.date);
+    datesArray = datesArray.filter((date, i, self) =>
+        self.findIndex(d => d.getTime() === date.getTime()) === i
+    );
     d3.select("#" + DivID).selectAll("svg").remove();
 
     const svg = d3.select("#" + DivID).append("svg")
@@ -60,6 +64,22 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .style('stroke-width', 2)
         .attr("d", line.y(d => y(d[Column])));
 
+    // Draw vertical line at slider position
+    var slideridx = $("#slider").data("ionRangeSlider").old_from - 1;
+    var sliderDate = datesArray[slideridx];
+    svg.append("line")
+        .attr("x1", x(sliderDate))
+        .attr("y1", 0)
+        .attr("x2", x(sliderDate))
+        .attr("y2", height)
+        .attr("class", "TimeIndicator")
+        .style("stroke", "#C41E3A")
+        .style("stroke-width", 2)
+        .on("click", function (event, d) {
+            var slideridx = $("#slider").data("ionRangeSlider").old_from - 1;
+            var sliderDate = datesArray[slideridx];
+            d3.select(this).attr("x1", x(sliderDate)).attr("x2", x(sliderDate));
+        });
 
     const legend = svg.append("g")
         .attr("class", "legend")
@@ -114,7 +134,6 @@ function LoadTimeSeries(id) {
         type: 'POST',
         success: function (response) {
             var data = JSON.parse(response);
-            console.log(data)
             MultivariateTimeSeriesSmallMultiples('TemporalMultivariateDiv', data.temporal, data.neighbors, data.columns)
         },
         error: function (error) {

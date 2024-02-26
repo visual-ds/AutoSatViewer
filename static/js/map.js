@@ -27,7 +27,7 @@ async function loadFile() {
       source: 'spatial-data',
       paint: {
         'fill-color': '#ffffff',
-        'fill-opacity': 0
+        'fill-opacity': 0.5
       }
     };
     map.addLayer(layer);
@@ -87,6 +87,8 @@ function setSlider(data) {
     ticks: true,
     value: 1,
     onChange: function (newRange) {
+      // triger click on TimeIndicator
+      d3.selectAll(".TimeIndicator").dispatch("click");
       updateSpatialFill();
     }
   });
@@ -108,13 +110,15 @@ function updateSpatialFill() {
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
     .then(data => {
-      //var max = d3.max(data, d => d.value);
-      //var min = d3.min(data, d => d.value);
-      var min = d3.quantile(data.map(d => d.value), 0.025);
-      var max = d3.quantile(data.map(d => d.value), 0.975);
-      if (max == min) {
-        max = max + 1;
-      }
+      var dataNonZero = data.filter(d => d.value != 0);
+      var colors = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#4a1486'];
+      var colorScale = d3.scaleQuantile()
+        .domain(dataNonZero.map(d => d.value))
+        .range(colors);
+      var quantiles = colorScale.quantiles();
+      // append max value to quantiles
+      quantiles.push(d3.max(dataNonZero.map(d => d.value)));
+
       map.getSource('spatial-data').setData({
         type: 'FeatureCollection',
         features: data.map((d, i) => {
@@ -124,15 +128,8 @@ function updateSpatialFill() {
         })
       });
 
-
-
-      map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['linear'], ['get', 'value'], min, '#ffffff', max, '#ff0000']);
-      map.setPaintProperty('spatial-data', 'fill-opacity', 0.5);
+      map.setPaintProperty('spatial-data', 'fill-color', ['step', ['get', 'value'], '#ffffff', quantiles[0], colors[0], quantiles[1], colors[1], quantiles[2], colors[2], quantiles[3], colors[3], quantiles[4], colors[4], quantiles[5], colors[5], quantiles[6], colors[6], quantiles[7], colors[7]]);
       map.setPaintProperty('spatial-data', 'fill-outline-color', '#000000');
-
-      var colorScale = d3.scaleLinear()
-        .domain([min, max])
-        .range(["#ffffff", "#ff0000"]);
 
       var svg_node = legend({
         color: colorScale,
@@ -158,7 +155,6 @@ function updateSpatialHighlight(data) {
     type: 'FeatureCollection',
     features: data.map((d, i) => {
       var feature = map.getSource('spatial-data')._data.features[i];
-      //feature.properties.value = d.value;
       feature.properties.highlight = d.highlight;
       return feature;
     })
