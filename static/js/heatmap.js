@@ -1,6 +1,7 @@
 const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
 
 function LoadOverview() {
+    var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();
     N_FREQS = Math.pow(2, N_FREQS);
     var THRESHOLD = $("#threshold").val();
@@ -11,7 +12,7 @@ function LoadOverview() {
         }
     });
 
-    var url = `/get_heatmap_data/${N_FREQS}_${THRESHOLD}`
+    var url = `/get_heatmap_data/${changeType}_${N_FREQS}_${THRESHOLD}`
     for (let i = 0; i < selectedSignals.length; i++) {
         url += `_${selectedSignals[i]}`;
     }
@@ -52,9 +53,12 @@ function DrawOverview(data) {
         .range([heatmapHeight, 0])
         .domain(Array.from({ length: N_FREQS }, (v, k) => k));
 
-    var colorScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.value)])
-        .range(["#ffffff", "#ff0000"]);
+    //var colorScale = d3.scaleLinear()
+    //    .domain([0, d3.max(data, d => d.value)])
+    //    .range(["#ffffff", "#ff0000"]);
+
+    var colorScale = d3.scaleSequential(d3.interpolateGreens)
+        .domain([0, d3.max(data, d => d.value)]);
 
     var svg = d3.select("#heatmap")
         .append("svg")

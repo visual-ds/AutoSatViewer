@@ -109,16 +109,16 @@ function updateSpatialFill() {
   var value = $("#valueType").val();
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
-    .then(data => {
-      var dataNonZero = data.filter(d => d.value != 0);
+    .then(response => {
+      // var dataNonZero = data.filter(d => d.value != 0);
+      var data = response.data;
+      var quantiles = response.quantiles;
       var colors = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#4a1486'];
-      var colorScale = d3.scaleQuantile()
-        .domain(dataNonZero.map(d => d.value))
-        .range(colors);
-      var quantiles = colorScale.quantiles();
-      // append max value to quantiles
-      quantiles.push(d3.max(dataNonZero.map(d => d.value)));
 
+      var colorScale = d3.scaleThreshold()
+        .domain(quantiles)
+        .range(colors);
+    
       map.getSource('spatial-data').setData({
         type: 'FeatureCollection',
         features: data.map((d, i) => {
@@ -135,7 +135,7 @@ function updateSpatialFill() {
         color: colorScale,
         title: "Value",
         ticks: 5,
-        tickFormat: ".2f",
+        tickFormat: "d",
         width: 200,
       });
 

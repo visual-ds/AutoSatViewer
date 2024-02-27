@@ -39,14 +39,19 @@ def get_map():
 def get_heatmap_data(request):
     data = []
     request = request.split("_")
-    n_freqs = int(request[0])
-    threshold = float(request[1])
-    SIGNAL_TYPES = request[2:]
+    change_type = request[0]
+    n_freqs = int(request[1])
+    threshold = float(request[2])
+    SIGNAL_TYPES = request[3:]
     configs["n_freqs"] = n_freqs
     configs["threshold"] = threshold
     for typ in SIGNAL_TYPES:
         typ = typ.replace("%20", " ")
-        coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
+        if change_type == "spatiotemporal":
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
+        elif change_type == "spatial":
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{typ}_{POLY}_{TIME}.csv")
+
         coeffs = average_coeffs(n_freqs, typ, coeffs)
 
         def get_high_count(df):
@@ -114,6 +119,12 @@ def get_spatial_data(request):
         coeff_idx = int(value[-1])
         df["value"] = df[f"mean_freq{coeff_idx}"]
     df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
+    q = [i/8 for i in range(1, 9)]
+    if value == "signal":
+        values = df[typ].values
+    else:
+        values = df[f"mean_freq{coeff_idx}"].values
+    quantiles = np.quantile(values[values > 0], q).tolist()
     dates = df["date"].unique()
     date = dates[int(date)]
     df = df[df["date"] == date]
@@ -121,7 +132,7 @@ def get_spatial_data(request):
         df["value"] = df[typ]
     else:
         df["value"] = df[f"mean_freq{coeff_idx}"]
-    return jsonify(df.to_dict(orient="records"))
+    return jsonify({"data" : df.to_dict(orient="records"), "quantiles": quantiles})
 
 
 

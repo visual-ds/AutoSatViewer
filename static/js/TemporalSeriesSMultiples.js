@@ -1,5 +1,6 @@
 function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, color) {
     const miDiv = document.getElementById(DivID);
+    var signalMap = $("#signalMap").val();
 
     const viz_width = miDiv.offsetWidth,
         viz_height = miDiv.offsetHeight;
@@ -36,7 +37,7 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%Y")).ticks(6))
         .selectAll("g")
-        .append("line") // Añadir líneas verticales
+        .append("line")
         .style('stroke', '#E3E9ED')
         .attr("y2", -height);
 
@@ -44,7 +45,7 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("class", "axis")
         .call(d3.axisLeft(y).ticks(6))
         .selectAll("g")
-        .append("line") // Añadir líneas verticales
+        .append("line") 
         .style('stroke', '#E3E9ED')
         .attr("x2", width);
 
@@ -96,6 +97,7 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("y", -5)
         .attr("dy", ".35em")
         .style("text-anchor", "center")
+        .style("font-weight", Column == signalMap ? "bold" : "normal")
         .text(d => d);
 
 }
