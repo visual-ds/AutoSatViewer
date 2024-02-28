@@ -6,7 +6,7 @@ import geopandas as gpd
 import scipy.sparse
 
 POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][1]
-TIME = ["Day", "Month"][1]
+TIME = ["Day", "Month"][0]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -93,9 +93,13 @@ def get_time_series():
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     try:
         adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
+        # compute adj_matrix^2
+        adj_matrix = adj_matrix.dot(adj_matrix)
         neighbors = np.where(adj_matrix[block_id] > 0)[0]
     except:
         adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
+        # compute adj_matrix^2
+        adj_matrix = adj_matrix.dot(adj_matrix)
         neighbors = adj_matrix[block_id].nonzero()[1]
     neighbors = list(neighbors)
     temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]

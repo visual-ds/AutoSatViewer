@@ -45,25 +45,9 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("class", "axis")
         .call(d3.axisLeft(y).ticks(6))
         .selectAll("g")
-        .append("line") 
+        .append("line")
         .style('stroke', '#E3E9ED')
         .attr("x2", width);
-
-    svg.append("path")
-        .data([dataNeighbors])
-        .attr("class", "line")
-        .style("stroke", "#606060")
-        .style("fill", "none")
-        .style('stroke-width', 2)
-        .attr("d", line.y(d => y(d[Column])));
-
-    svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .style("stroke", color)
-        .style("fill", "none")
-        .style('stroke-width', 2)
-        .attr("d", line.y(d => y(d[Column])));
 
     // Draw vertical line at slider position
     var slideridx = $("#slider").data("ionRangeSlider").old_from - 1;
@@ -76,11 +60,28 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("class", "TimeIndicator")
         .style("stroke", "#C41E3A")
         .style("stroke-width", 2)
+        .style("opacity", 0.5)
         .on("click", function (event, d) {
             var slideridx = $("#slider").data("ionRangeSlider").old_from - 1;
             var sliderDate = datesArray[slideridx];
             d3.select(this).attr("x1", x(sliderDate)).attr("x2", x(sliderDate));
         });
+
+    svg.append("path")
+        .data([dataNeighbors])
+        .attr("class", "line")
+        .style("stroke", "#cccccc")
+        .style("fill", "none")
+        .style('stroke-width', 2)
+        .attr("d", line.y(d => y(d[Column])));
+
+    svg.append("path")
+        .data([data])
+        .attr("class", "line")
+        .style("stroke", color)
+        .style("fill", "none")
+        .style('stroke-width', 2)
+        .attr("d", line.y(d => y(d[Column])));
 
     const legend = svg.append("g")
         .attr("class", "legend")

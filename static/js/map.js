@@ -27,7 +27,7 @@ async function loadFile() {
       source: 'spatial-data',
       paint: {
         'fill-color': '#ffffff',
-        'fill-opacity': 0.5
+        'fill-opacity': 0.75
       }
     };
     map.addLayer(layer);
@@ -118,7 +118,13 @@ function updateSpatialFill() {
       var colorScale = d3.scaleThreshold()
         .domain(quantiles)
         .range(colors);
-    
+
+      //var base = 0.4;
+      //colorScale = d3.scalePow()
+      //  .exponent(base)
+      //  .domain([1, quantiles[7]])
+      //  .range(['#ffffff', '#ff0000']);
+
       map.getSource('spatial-data').setData({
         type: 'FeatureCollection',
         features: data.map((d, i) => {
@@ -129,13 +135,15 @@ function updateSpatialFill() {
       });
 
       map.setPaintProperty('spatial-data', 'fill-color', ['step', ['get', 'value'], '#ffffff', quantiles[0], colors[0], quantiles[1], colors[1], quantiles[2], colors[2], quantiles[3], colors[3], quantiles[4], colors[4], quantiles[5], colors[5], quantiles[6], colors[6], quantiles[7], colors[7]]);
-      map.setPaintProperty('spatial-data', 'fill-outline-color', '#000000');
+      //console.log(quantiles)
+      //map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['exponential', base], ['get', 'value'], 1, '#ffffff', quantiles[7], '#ff0000']);
+      map.setPaintProperty('spatial-data', 'fill-outline-color', '#cccccc');
 
       var svg_node = legend({
         color: colorScale,
         title: "Value",
         ticks: 5,
-        tickFormat: "d",
+        tickFormat: quantiles[7] <= 1 ? ".2f" : "d",
         width: 200,
       });
 
@@ -148,7 +156,7 @@ function updateSpatialFill() {
 function updateSpatialHighlight(data) {
   // if data is empty, set all opacity to 0.5
   if (data.length == 0) {
-    map.setPaintProperty('spatial-data', 'fill-opacity', 0.5);
+    map.setPaintProperty('spatial-data', 'fill-opacity', 0.75);
     return;
   }
   map.getSource('spatial-data').setData({
@@ -161,5 +169,5 @@ function updateSpatialHighlight(data) {
   });
 
   //update opacity based in highlight boolean
-  map.setPaintProperty('spatial-data', 'fill-opacity', ['case', ['get', 'highlight'], 0.5, 0.1]);
+  map.setPaintProperty('spatial-data', 'fill-opacity', ['case', ['get', 'highlight'], 1, 0.25]);
 }
