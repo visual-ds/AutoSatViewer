@@ -15,6 +15,13 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     datesArray = datesArray.filter((date, i, self) =>
         self.findIndex(d => d.getTime() === date.getTime()) === i
     );
+    // select 4 equaly spaced dates
+    var nDates = datesArray.length;
+    var step = Math.floor(nDates / 4);
+    var ticks = [datesArray[0], datesArray[step], datesArray[2 * step], datesArray[3 * step]];
+    // verify if min date and max date are in the same year
+    var sameYear = datesArray[0].getFullYear() == datesArray[nDates - 1].getFullYear();
+
     d3.select("#" + DivID).selectAll("svg").remove();
 
     const svg = d3.select("#" + DivID).append("svg")
@@ -35,19 +42,19 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     svg.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%Y")).ticks(6))
-        .selectAll("g")
-        .append("line")
-        .style('stroke', '#E3E9ED')
-        .attr("y2", -height);
+        .call(d3.axisBottom(x).tickFormat(d3.timeFormat(sameYear ? "%m/%d" : "%y/%m/%d")).tickValues(ticks))
+    // .selectAll("g")
+    // .append("line")
+    // .style('stroke', '#E3E9ED')
+    // .attr("y2", -height);
 
     svg.append("g")
         .attr("class", "axis")
         .call(d3.axisLeft(y).ticks(6))
-        .selectAll("g")
-        .append("line")
-        .style('stroke', '#E3E9ED')
-        .attr("x2", width);
+    // .selectAll("g")
+    // .append("line")
+    // .style('stroke', '#E3E9ED')
+    // .attr("x2", width);
 
     // Draw vertical line at slider position
     var slideridx = $("#slider").data("ionRangeSlider").old_from - 1;

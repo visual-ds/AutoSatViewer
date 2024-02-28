@@ -51,7 +51,8 @@ function DrawOverview(data) {
 
     var y = d3.scaleBand()
         .range([heatmapHeight, 0])
-        .domain(Array.from({ length: N_FREQS }, (v, k) => k));
+        .domain(Array.from({ length: N_FREQS }, (v, k) => k))
+        .padding(0.1);
 
     //var colorScale = d3.scaleLinear()
     //    .domain([0, d3.max(data, d => d.value)])

@@ -138,7 +138,7 @@ function updateSpatialFill() {
       //console.log(quantiles)
       //map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['exponential', base], ['get', 'value'], 1, '#ffffff', quantiles[7], '#ff0000']);
       map.setPaintProperty('spatial-data', 'fill-outline-color', '#cccccc');
-
+      
       var svg_node = legend({
         color: colorScale,
         title: "Value",
