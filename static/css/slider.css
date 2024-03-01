@@ -71,19 +71,6 @@
   background: #bde0fe;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 #timeline {
   top: 10px;
   width: calc(60vw - 30px);
@@ -95,10 +82,10 @@
 }
 
 .timeslider {
-  width: calc(60vw - 100px) !important;
+  width: calc(60vw - 50px) !important;
   /*height: 100%;*/
-  padding-left: 10px;
-  padding-right: 520px;
+  padding-left: 750px;
+  padding-right: 10px;
   top: -6px;
 
 }

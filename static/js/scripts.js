@@ -31,17 +31,21 @@ function shrinkDiv2() {
 function shrinkDiv3() {
     var botContainer = document.querySelector('.bottom-container');
     var shrinkButton = document.querySelector('.shrink-button3');
+    var timeline = document.querySelector('.top-container');
 
     if (botContainer.classList.contains('shrink')) {
         // Expand the div
         botContainer.classList.remove('shrink');
         shrinkButton.textContent = '-';
+        timeline.style.setProperty('bottom', '220px');
     } else {
         // Shrink the div
         botContainer.classList.add('shrink');
         shrinkButton.textContent = '+';
+        timeline.style.setProperty('bottom', '0px');
     }
 }
+
 
 window.onload = function () {
     var signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
