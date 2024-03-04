@@ -32,6 +32,8 @@ async function loadFile() {
     };
     map.addLayer(layer);
 
+    var clicked = undefined;
+
     var popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false
@@ -57,10 +59,17 @@ async function loadFile() {
     // call time series when clicking on a polygon
     map.on('click', 'spatial-data', (e) => {
       var id = e.features[0].properties.id_poly;
-      LoadTimeSeries(id);
+      if (clicked == id) {
+        clicked = undefined;
+        LoadTimeSeries();
+      } else {
+        clicked = id;
+        LoadTimeSeries(id);
+      }
     });
 
     updateSpatialFill();
+    LoadTimeSeries();
 
   } catch (error) {
     console.error('Error fetching GeoJSON file:', error);
