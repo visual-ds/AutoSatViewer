@@ -3,7 +3,6 @@ const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard
 function LoadOverview() {
     var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();
-    N_FREQS = Math.pow(2, N_FREQS);
     var THRESHOLD = $("#threshold").val();
     var selectedSignals = [];
     signalTypes.forEach(signal => {
@@ -31,11 +30,19 @@ function LoadOverview() {
 }
 
 function DrawOverview(data) {
-    var N_FREQS = [...new Set(data.map(d => d.freq))].length;
+    var N_FREQS = $("#nFreqs").val();
+    var FreqsArray = [];
+    for (let i = 1; i <= N_FREQS; i++) {
+        FreqsArray.push(4 - i);
+    }
+    console.log(FreqsArray)
+    var MinFreq = 4 - N_FREQS;
+    data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
-    var fullHeight = Math.min(60 * N_SIGNALS, 550);
+    var fullHeight = Math.min(50 * N_SIGNALS, 300);
 
+    console.log(data)
     setSlider(data);
 
     var margin = { top: 20, right: 20, bottom: 30, left: 100 },
@@ -51,15 +58,17 @@ function DrawOverview(data) {
 
     var y = d3.scaleBand()
         .range([heatmapHeight, 0])
-        .domain(Array.from({ length: N_FREQS }, (v, k) => k))
+        .domain(FreqsArray)
         .padding(0.1);
+
+    console.log(y(3), y(4), y)
 
     //var colorScale = d3.scaleLinear()
     //    .domain([0, d3.max(data, d => d.value)])
     //    .range(["#ffffff", "#ff0000"]);
 
     var colorScale = d3.scaleSequential(d3.interpolateGreens)
-        .domain([0, d3.max(data.filter(d => d.freq == 3), d => d.value)]);
+        .domain([0, d3.max(data, d => d.value)]);
 
     var svg = d3.select("#heatmap")
         .append("svg")
@@ -117,7 +126,10 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .append("rect")
         .attr("class", "heatmapRect")
         .attr("x", d => x(d.date))
-        .attr("y", d => y(d.freq))
+        .attr("y", d => {
+            console.log(d.freq, y(d.freq))
+            return y(d.freq)
+        })
         .attr("width", x(minDistance) - x(0))
         .attr("height", y.bandwidth())
         .style("fill", d => colorScale(d.value))

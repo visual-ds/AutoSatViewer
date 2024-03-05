@@ -59,7 +59,7 @@ window.onload = function () {
     });
 
     $("#nFreqs").on('input', function () {
-        $("#nFreqsValue").text("Nº freqs.:" + Math.pow(2, $(this).val()));
+        $("#nFreqsValue").text("Nº freqs.:" + $(this).val());
     });
     $("#threshold").on('input', function () {
         $("#thresholdValue").text("Thresh.:" + $(this).val());
