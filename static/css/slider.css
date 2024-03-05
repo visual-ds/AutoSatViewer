@@ -82,7 +82,7 @@
 }
 
 .timeslider {
-  width: calc(50vw - 50px) !important;
+  width: calc(100vw - 650px) !important;
   padding-right: 10px;
 }
 

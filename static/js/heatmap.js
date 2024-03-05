@@ -59,7 +59,7 @@ function DrawOverview(data) {
     //    .range(["#ffffff", "#ff0000"]);
 
     var colorScale = d3.scaleSequential(d3.interpolateGreens)
-        .domain([0, d3.max(data, d => d.value)]);
+        .domain([0, d3.max(data.filter(d => d.freq == 3), d => d.value)]);
 
     var svg = d3.select("#heatmap")
         .append("svg")

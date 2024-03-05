@@ -42,13 +42,13 @@
     </div>
 
     <div class="config-left-container">
-        <div class="container config-container" style="border: solid 2px pink;">
+        <div class="container config-container">
             <div class="shrink-button1 sign" onclick="shrinkConfig()">-</div>
-            <div id = "config-menu">
-                <div id="signalTypes" style="height: 100%; overflow-y: scroll; float: left;">
+            <div id="config-menu">
+                <div id="signalTypes" style="height: 80px; overflow-y: scroll;">
                     <p>Signal Types</p>
-                </div>
-                <div id="heatmapControl" style="margin: 0px 0px 0px 20px; float: left;">
+                </div></br>
+                <div id="heatmapControl">
                     <p>Heatmap Control</p>
                     <form>
                         <label for="changeType">Change:</label><select id="changeType">
@@ -61,7 +61,7 @@
                             0.75</label><input type="range" id="threshold" min="0" max="1" step="0.025"
                             value="0.75"></br>
                         <input type="button" value="Update" id="heatmapUpdate" style="float:left;"
-                            onclick="LoadOverview()">
+                            onclick="LoadOverview()"></br>
                     </form>
                 </div>
                 <label for="signalMap">Map fill:</label><select id="signalMap"></select></br>
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <div class="container left-container" style="border: solid 2px green;">
+        <div class="container left-container">
             <div class="shrink-button2 sign" onclick="shrinkLeft()">-</div>
             <div id="heatmap" class="chart">
                 <svg id="heatmapSVG"></svg>
