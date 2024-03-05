@@ -35,14 +35,13 @@ function DrawOverview(data) {
     for (let i = 1; i <= N_FREQS; i++) {
         FreqsArray.push(4 - i);
     }
-    console.log(FreqsArray)
     var MinFreq = 4 - N_FREQS;
     data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
     var fullHeight = Math.min(50 * N_SIGNALS, 300);
 
-    console.log(data)
+
     setSlider(data);
 
     var margin = { top: 20, right: 20, bottom: 30, left: 100 },
@@ -61,7 +60,6 @@ function DrawOverview(data) {
         .domain(FreqsArray)
         .padding(0.1);
 
-    console.log(y(3), y(4), y)
 
     //var colorScale = d3.scaleLinear()
     //    .domain([0, d3.max(data, d => d.value)])
@@ -126,10 +124,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .append("rect")
         .attr("class", "heatmapRect")
         .attr("x", d => x(d.date))
-        .attr("y", d => {
-            console.log(d.freq, y(d.freq))
-            return y(d.freq)
-        })
+        .attr("y", d => y(d.freq))
         .attr("width", x(minDistance) - x(0))
         .attr("height", y.bandwidth())
         .style("fill", d => colorScale(d.value))

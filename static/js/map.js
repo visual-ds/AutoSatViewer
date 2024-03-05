@@ -47,7 +47,6 @@ async function loadFile() {
       popup.setLngLat(e.lngLat)
         .setHTML(`ID: ${id}<br>Value: ${value.toFixed(2)}`)
         .addTo(map);
-      //LoadTimeSeries(id);
     });
     map.on("mouseleave", "spatial-data", () => {
       popup.remove();
@@ -61,15 +60,16 @@ async function loadFile() {
       var id = e.features[0].properties.id_poly;
       if (clicked == id) {
         clicked = undefined;
-        LoadTimeSeries();
+        //LoadTimeSeries();
       } else {
         clicked = id;
-        LoadTimeSeries(id);
+        //LoadTimeSeries(id);
       }
     });
 
     updateSpatialFill();
-    LoadTimeSeries();
+    //LoadTimeSeries();
+    LoadScatter();
 
   } catch (error) {
     console.error('Error fetching GeoJSON file:', error);

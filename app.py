@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][1]
-TIME = ["Day", "Month"][0]
+POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][2]
+TIME = ["Day", "Month"][1]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -122,6 +122,36 @@ def get_time_series():
         'temporal': json.loads(temporal.to_json(orient='records')), 
         'columns': temporal.columns.values.tolist()[1:], 
         'neighbors': json.loads(temporal_neigh.to_json(orient='records'))
+    })
+
+@app.route('/get_scatter_data/<string:request>')
+def get_scatter_plot(request):
+    data = []
+    request = request.split("_")
+    change_type = request[0]
+    n_freqs = 4 #int(request[1])
+    threshold = float(request[1])
+    SIGNAL_TYPES = request[2:]
+    configs["n_freqs"] = n_freqs
+    configs["threshold"] = threshold
+    for typ in SIGNAL_TYPES:
+        typ = typ.replace("%20", " ")
+        if change_type == "spatiotemporal":
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
+        elif change_type == "spatial":
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{typ}_{POLY}_{TIME}.csv")
+
+        coeffs = average_coeffs(n_freqs, typ, coeffs)
+        coeffs["high"] = coeffs["mean_freq3"] > threshold
+        coeffs = coeffs[["date", "high", "mean_freq3"]]
+        coeffs = coeffs.groupby("date").agg({"high": "sum", "mean_freq3": "mean"}).reset_index()
+        coeffs["type"] = typ
+        data.append(coeffs)
+    
+    data = pd.concat(data)
+    return json.dumps({
+        'scatter' : json.loads(data.to_json(orient='records')),
+        'columns' : SIGNAL_TYPES,
     })
 
 @app.route('/get_spatial_data/<string:request>')
