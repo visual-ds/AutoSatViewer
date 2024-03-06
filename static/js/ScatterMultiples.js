@@ -16,8 +16,10 @@ function ScatterIndividual(DivID, data, Column, color) {
     const svg = d3.select("#" + DivID).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("viewBox", [0, 0, width + margin.left + margin.right, height + margin.top + margin.bottom]);
+
+    const gAll = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const x = d3.scaleLinear()
         .range([0, width])
@@ -28,25 +30,72 @@ function ScatterIndividual(DivID, data, Column, color) {
         .domain(d3.extent(data, d => d.mean_freq3));
 
 
-    svg.append("g")
+    var xAxis = (g, x) => g.call(d3.axisBottom(x).ticks(3));
+    var yAxis = (g, y) => g.call(d3.axisLeft(y).ticks(3));
+
+    const gx = gAll.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).ticks(3));
+        .attr("transform", `translate(0,${height})`);
 
-    svg.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y).ticks(3));
+    const gy = gAll.append("g")
+        .attr("class", "axis");
 
+    var clip = gAll.append("defs").append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("x", 0)
+        .attr("y", 0);
 
-    svg.selectAll("dot")
+    const gDot = gAll.append("g")
+        .attr("clip-path", "url(#clip)");
+
+    var tooltip = d3.select("#" + DivID).append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0)
+        .style("position", "relative");
+
+    gDot.selectAll("dot")
         .data(data)
         .enter().append("circle")
         .attr("r", 3)
         .attr("cx", d => x(d.high))
         .attr("cy", d => y(d.mean_freq3))
-        .style("fill", color);
+        .style("fill", color)
+        .on("mouseover", function (event, d) {
+            //tooltip.style("opacity", 1);
+            //tooltip.html(d.date)
+            //    .style("left", (event.layerX) + "px")
+            //    .style("top", (event.layerY) + "px");
+        })
+        .on("mouseout", function (d) {
+            //tooltip.style("opacity", 0);
+        });
 
-    const legend = svg.append("g")
+    var zoom = d3.zoom()
+        .scaleExtent([1, 10])
+        .on("zoom", zoomed);
+
+    function zoomed() {
+        svg.attr("transform", d3.event.transform);
+    }
+
+    svg.call(zoom).call(zoom.transform, d3.zoomIdentity);
+
+    function zoomed({ transform }) {
+        const zx = transform.rescaleX(x);
+        const zy = transform.rescaleY(y);
+        //gDot.attr("transform", transform)//.attr("stroke-width", 5 / transform.k);
+        gDot.selectAll("circle")
+            .attr("cx", d => zx(d.high))
+            .attr("cy", d => zy(d.mean_freq3))
+            .attr("r", 3 * transform.k);
+        gx.call(xAxis, zx);
+        gy.call(yAxis, zy);
+    }
+
+    const legend = gAll.append("g")
         .attr("class", "legend")
 
     legend.append("text")
