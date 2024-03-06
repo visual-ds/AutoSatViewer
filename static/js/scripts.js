@@ -64,6 +64,8 @@ window.onload = function () {
     $("#threshold").on('input', function () {
         $("#thresholdValue").text("Thresh.:" + $(this).val());
     });
+    document.querySelector(".shrink-button1").click();
     // call a click on the update button
+    LoadTable();
     document.querySelector('#heatmapUpdate').click();
 }

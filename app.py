@@ -5,7 +5,7 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][2]
+POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][1]
 TIME = ["Day", "Month"][1]
 configs = {
     "n_freqs": 4,
@@ -182,6 +182,25 @@ def get_spatial_data(request):
     return jsonify({"data" : df.to_dict(orient="records"), "quantiles": quantiles})
 
 
+@app.route('/get_similarity_table/<string:request>')
+def get_similarity_table(request):
+    request = request.split("_")
+    similarity = request[0]
+    SIGNAL_TYPES = [s.replace("%20", " ") for s in request[2:]]
+    data = []
+    for i, typ_i in enumerate(SIGNAL_TYPES):
+        for j, typ_j in enumerate(SIGNAL_TYPES):
+            data.append({
+                "row" : typ_i,
+                "column" : typ_j,
+                "value" : np.random.random()
+            })
+    
+    data = pd.DataFrame(data)
+    return jsonify({
+        "table" : data.to_dict(orient="records"),
+        "columns" : SIGNAL_TYPES
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
