@@ -32,6 +32,8 @@ async function loadFile() {
     };
     map.addLayer(layer);
 
+    var clicked = undefined;
+
     var popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false
@@ -41,10 +43,10 @@ async function loadFile() {
     // add tooltip with id when hovering over a polygon
     map.on('mousemove', 'spatial-data', (e) => {
       var id = e.features[0].properties.id_poly;
+      var value = e.features[0].properties.value;
       popup.setLngLat(e.lngLat)
-        .setHTML(id)
+        .setHTML(`ID: ${id}<br>Value: ${value.toFixed(2)}`)
         .addTo(map);
-      //LoadTimeSeries(id);
     });
     map.on("mouseleave", "spatial-data", () => {
       popup.remove();
@@ -56,10 +58,27 @@ async function loadFile() {
     // call time series when clicking on a polygon
     map.on('click', 'spatial-data', (e) => {
       var id = e.features[0].properties.id_poly;
-      LoadTimeSeries(id);
+      console.log($("#bottomPanel").val())
+      if (clicked == id) {
+        clicked = undefined;
+        if ($("#bottomPanel").val() == "timeseries") {
+          LoadTimeSeries();
+        }
+      } else {
+        clicked = id;
+        if ($("#bottomPanel").val() == "timeseries") {
+          LoadTimeSeries(id);
+        }
+      }
     });
 
     updateSpatialFill();
+    console.log($("#bottomPanel").val())
+    if ($("#bottomPanel").val() == "timeseries") {
+      LoadTimeSeries();
+    } else if ($("#bottomPanel").val() == "scatter") {
+      LoadScatter();
+    }
 
   } catch (error) {
     console.error('Error fetching GeoJSON file:', error);
@@ -71,8 +90,7 @@ loadFile();
 /************************************************** TIME SLIDER *********************** */
 var slider_width = document.getElementById("timeslider").clientWidth * 0.99;
 $('#timeslider')
-  .width(slider_width)
-  .offset({ left: 50 - 10, bottom: -20 });
+  .width(slider_width);
 
 function setSlider(data) {
   var date = data.map(d => new Date(d.date).toDateString());
@@ -110,20 +128,14 @@ function updateSpatialFill() {
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
     .then(response => {
-      // var dataNonZero = data.filter(d => d.value != 0);
       var data = response.data;
       var quantiles = response.quantiles;
-      var colors = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#4a1486'];
+      var colors = ["#ffffff", '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#54278f', '#3f007d']
 
       var colorScale = d3.scaleThreshold()
         .domain(quantiles)
         .range(colors);
 
-      //var base = 0.4;
-      //colorScale = d3.scalePow()
-      //  .exponent(base)
-      //  .domain([1, quantiles[7]])
-      //  .range(['#ffffff', '#ff0000']);
 
       map.getSource('spatial-data').setData({
         type: 'FeatureCollection',
@@ -134,14 +146,14 @@ function updateSpatialFill() {
         })
       });
 
-      map.setPaintProperty('spatial-data', 'fill-color', ['step', ['get', 'value'], '#ffffff', quantiles[0], colors[0], quantiles[1], colors[1], quantiles[2], colors[2], quantiles[3], colors[3], quantiles[4], colors[4], quantiles[5], colors[5], quantiles[6], colors[6], quantiles[7], colors[7]]);
-      //console.log(quantiles)
-      //map.setPaintProperty('spatial-data', 'fill-color', ['interpolate', ['exponential', base], ['get', 'value'], 1, '#ffffff', quantiles[7], '#ff0000']);
+      map.setPaintProperty('spatial-data', 'fill-color', ['step', ['get', 'value'], colors[0], quantiles[0], colors[1], quantiles[1], colors[2], quantiles[2], colors[3], quantiles[3], colors[4], quantiles[4], colors[5], quantiles[5], colors[6], quantiles[6], colors[7], quantiles[7], colors[8]]);
+
+
       map.setPaintProperty('spatial-data', 'fill-outline-color', '#cccccc');
-      
+
       var svg_node = legend({
         color: colorScale,
-        title: "Value",
+        title: type + " " + value,
         ticks: 5,
         tickFormat: quantiles[7] <= 1 ? ".2f" : "d",
         width: 200,

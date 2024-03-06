@@ -57,7 +57,12 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     // .attr("x2", width);
 
     // Draw vertical line at slider position
-    var slideridx = $("#slider").data("ionRangeSlider").old_from - 1;
+    var slideridx;
+    if ($("#slider").data("ionRangeSlider")) {
+        slideridx = $("#slider").data("ionRangeSlider").old_from - 1;
+    } else {
+        slideridx = 0;
+    }
     var sliderDate = datesArray[slideridx];
     svg.append("line")
         .attr("x1", x(sliderDate))
@@ -132,6 +137,9 @@ function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, column
 }
 
 function LoadTimeSeries(id) {
+    if (id == undefined) {
+        id = -1;
+    }
     var selectedSignals = [];
     signalTypes.forEach(signal => {
         if (document.getElementById(signal).checked) {

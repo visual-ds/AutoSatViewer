@@ -40,7 +40,7 @@ def get_heatmap_data(request):
     data = []
     request = request.split("_")
     change_type = request[0]
-    n_freqs = int(request[1])
+    n_freqs = 4 #int(request[1])
     threshold = float(request[2])
     SIGNAL_TYPES = request[3:]
     configs["n_freqs"] = n_freqs
@@ -55,7 +55,9 @@ def get_heatmap_data(request):
         coeffs = average_coeffs(n_freqs, typ, coeffs)
 
         def get_high_count(df):
-            return (df.iloc[:, 2:] > threshold).sum(axis=0)
+            #return (df.iloc[:, 2:] > threshold).sum(axis=0)
+            #return (df.iloc[:, 2:]).mean(axis=0)
+            return (df.iloc[:, 2:]).quantile(0.75, axis=0)
         
         coeffs = coeffs.groupby("date").apply(get_high_count)
         coeffs["type"] = typ
@@ -95,20 +97,61 @@ def get_time_series():
         adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
         # compute adj_matrix^2
         adj_matrix = adj_matrix.dot(adj_matrix)
-        neighbors = np.where(adj_matrix[block_id] > 0)[0]
+        if block_id != -1:
+            neighbors = np.where(adj_matrix[block_id] > 0)[0]
+        else:
+            neighbors = np.arange(adj_matrix.shape[0])
     except:
         adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
         # compute adj_matrix^2
         adj_matrix = adj_matrix.dot(adj_matrix)
-        neighbors = adj_matrix[block_id].nonzero()[1]
+        if block_id != -1:
+            neighbors = adj_matrix[block_id].nonzero()[1]
+        else:
+            neighbors = np.arange(adj_matrix.shape[0])
     neighbors = list(neighbors)
-    temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
-    temporal_neigh = df[df['id_poly'].isin(neighbors)][['date'] + selected_signals]
+    if block_id == -1: # get mean data as neighbors
+        temporal = df[df["id_poly"] == 0][['date'] + selected_signals]
+        temporal[selected_signals] = temporal[selected_signals] * 0
+        temporal_neigh = df[['date'] + selected_signals]
+    else:
+        temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
+        temporal_neigh = df[df['id_poly'].isin(neighbors)][['date'] + selected_signals]
     temporal_neigh = temporal_neigh.groupby('date').mean().reset_index()
     return json.dumps({
         'temporal': json.loads(temporal.to_json(orient='records')), 
         'columns': temporal.columns.values.tolist()[1:], 
         'neighbors': json.loads(temporal_neigh.to_json(orient='records'))
+    })
+
+@app.route('/get_scatter_data/<string:request>')
+def get_scatter_plot(request):
+    data = []
+    request = request.split("_")
+    change_type = request[0]
+    n_freqs = 4 #int(request[1])
+    threshold = float(request[1])
+    SIGNAL_TYPES = request[2:]
+    configs["n_freqs"] = n_freqs
+    configs["threshold"] = threshold
+    for typ in SIGNAL_TYPES:
+        typ = typ.replace("%20", " ")
+        if change_type == "spatiotemporal":
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
+        elif change_type == "spatial":
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{typ}_{POLY}_{TIME}.csv")
+
+        coeffs = average_coeffs(n_freqs, typ, coeffs)
+        coeffs["high"] = coeffs["mean_freq3"] > threshold
+        coeffs = coeffs[["date", "high", "mean_freq3"]]
+        coeffs = coeffs.groupby("date").agg({"high": "sum", "mean_freq3": "mean"}).reset_index()
+        coeffs["type"] = typ
+        data.append(coeffs)
+    
+    data = pd.concat(data)
+    return json.dumps({
+        'scatter' : json.loads(data.to_json(orient='records')),
+        'columns' : SIGNAL_TYPES,
     })
 
 @app.route('/get_spatial_data/<string:request>')
@@ -139,6 +182,17 @@ def get_spatial_data(request):
     return jsonify({"data" : df.to_dict(orient="records"), "quantiles": quantiles})
 
 
+@app.route('/get_similarity_table/<string:request>')
+def get_similarity_table(request):
+    request = request.split("_")
+    similarity = request[0]
+    SIGNAL_TYPES = [s.replace("%20", " ") for s in request[2:]]
+    data = pd.read_csv(f"wavelet_code/data/similarity_matrix/{POLY}_{TIME}.csv")
+    data = data[data["row"].isin(SIGNAL_TYPES) & data["column"].isin(SIGNAL_TYPES)]
+    return jsonify({
+        "table" : data.to_dict(orient="records"),
+        "columns" : SIGNAL_TYPES
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

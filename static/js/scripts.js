@@ -1,49 +1,30 @@
-function shrinkDiv() {
-    var topContainer = document.querySelector('.top-container');
-    var shrinkButton = document.querySelector('.shrink-button');
+function shrinkGeral(container, button) {
+    var configContainer = document.querySelector(container);
+    var shrinkButton = document.querySelector(button);
 
-    if (topContainer.classList.contains('shrink')) {
+    if (configContainer.classList.contains('shrink')) {
         // Expand the div
-        topContainer.classList.remove('shrink');
+        configContainer.classList.remove('shrink');
         shrinkButton.textContent = '-';
     } else {
         // Shrink the div
-        topContainer.classList.add('shrink');
+        configContainer.classList.add('shrink');
         shrinkButton.textContent = '+';
     }
+
 }
 
-function shrinkDiv2() {
-    var midContainer = document.querySelector('.middle-container');
-    var shrinkButton = document.querySelector('.shrink-button2');
+function shrinkConfig() {
+    shrinkGeral('.config-container', '.shrink-button1');
 
-    if (midContainer.classList.contains('shrink')) {
-        // Expand the div
-        midContainer.classList.remove('shrink');
-        shrinkButton.textContent = '-';
-    } else {
-        // Shrink the div
-        midContainer.classList.add('shrink');
-        shrinkButton.textContent = '+';
-    }
 }
 
-function shrinkDiv3() {
-    var botContainer = document.querySelector('.bottom-container');
-    var shrinkButton = document.querySelector('.shrink-button3');
-    var timeline = document.querySelector('.top-container');
+function shrinkLeft() {
+    shrinkGeral('.left-container', '.shrink-button2');
+}
 
-    if (botContainer.classList.contains('shrink')) {
-        // Expand the div
-        botContainer.classList.remove('shrink');
-        shrinkButton.textContent = '-';
-        timeline.style.setProperty('bottom', '220px');
-    } else {
-        // Shrink the div
-        botContainer.classList.add('shrink');
-        shrinkButton.textContent = '+';
-        timeline.style.setProperty('bottom', '0px');
-    }
+function shrinkBottom() {
+    shrinkGeral('.bottom-container', '.shrink-button3');
 }
 
 
@@ -78,11 +59,22 @@ window.onload = function () {
     });
 
     $("#nFreqs").on('input', function () {
-        $("#nFreqsValue").text("Nº freqs.:" + Math.pow(2, $(this).val()));
+        $("#nFreqsValue").text("Nº freqs.:" + $(this).val());
     });
     $("#threshold").on('input', function () {
         $("#thresholdValue").text("Thresh.:" + $(this).val());
     });
+
+    $("#bottomPanel").on('change', function () {
+        if ($("#bottomPanel").val() == "timeseries") {
+            LoadTimeSeries();
+        } else if ($("#bottomPanel").val() == "scatter") {
+            LoadScatter();
+        }
+    });
+
+    document.querySelector(".shrink-button1").click();
     // call a click on the update button
+    LoadTable();
     document.querySelector('#heatmapUpdate').click();
 }

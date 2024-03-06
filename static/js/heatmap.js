@@ -3,7 +3,6 @@ const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard
 function LoadOverview() {
     var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();
-    N_FREQS = Math.pow(2, N_FREQS);
     var THRESHOLD = $("#threshold").val();
     var selectedSignals = [];
     signalTypes.forEach(signal => {
@@ -31,10 +30,17 @@ function LoadOverview() {
 }
 
 function DrawOverview(data) {
-    var N_FREQS = [...new Set(data.map(d => d.freq))].length;
+    var N_FREQS = $("#nFreqs").val();
+    var FreqsArray = [];
+    for (let i = 1; i <= N_FREQS; i++) {
+        FreqsArray.push(4 - i);
+    }
+    var MinFreq = 4 - N_FREQS;
+    data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
-    var fullHeight = Math.min(60 * N_SIGNALS, 550);
+    var fullHeight = Math.min(50 * N_SIGNALS, 300);
+
 
     setSlider(data);
 
@@ -51,8 +57,9 @@ function DrawOverview(data) {
 
     var y = d3.scaleBand()
         .range([heatmapHeight, 0])
-        .domain(Array.from({ length: N_FREQS }, (v, k) => k))
+        .domain(FreqsArray)
         .padding(0.1);
+
 
     //var colorScale = d3.scaleLinear()
     //    .domain([0, d3.max(data, d => d.value)])
@@ -93,7 +100,7 @@ function DrawOverview(data) {
     // add legend
     var legendNode = legend({
         color: colorScale,
-        title: "Nº with changes",
+        title: "Nº regions with changes",
         width: 330,
         marginLeft: margin.left,
         ticks: 6

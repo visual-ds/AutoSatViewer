@@ -72,22 +72,18 @@
 }
 
 #timeline {
-  top: 10px;
+  /* top: 10px; */
+  float: right;
   width: calc(60vw - 30px);
   height: 40px;
-  margin-left: 15px;
-
+  /* margin-left: 15px; */
   border-radius: 0px;
   flex-direction: row;
 }
 
 .timeslider {
-  width: calc(60vw - 50px) !important;
-  /*height: 100%;*/
-  padding-left: 750px;
+  width: calc(100vw - 650px) !important;
   padding-right: 10px;
-  top: -6px;
-
 }
 
 .timestep_indicator {
