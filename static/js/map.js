@@ -58,18 +58,27 @@ async function loadFile() {
     // call time series when clicking on a polygon
     map.on('click', 'spatial-data', (e) => {
       var id = e.features[0].properties.id_poly;
+      console.log($("#bottomPanel").val())
       if (clicked == id) {
         clicked = undefined;
-        //LoadTimeSeries();
+        if ($("#bottomPanel").val() == "timeseries") {
+          LoadTimeSeries();
+        }
       } else {
         clicked = id;
-        //LoadTimeSeries(id);
+        if ($("#bottomPanel").val() == "timeseries") {
+          LoadTimeSeries(id);
+        }
       }
     });
 
     updateSpatialFill();
-    //LoadTimeSeries();
-    LoadScatter();
+    console.log($("#bottomPanel").val())
+    if ($("#bottomPanel").val() == "timeseries") {
+      LoadTimeSeries();
+    } else if ($("#bottomPanel").val() == "scatter") {
+      LoadScatter();
+    }
 
   } catch (error) {
     console.error('Error fetching GeoJSON file:', error);

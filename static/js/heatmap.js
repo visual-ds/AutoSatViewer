@@ -100,7 +100,7 @@ function DrawOverview(data) {
     // add legend
     var legendNode = legend({
         color: colorScale,
-        title: "Nº with changes",
+        title: "Nº regions with changes",
         width: 330,
         marginLeft: margin.left,
         ticks: 6

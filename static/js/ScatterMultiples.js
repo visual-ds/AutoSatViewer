@@ -27,8 +27,11 @@ function ScatterIndividual(DivID, data, Column, color) {
 
     const y = d3.scaleLinear()
         .range([height, 0])
-        .domain(d3.extent(data, d => d.mean_freq3));
+        .domain([0.9 * d3.min(data, d => d.mean_freq3), 1.1 * d3.max(data, d => d.mean_freq3)]);
 
+    const colorScale = d3.scaleSequential()
+        .domain(d3.extent(data, d => d.date))
+        .range(["#f0f0f0", color]);
 
     var xAxis = (g, x) => g.call(d3.axisBottom(x).ticks(3));
     var yAxis = (g, y) => g.call(d3.axisLeft(y).ticks(3));
@@ -62,7 +65,7 @@ function ScatterIndividual(DivID, data, Column, color) {
         .attr("r", 3)
         .attr("cx", d => x(d.high))
         .attr("cy", d => y(d.mean_freq3))
-        .style("fill", color)
+        .style("fill", d => colorScale(d.date))
         .on("mouseover", function (event, d) {
             //tooltip.style("opacity", 1);
             //tooltip.html(d.date)

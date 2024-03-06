@@ -64,6 +64,15 @@ window.onload = function () {
     $("#threshold").on('input', function () {
         $("#thresholdValue").text("Thresh.:" + $(this).val());
     });
+
+    $("#bottomPanel").on('change', function () {
+        if ($("#bottomPanel").val() == "timeseries") {
+            LoadTimeSeries();
+        } else if ($("#bottomPanel").val() == "scatter") {
+            LoadScatter();
+        }
+    });
+
     document.querySelector(".shrink-button1").click();
     // call a click on the update button
     LoadTable();

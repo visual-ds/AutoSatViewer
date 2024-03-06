@@ -6,7 +6,7 @@ import geopandas as gpd
 import scipy.sparse
 
 POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][1]
-TIME = ["Day", "Month"][1]
+TIME = ["Day", "Month"][0]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -187,16 +187,8 @@ def get_similarity_table(request):
     request = request.split("_")
     similarity = request[0]
     SIGNAL_TYPES = [s.replace("%20", " ") for s in request[2:]]
-    data = []
-    for i, typ_i in enumerate(SIGNAL_TYPES):
-        for j, typ_j in enumerate(SIGNAL_TYPES):
-            data.append({
-                "row" : typ_i,
-                "column" : typ_j,
-                "value" : np.random.random()
-            })
-    
-    data = pd.DataFrame(data)
+    data = pd.read_csv(f"wavelet_code/data/similarity_matrix/{POLY}_{TIME}.csv")
+    data = data[data["row"].isin(SIGNAL_TYPES) & data["column"].isin(SIGNAL_TYPES)]
     return jsonify({
         "table" : data.to_dict(orient="records"),
         "columns" : SIGNAL_TYPES
