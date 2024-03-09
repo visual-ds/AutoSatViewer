@@ -80,10 +80,6 @@ function ScatterIndividual(DivID, data, Column, color) {
         .scaleExtent([1, 10])
         .on("zoom", zoomed);
 
-    function zoomed() {
-        svg.attr("transform", d3.event.transform);
-    }
-
     svg.call(zoom).call(zoom.transform, d3.zoomIdentity);
 
     function zoomed({ transform }) {

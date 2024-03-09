@@ -83,7 +83,11 @@
 
         <div class="container left-container">
             <div class="shrink-button2 sign" onclick="shrinkLeft()">-</div>
-            <div id="similarity_table" class="chart">
+            <div id="similarity_projection" style="display: flex;">
+                <div id="similarity_table" class="chart">
+                </div>
+                <div id="projection_scatter" class="chart" style="flex-grow: 1;">
+                </div>
             </div>
             <div id="heatmap" class="chart">
                 <svg id="heatmapSVG"></svg>
@@ -110,6 +114,7 @@
 <script src="./static/js/ScatterMultiples.js"></script>
 <script src="./static/js/heatmap.js"></script>
 <script src="./static/js/similarityTable.js"></script>
+<script src="./static/js/projScatter.js"></script>
 <script src="./static/js/map.js"></script>
 
 </html>

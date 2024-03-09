@@ -23,7 +23,7 @@ function LoadTable() {
 function DrawTable(data) {
 
     const fullHeight = 280;
-    const fullWidth = 350;
+    const fullWidth = 330;
 
     var svg = d3.select("#similarity_table")
         .append("svg")

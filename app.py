@@ -194,5 +194,10 @@ def get_similarity_table(request):
         "columns" : SIGNAL_TYPES
     })
 
+@app.route('/get_projection/<string:request>')
+def get_projection(request):
+    df = pd.read_csv(f"wavelet_code/data/projections/{POLY}_{TIME}.csv")
+    return jsonify(df.to_dict(orient="records"))
+
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

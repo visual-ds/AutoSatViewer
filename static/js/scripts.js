@@ -76,5 +76,6 @@ window.onload = function () {
     document.querySelector(".shrink-button1").click();
     // call a click on the update button
     LoadTable();
+    LoadProj();
     document.querySelector('#heatmapUpdate').click();
 }
