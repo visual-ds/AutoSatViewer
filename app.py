@@ -20,13 +20,13 @@ def index():
     return render_template('index.html')
 
 
-def average_coeffs(n_freqs, typ, coeffs):
-    n_f = 32 // n_freqs
-    for i in range(n_freqs):
-        columns = [f"{typ}_coeff_{j}" for j in range(i * n_f, (i + 1) * n_f)]
-        coeffs["mean_freq" + str(i)] = coeffs[columns].mean(axis=1)
-        coeffs.drop(columns, axis=1, inplace=True)
-    return coeffs
+# def average_coeffs(n_freqs, typ, coeffs):
+#     n_f = 32 // n_freqs
+#     for i in range(n_freqs):
+#         columns = [f"{typ}_coeff_{j}" for j in range(i * n_f, (i + 1) * n_f)]
+#         coeffs["mean_freq" + str(i)] = coeffs[columns].mean(axis=1)
+#         coeffs.drop(columns, axis=1, inplace=True)
+#     return coeffs
 
 @app.route('/get_map')
 def get_map():
@@ -37,53 +37,53 @@ def get_map():
 
 @app.route('/get_heatmap_data/<string:request>')
 def get_heatmap_data(request):
-    data = []
     request = request.split("_")
     change_type = request[0]
-    n_freqs = 4 #int(request[1])
+    n_freqs = int(request[1])
     threshold = float(request[2])
     SIGNAL_TYPES = request[3:]
-    configs["n_freqs"] = n_freqs
+    SIGNAL_TYPES = [s.replace("%20", " ") for s in SIGNAL_TYPES]
     configs["threshold"] = threshold
-    for typ in SIGNAL_TYPES:
-        typ = typ.replace("%20", " ")
-        if change_type == "spatiotemporal":
-            coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
-        elif change_type == "spatial":
-            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{typ}_{POLY}_{TIME}.csv")
+    if change_type == "spatiotemporal":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
+    elif change_type == "spatial":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
 
-        coeffs = average_coeffs(n_freqs, typ, coeffs)
-
-        def get_high_count(df):
-            #return (df.iloc[:, 2:] > threshold).sum(axis=0)
-            #return (df.iloc[:, 2:]).mean(axis=0)
-            return (df.iloc[:, 2:]).quantile(0.75, axis=0)
-        
-        coeffs = coeffs.groupby("date").apply(get_high_count)
-        coeffs["type"] = typ
-        coeffs = coeffs.reset_index()
-        coeffs.columns = ["date"] + list(range(n_freqs)) + ["type"]
-        # transform freq columns to new rows
-        coeffs = pd.melt(coeffs, id_vars=["date", "type"], value_vars=list(range(n_freqs)), var_name="freq", value_name="value")
-        data.append(coeffs)
+    def get_high_count(df):
+        return (df.iloc[:, 2:] > threshold).sum(axis=0)
+        #return (df.iloc[:, 2:]).mean(axis=0)
+        #return (df.iloc[:, 2:]).quantile(0.75, axis=0)
     
-    data = pd.concat(data)
-    data = data.to_dict(orient="records")
-    return jsonify(data)
+    coeffs = coeffs.groupby("date").apply(get_high_count).reset_index()
+    columns = coeffs.columns
+    columns_to_keep = ["date"] + [c for c in columns if c.split("_")[0] in SIGNAL_TYPES]
+    coeffs = coeffs[columns_to_keep]
+    coeffs = pd.melt(coeffs, id_vars=["date"], value_vars=columns_to_keep[1:])
+    coeffs["freq"] = coeffs["variable"].apply(lambda x: int(x.split("_")[-1]))
+    coeffs["type"] = coeffs["variable"].apply(lambda x: x.split("_")[0])
+    coeffs = coeffs[coeffs["type"].isin(SIGNAL_TYPES)]
+    coeffs = coeffs.drop("variable", axis=1)
+    return jsonify(coeffs.to_dict(orient="records"))
+    
 
 @app.route('/get_high_coefficients/<string:request>')
 def get_high_coefficients(request):
-    typ, date, freq = request.split("_")
+    typ, date, freq, change_type = request.split("_")
     typ = typ.replace("%20", " ")
     freq = int(freq)
     date = pd.to_datetime(date)
-    coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
-    coeffs = average_coeffs(configs["n_freqs"], typ, coeffs)
+    if change_type == "spatiotemporal":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
+    elif change_type == "spatial":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
+    #coeffs = average_coeffs(configs["n_freqs"], typ, coeffs)
     coeffs["date"] = pd.to_datetime(coeffs["date"])
     coeffs = coeffs[coeffs["date"] == date]
-    idx_high = coeffs.iloc[:, 2 + freq] > configs["threshold"]
+    name = f"{typ}_coeff_{freq}"
+    idx_high = coeffs[name] > configs["threshold"]
     coeffs["highlight"] = idx_high
-    coeffs["value"] = coeffs[f"mean_freq{freq}"]
+    coeffs["value"] = coeffs[name]
+    print(coeffs.highlight.sum())
     return jsonify(coeffs.to_dict(orient="records"))
 
     

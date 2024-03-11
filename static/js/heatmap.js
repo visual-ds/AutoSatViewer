@@ -144,9 +144,10 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
 
             clearTimeout(hoverTimeout);
             var date = d.date.toISOString().split("T")[0];
+            var changeType = $("#changeType").val();
             hoverTimeout = setTimeout(() => {
                 $.ajax({
-                    url: `/get_high_coefficients/${d.type}_${date}_${d.freq}`,
+                    url: `/get_high_coefficients/${d.type}_${date}_${d.freq}_${changeType}`,
                     type: "GET",
                     success: async function (data) {
                         var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime()); + 1
