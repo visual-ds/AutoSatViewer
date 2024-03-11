@@ -54,10 +54,12 @@ function ScatterIndividual(DivID, data, Column, color) {
     const gDot = gAll.append("g")
         .attr("clip-path", "url(#clip)");
 
-    var tooltip = d3.select("#" + DivID).append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0)
-        .style("position", "relative");
+    var tooltip = d3.select("#tooltiptmp");
+    // var tooltip = d3.select("#" + DivID);
+        //.append("div")
+        //.attr("class", "tooltip")
+        //.style("opacity", 0)
+        //.style("position", "relative");
 
     gDot.selectAll("dot")
         .data(data)
@@ -67,13 +69,21 @@ function ScatterIndividual(DivID, data, Column, color) {
         .attr("cy", d => y(d.mean_freq3))
         .style("fill", d => colorScale(d.date))
         .on("mouseover", function (event, d) {
-            //tooltip.style("opacity", 1);
-            //tooltip.html(d.date)
-            //    .style("left", (event.layerX) + "px")
-            //    .style("top", (event.layerY) + "px");
+            var x = event.clientX;
+            var y = event.clientY;
+            x = x - 60;
+            y = y - 60;
+            var year = d.date.getFullYear();
+            var month = ('0' + (d.date.getMonth() + 1)).slice(-2); // Adding 1 because getMonth() returns zero-based month
+            var day = ('0' + d.date.getDate()).slice(-2);
+
+            tooltip.style("display", "block");
+            tooltip.html('<p>' + year + '/' + month + '/' + day + '</p>')
+                .style("left", x + "px")
+                .style("top", y + "px");
         })
         .on("mouseout", function (d) {
-            //tooltip.style("opacity", 0);
+            tooltip.style("display", "none");
         });
 
     var zoom = d3.zoom()

@@ -116,3 +116,16 @@ body {
     height: 40px;
     width: 250px;
 }
+
+#tooltiptmp{
+    position: absolute;
+    top: 350px;
+    right: 650px;
+    height: 50px;
+    width: 100px;
+    background-color: white;
+    /*border: 1px solid black;*/
+    text-align: center;
+    display: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
