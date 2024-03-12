@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus10k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][1]
-TIME = ["Day", "Month"][1]
+POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][3]
+TIME = ["Day", "Month", "5days", "3days"][2]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -50,19 +50,14 @@ def get_heatmap_data(request):
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
 
     def get_high_count(df):
-        return (df.iloc[:, 2:] > threshold).sum(axis=0)
+        return (df.iloc[:, 1:] > threshold).sum(axis=0)
         #return (df.iloc[:, 2:]).mean(axis=0)
         #return (df.iloc[:, 2:]).quantile(0.75, axis=0)
     
-    coeffs = coeffs.groupby("date").apply(get_high_count).reset_index()
-    columns = coeffs.columns
-    columns_to_keep = ["date"] + [c for c in columns if c.split("_")[0] in SIGNAL_TYPES]
-    coeffs = coeffs[columns_to_keep]
-    coeffs = pd.melt(coeffs, id_vars=["date"], value_vars=columns_to_keep[1:])
-    coeffs["freq"] = coeffs["variable"].apply(lambda x: int(x.split("_")[-1]))
-    coeffs["type"] = coeffs["variable"].apply(lambda x: x.split("_")[0])
-    coeffs = coeffs[coeffs["type"].isin(SIGNAL_TYPES)]
-    coeffs = coeffs.drop("variable", axis=1)
+    coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
+    coeffs = coeffs[coeffs.type.isin(SIGNAL_TYPES)]
+    coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
+    coeffs["freq"] = coeffs["freq"].str.replace("mean_freq_", "").astype(int)
     return jsonify(coeffs.to_dict(orient="records"))
     
 
@@ -76,14 +71,12 @@ def get_high_coefficients(request):
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
     elif change_type == "spatial":
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
-    #coeffs = average_coeffs(configs["n_freqs"], typ, coeffs)
     coeffs["date"] = pd.to_datetime(coeffs["date"])
     coeffs = coeffs[coeffs["date"] == date]
-    name = f"{typ}_coeff_{freq}"
-    idx_high = coeffs[name] > configs["threshold"]
+    coeffs = coeffs[coeffs.type == typ]
+    idx_high = coeffs[f"mean_freq_{freq}"] > configs["threshold"]
     coeffs["highlight"] = idx_high
-    coeffs["value"] = coeffs[name]
-    print(coeffs.highlight.sum())
+    coeffs["value"] = coeffs[f"mean_freq_{freq}"]
     return jsonify(coeffs.to_dict(orient="records"))
 
     
@@ -139,12 +132,12 @@ def get_scatter_plot(request):
         if change_type == "spatiotemporal":
             coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
         elif change_type == "spatial":
-            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{typ}_{POLY}_{TIME}.csv")
+            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
 
         coeffs = average_coeffs(n_freqs, typ, coeffs)
-        coeffs["high"] = coeffs["mean_freq3"] > threshold
-        coeffs = coeffs[["date", "high", "mean_freq3"]]
-        coeffs = coeffs.groupby("date").agg({"high": "sum", "mean_freq3": "mean"}).reset_index()
+        coeffs["high"] = coeffs["mean_freq_3"] > threshold
+        coeffs = coeffs[["date", "high", "mean_freq_3"]]
+        coeffs = coeffs.groupby("date").agg({"high": "sum", "mean_freq_3": "mean"}).reset_index()
         coeffs["type"] = typ
         data.append(coeffs)
     
@@ -161,16 +154,16 @@ def get_spatial_data(request):
     if value == "signal":
         df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     else:
-        df = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
-        df = average_coeffs(4, typ, df)
+        df = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
+        df = df[df["type"] == typ]
         coeff_idx = int(value[-1])
-        df["value"] = df[f"mean_freq{coeff_idx}"]
+        df["value"] = df[f"mean_freq_{coeff_idx}"]
     df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
     q = [i/8 for i in range(1, 9)]
     if value == "signal":
         values = df[typ].values
     else:
-        values = df[f"mean_freq{coeff_idx}"].values
+        values = df[f"mean_freq_{coeff_idx}"].values
     quantiles = np.quantile(values[values > 0], q).tolist()
     dates = df["date"].unique()
     date = dates[int(date)]
@@ -178,7 +171,7 @@ def get_spatial_data(request):
     if value == "signal":
         df["value"] = df[typ]
     else:
-        df["value"] = df[f"mean_freq{coeff_idx}"]
+        df["value"] = df[f"mean_freq_{coeff_idx}"]
     return jsonify({"data" : df.to_dict(orient="records"), "quantiles": quantiles})
 
 

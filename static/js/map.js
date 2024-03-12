@@ -27,7 +27,8 @@ async function loadFile() {
       source: 'spatial-data',
       paint: {
         'fill-color': '#ffffff',
-        'fill-opacity': 0.75
+        'fill-opacity': 0.75,
+        'fill-outline-color': '#cccccc'
       }
     };
     map.addLayer(layer);

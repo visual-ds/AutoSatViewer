@@ -155,8 +155,11 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                             from: idx
                         });
                         // trigger slider change
-                        $('#slider').data('ionRangeSlider').options.onChange();
                         $("#signalMap").val(d.type);
+                        $('#slider').data('ionRangeSlider').options.onChange();
+                        
+
+                        LoadProj(d.type);
                         updateSpatialHighlight(data);
                     }
                 });
