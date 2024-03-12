@@ -37,7 +37,7 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     const line = d3.line()
         .x(d => x(d.date))
         .y(d => y(d.value))
-        .curve(d3.curveNatural);
+    //.curve(d3.curveNatural);
 
     svg.append("g")
         .attr("class", "axis")

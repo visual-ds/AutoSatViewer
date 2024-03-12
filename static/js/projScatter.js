@@ -15,6 +15,9 @@ function LoadProj(signal) {
 
 function DrawProjection(signal, data) {
 
+    var threshold = $("#threshold").val();
+    var quant = d3.quantile(data.map(d => d.mean_coeff), threshold);
+
     const fullHeight = 280;
     const fullWidth = 280;
 
@@ -71,7 +74,7 @@ function DrawProjection(signal, data) {
         .style("fill", d => d.color)// "#0047ab")
         .style("stroke", "none")
         .style("stroke-width", 2)
-        .style("opacity", 0.25);
+        .style("opacity", d => d.mean_coeff > quant ? 0.85 : 0.05);
 
     var zoom = d3.zoom()
         .scaleExtent([1, 10])
@@ -107,7 +110,13 @@ function DrawProjection(signal, data) {
     }
 
     function brushed({ selection }) {
-        if (selection === null) return;
+        if (selection === null) {
+            gDot.selectAll("circle").classed("selected_proj", false);
+            gDot.selectAll("circle").style("stroke", "none");
+            updateSpatialHighlight([]);
+
+            return;
+        }
         const [[x0, y0], [x1, y1]] = selection;
         gDot.selectAll("circle")
             .classed("selected_proj", d => x0 <= x(d[signal + "_x"]) && x(d[signal + "_x"]) < x1 && y0 <= y(d[signal + "_y"]) && y(d[signal + "_y"]) < y1);

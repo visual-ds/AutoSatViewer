@@ -126,6 +126,12 @@ function updateSpatialFill() {
   }
   var type = $("#signalMap").val();
   var value = $("#valueType").val();
+  if (value.includes("coeff")) {
+    var changeType = $("#changeType").val();
+    if (changeType == "spatial") {
+      value += "spatial";
+    }
+  }
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
     .then(response => {

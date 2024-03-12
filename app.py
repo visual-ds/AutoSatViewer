@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][3]
-TIME = ["Day", "Month", "5days", "3days"][2]
+POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][0]
+TIME = ["Day", "Month", "5days", "3days"][3]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -50,9 +50,9 @@ def get_heatmap_data(request):
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
 
     def get_high_count(df):
-        return (df.iloc[:, 1:] > threshold).sum(axis=0)
-        #return (df.iloc[:, 2:]).mean(axis=0)
-        #return (df.iloc[:, 2:]).quantile(0.75, axis=0)
+        #return (df.iloc[:, 1:] > threshold).sum(axis=0)
+        return (df.iloc[:, 1:]).mean(axis=0)
+        #return (df.iloc[:, 1:]).quantile(0.95, axis=0)
     
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
     coeffs = coeffs[coeffs.type.isin(SIGNAL_TYPES)]
@@ -72,9 +72,10 @@ def get_high_coefficients(request):
     elif change_type == "spatial":
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
     coeffs["date"] = pd.to_datetime(coeffs["date"])
-    coeffs = coeffs[coeffs["date"] == date]
     coeffs = coeffs[coeffs.type == typ]
-    idx_high = coeffs[f"mean_freq_{freq}"] > configs["threshold"]
+    threshold = np.quantile(coeffs[f"mean_freq_{freq}"], configs["threshold"])
+    coeffs = coeffs[coeffs["date"] == date]
+    idx_high = coeffs[f"mean_freq_{freq}"] > threshold
     coeffs["highlight"] = idx_high
     coeffs["value"] = coeffs[f"mean_freq_{freq}"]
     return jsonify(coeffs.to_dict(orient="records"))
@@ -153,10 +154,15 @@ def get_spatial_data(request):
     typ = typ.replace("%20", " ")
     if value == "signal":
         df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    elif "spatial" in value:
+        df = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
+        df = df[df["type"] == typ]
+        coeff_idx = [int(s) for s in value if s.isdigit()][0]
+        df["value"] = df[f"mean_freq_{coeff_idx}"]
     else:
         df = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
         df = df[df["type"] == typ]
-        coeff_idx = int(value[-1])
+        coeff_idx = [int(s) for s in value if s.isdigit()][0]
         df["value"] = df[f"mean_freq_{coeff_idx}"]
     df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
     q = [i/8 for i in range(1, 9)]
