@@ -1,16 +1,16 @@
 function LoadTable() {
     var similarityType = "euclidean";
-    var selectedSignals = [];
-    signalTypes.forEach(signal => {
-        if (document.getElementById(signal).checked) {
-            selectedSignals.push(signal);
-        }
-    });
+    // var selectedSignals = [];
+    // signalTypes.forEach(signal => {
+    //     if (document.getElementById(signal).checked) {
+    //         selectedSignals.push(signal);
+    //     }
+    // });
 
     var url = `/get_similarity_table/${similarityType}`
-    for (let i = 0; i < selectedSignals.length; i++) {
-        url += `_${selectedSignals[i]}`;
-    }
+    // for (let i = 0; i < selectedSignals.length; i++) {
+    //     url += `_${selectedSignals[i]}`;
+    // }
     $.ajax({
         url: url,
         type: "GET",
@@ -23,7 +23,7 @@ function LoadTable() {
 function DrawTable(data) {
 
     const fullHeight = 280;
-    const fullWidth = 350;
+    const fullWidth = 330;
 
     var svg = d3.select("#similarity_table")
         .append("svg")

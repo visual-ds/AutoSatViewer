@@ -90,10 +90,6 @@ function ScatterIndividual(DivID, data, Column, color) {
         .scaleExtent([1, 10])
         .on("zoom", zoomed);
 
-    function zoomed() {
-        svg.attr("transform", d3.event.transform);
-    }
-
     svg.call(zoom).call(zoom.transform, d3.zoomIdentity);
 
     function zoomed({ transform }) {
@@ -143,18 +139,18 @@ function MultipleScatters(DivID, data, columns) {
 }
 
 function LoadScatter() {
-    var selectedSignals = [];
-    signalTypes.forEach(signal => {
-        if (document.getElementById(signal).checked) {
-            selectedSignals.push(signal);
-        }
-    });
+    // var selectedSignals = [];
+    // signalTypes.forEach(signal => {
+    //     if (document.getElementById(signal).checked) {
+    //         selectedSignals.push(signal);
+    //     }
+    // });
     var changeType = $("#changeType").val();
     var THRESHOLD = $("#threshold").val();
     var url = `/get_scatter_data/${changeType}_${THRESHOLD}`
-    for (let i = 0; i < selectedSignals.length; i++) {
-        url += `_${selectedSignals[i]}`;
-    }
+    // for (let i = 0; i < selectedSignals.length; i++) {
+    //     url += `_${selectedSignals[i]}`;
+    // }
     $.ajax({
         url: url,
         type: 'GET',

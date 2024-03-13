@@ -27,7 +27,8 @@ async function loadFile() {
       source: 'spatial-data',
       paint: {
         'fill-color': '#ffffff',
-        'fill-opacity': 0.75
+        'fill-opacity': 0.75,
+        'fill-outline-color': '#cccccc'
       }
     };
     map.addLayer(layer);
@@ -85,8 +86,6 @@ async function loadFile() {
   }
 }
 
-loadFile();
-
 /************************************************** TIME SLIDER *********************** */
 var slider_width = document.getElementById("timeslider").clientWidth * 0.99;
 $('#timeslider')
@@ -125,6 +124,12 @@ function updateSpatialFill() {
   }
   var type = $("#signalMap").val();
   var value = $("#valueType").val();
+  if (value.includes("coeff")) {
+    var changeType = $("#changeType").val();
+    if (changeType == "spatial") {
+      value += "spatial";
+    }
+  }
   fetch(`/get_spatial_data/${T}_${type}_${value}`)
     .then(data => data.json())
     .then(response => {
@@ -149,7 +154,6 @@ function updateSpatialFill() {
       map.setPaintProperty('spatial-data', 'fill-color', ['step', ['get', 'value'], colors[0], quantiles[0], colors[1], quantiles[1], colors[2], quantiles[2], colors[3], quantiles[3], colors[4], quantiles[4], colors[5], quantiles[5], colors[6], quantiles[6], colors[7], quantiles[7], colors[8]]);
 
 
-      map.setPaintProperty('spatial-data', 'fill-outline-color', '#cccccc');
 
       var svg_node = legend({
         color: colorScale,
@@ -169,6 +173,7 @@ function updateSpatialHighlight(data) {
   // if data is empty, set all opacity to 0.5
   if (data.length == 0) {
     map.setPaintProperty('spatial-data', 'fill-opacity', 0.75);
+    map.setPaintProperty('spatial-data', 'fill-outline-color', '#cccccc');
     return;
   }
   map.getSource('spatial-data').setData({
@@ -182,4 +187,7 @@ function updateSpatialHighlight(data) {
 
   //update opacity based in highlight boolean
   map.setPaintProperty('spatial-data', 'fill-opacity', ['case', ['get', 'highlight'], 1, 0.25]);
+
+  //update stroke color based in highlight boolean
+  map.setPaintProperty('spatial-data', 'fill-outline-color', ['case', ['get', 'highlight'], '#C70039', '#cccccc']);
 }

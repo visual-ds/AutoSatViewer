@@ -29,29 +29,29 @@ function shrinkBottom() {
 
 
 window.onload = function () {
-    var signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
-    var chekedSignalTypes = ["Accident", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery"];
-    for (let i = 0; i < signalTypes.length; i++) {
-        var type = signalTypes[i];
-        var checkbox = document.createElement('input');
-        checkbox.type = "checkbox";
-        checkbox.id = type;
-        checkbox.value = type;
-        if (chekedSignalTypes.includes(type)) {
-            checkbox.checked = true;
-        }
-        var label = document.createElement('label');
-        label.htmlFor = type;
-        label.appendChild(document.createTextNode(type));
-        document.querySelector('#signalTypes').appendChild(checkbox);
-        document.querySelector('#signalTypes').appendChild(label);
-        document.querySelector('#signalTypes').appendChild(document.createElement('br'));
+    // var signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
+    // var chekedSignalTypes = ["Accident", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery"];
+    // for (let i = 0; i < signalTypes.length; i++) {
+    //     var type = signalTypes[i];
+    //     var checkbox = document.createElement('input');
+    //     checkbox.type = "checkbox";
+    //     checkbox.id = type;
+    //     checkbox.value = type;
+    //     if (chekedSignalTypes.includes(type)) {
+    //         checkbox.checked = true;
+    //     }
+    //     var label = document.createElement('label');
+    //     label.htmlFor = type;
+    //     label.appendChild(document.createTextNode(type));
+    //     document.querySelector('#signalTypes').appendChild(checkbox);
+    //     document.querySelector('#signalTypes').appendChild(label);
+    //     document.querySelector('#signalTypes').appendChild(document.createElement('br'));
 
-        var option = document.createElement('option');
-        option.value = type;
-        option.text = type;
-        document.querySelector('#signalMap').appendChild(option);
-    }
+    //     var option = document.createElement('option');
+    //     option.value = type;
+    //     option.text = type;
+    //     document.querySelector('#signalMap').appendChild(option);
+    // }
 
 
     $("#mapUpdateFill").on('click', function () {
@@ -72,9 +72,22 @@ window.onload = function () {
             LoadScatter();
         }
     });
+    
 
-    document.querySelector(".shrink-button1").click();
-    // call a click on the update button
-    LoadTable();
-    document.querySelector('#heatmapUpdate').click();
+    fetch('/get_signal_types')
+        .then(response => response.json())
+        .then(signalTypes => {
+            signalTypes.forEach(d => {
+                var option = document.createElement('option');
+                option.value = d;
+                option.text = d;
+                document.querySelector('#signalMap').appendChild(option);
+                
+            document.querySelector(".shrink-button1").click();
+            document.querySelector('#heatmapUpdate').click();
+            })
+            loadFile();
+            LoadTable();
+            LoadProj();
+        });
 }

@@ -45,9 +45,9 @@
         <div class="container config-container">
             <div class="shrink-button1 sign" onclick="shrinkConfig()">-</div>
             <div id="config-menu">
-                <div id="signalTypes" style="height: 80px; overflow-y: scroll;">
+                <!--<div id="signalTypes" style="height: 80px; overflow-y: scroll;">
                     <p>Signal Types</p>
-                </div></br>
+                </div></br>-->
                 <div id="heatmapControl">
                     <p>Heatmap Control</p>
                     <form>
@@ -58,7 +58,7 @@
                         <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 95px;">Nº freqs.:
                             1</label><input type="range" id="nFreqs" min="1" max="4" step="1" value="1"></br>
                         <label for="threshold" id="thresholdValue" style="display: inline-block; width: 95px;">Thresh.:
-                            0.75</label><input type="range" id="threshold" min="0" max="1" step="0.025"
+                            0.75</label><input type="range" id="threshold" min="0.6" max="1" step="0.01"
                             value="0.75"></br>
                         <input type="button" value="Update" id="heatmapUpdate" onclick="LoadOverview()"></br>
                     </form>
@@ -83,7 +83,11 @@
 
         <div class="container left-container">
             <div class="shrink-button2 sign" onclick="shrinkLeft()">-</div>
-            <div id="similarity_table" class="chart">
+            <div id="similarity_projection" style="display: flex;">
+                <div id="similarity_table" class="chart">
+                </div>
+                <div id="projection_scatter" class="chart" style="flex-grow: 1;">
+                </div>
             </div>
             <div id="heatmap" class="chart">
                 <svg id="heatmapSVG"></svg>
@@ -113,6 +117,7 @@
 <script src="./static/js/ScatterMultiples.js"></script>
 <script src="./static/js/heatmap.js"></script>
 <script src="./static/js/similarityTable.js"></script>
+<script src="./static/js/projScatter.js"></script>
 <script src="./static/js/map.js"></script>
 
 </html>
