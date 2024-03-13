@@ -1,20 +1,20 @@
-const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
+// const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
 
 function LoadOverview() {
     var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();
     var THRESHOLD = $("#threshold").val();
-    var selectedSignals = [];
-    signalTypes.forEach(signal => {
-        if (document.getElementById(signal).checked) {
-            selectedSignals.push(signal);
-        }
-    });
+    // var selectedSignals = [];
+    // signalTypes.forEach(signal => {
+    //     if (document.getElementById(signal).checked) {
+    //         selectedSignals.push(signal);
+    //     }
+    // });
 
     var url = `/get_heatmap_data/${changeType}_${N_FREQS}_${THRESHOLD}`
-    for (let i = 0; i < selectedSignals.length; i++) {
-        url += `_${selectedSignals[i]}`;
-    }
+    // for (let i = 0; i < selectedSignals.length; i++) {
+    //     url += `_${selectedSignals[i]}`;
+    // }
 
     $.ajax({
         url: url,

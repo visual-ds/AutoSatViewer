@@ -140,15 +140,15 @@ function LoadTimeSeries(id) {
     if (id == undefined) {
         id = -1;
     }
-    var selectedSignals = [];
-    signalTypes.forEach(signal => {
-        if (document.getElementById(signal).checked) {
-            selectedSignals.push(signal);
-        }
-    });
+    // var selectedSignals = [];
+    // signalTypes.forEach(signal => {
+    //     if (document.getElementById(signal).checked) {
+    //         selectedSignals.push(signal);
+    //     }
+    // });
     $.ajax({
         url: '/get_time_series',
-        data: { 'block_id': id, 'signals': selectedSignals },
+        data: { 'block_id': id}, //'signals': selectedSignals },
         type: 'POST',
         success: function (response) {
             var data = JSON.parse(response);

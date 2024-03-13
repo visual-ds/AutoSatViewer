@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid"][0]
-TIME = ["Day", "Month", "5days", "3days"][3]
+POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid", "NYBlocks", "BLACities"][-1]
+TIME = ["Day", "Month", "5days", "3days", "Year"][4]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -19,14 +19,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-
-# def average_coeffs(n_freqs, typ, coeffs):
-#     n_f = 32 // n_freqs
-#     for i in range(n_freqs):
-#         columns = [f"{typ}_coeff_{j}" for j in range(i * n_f, (i + 1) * n_f)]
-#         coeffs["mean_freq" + str(i)] = coeffs[columns].mean(axis=1)
-#         coeffs.drop(columns, axis=1, inplace=True)
-#     return coeffs
 
 @app.route('/get_map')
 def get_map():
@@ -41,8 +33,6 @@ def get_heatmap_data(request):
     change_type = request[0]
     n_freqs = int(request[1])
     threshold = float(request[2])
-    SIGNAL_TYPES = request[3:]
-    SIGNAL_TYPES = [s.replace("%20", " ") for s in SIGNAL_TYPES]
     configs["threshold"] = threshold
     if change_type == "spatiotemporal":
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
@@ -55,7 +45,6 @@ def get_heatmap_data(request):
         #return (df.iloc[:, 1:]).quantile(0.95, axis=0)
     
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
-    coeffs = coeffs[coeffs.type.isin(SIGNAL_TYPES)]
     coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
     coeffs["freq"] = coeffs["freq"].str.replace("mean_freq_", "").astype(int)
     return jsonify(coeffs.to_dict(orient="records"))
@@ -84,37 +73,31 @@ def get_high_coefficients(request):
 @app.route('/get_time_series', methods=["GET", "POST"])
 def get_time_series():
     block_id = int(request.form['block_id'])
-    selected_signals = request.form.getlist('signals[]')
-    selected_signals = [s.replace("%20", " ") for s in selected_signals]
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     try:
         adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
-        # compute adj_matrix^2
-        adj_matrix = adj_matrix.dot(adj_matrix)
         if block_id != -1:
             neighbors = np.where(adj_matrix[block_id] > 0)[0]
         else:
             neighbors = np.arange(adj_matrix.shape[0])
     except:
         adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
-        # compute adj_matrix^2
-        adj_matrix = adj_matrix.dot(adj_matrix)
         if block_id != -1:
             neighbors = adj_matrix[block_id].nonzero()[1]
         else:
             neighbors = np.arange(adj_matrix.shape[0])
     neighbors = list(neighbors)
     if block_id == -1: # get mean data as neighbors
-        temporal = df[df["id_poly"] == 0][['date'] + selected_signals]
-        temporal[selected_signals] = temporal[selected_signals] * 0
-        temporal_neigh = df[['date'] + selected_signals]
+        temporal = df[df["id_poly"] == 0]
+        temporal.iloc[:, 2:] = temporal.iloc[:, 2:] * 0
+        temporal_neigh = df
     else:
-        temporal = df[df['id_poly'] == block_id][['date'] + selected_signals]
-        temporal_neigh = df[df['id_poly'].isin(neighbors)][['date'] + selected_signals]
+        temporal = df[df['id_poly'] == block_id]
+        temporal_neigh = df[df['id_poly'].isin(neighbors)]
     temporal_neigh = temporal_neigh.groupby('date').mean().reset_index()
     return json.dumps({
         'temporal': json.loads(temporal.to_json(orient='records')), 
-        'columns': temporal.columns.values.tolist()[1:], 
+        'columns': temporal.columns.values.tolist()[2:], 
         'neighbors': json.loads(temporal_neigh.to_json(orient='records'))
     })
 
@@ -125,22 +108,21 @@ def get_scatter_plot(request):
     change_type = request[0]
     n_freqs = 4 #int(request[1])
     threshold = float(request[1])
-    SIGNAL_TYPES = request[2:]
     configs["n_freqs"] = n_freqs
     configs["threshold"] = threshold
-    for typ in SIGNAL_TYPES:
-        typ = typ.replace("%20", " ")
-        if change_type == "spatiotemporal":
-            coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{typ}_{POLY}_{TIME}.csv")
-        elif change_type == "spatial":
-            coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
+    if change_type == "spatiotemporal":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
+    elif change_type == "spatial":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
 
-        coeffs = average_coeffs(n_freqs, typ, coeffs)
-        coeffs["high"] = coeffs["mean_freq_3"] > threshold
-        coeffs = coeffs[["date", "high", "mean_freq_3"]]
-        coeffs = coeffs.groupby("date").agg({"high": "sum", "mean_freq_3": "mean"}).reset_index()
-        coeffs["type"] = typ
-        data.append(coeffs)
+    SIGNAL_TYPES = coeffs["type"].unique().tolist()
+    coeffs["high"] = False
+    for typ in SIGNAL_TYPES:
+        quant = np.quantile(coeffs[coeffs["type"] == typ, "mean_freq_3"], threshold)
+        coeffs.loc[coeffs["type"] == typ, "high"] = coeffs.loc[coeffs["type"] == typ, "mean_freq_3"] > quant
+
+
+    coeffs = coeffs[["date", "high", "mean_freq_3", "type"]]
     
     data = pd.concat(data)
     return json.dumps({
@@ -185,9 +167,8 @@ def get_spatial_data(request):
 def get_similarity_table(request):
     request = request.split("_")
     similarity = request[0]
-    SIGNAL_TYPES = [s.replace("%20", " ") for s in request[2:]]
     data = pd.read_csv(f"wavelet_code/data/similarity_matrix/{POLY}_{TIME}.csv")
-    data = data[data["row"].isin(SIGNAL_TYPES) & data["column"].isin(SIGNAL_TYPES)]
+    SIGNAL_TYPES = data["row"].unique().tolist()
     return jsonify({
         "table" : data.to_dict(orient="records"),
         "columns" : SIGNAL_TYPES
@@ -197,6 +178,12 @@ def get_similarity_table(request):
 def get_projection(request):
     df = pd.read_csv(f"wavelet_code/data/projections/{POLY}_{TIME}.csv")
     return jsonify(df.to_dict(orient="records"))
+
+
+@app.route('/get_signal_types')
+def get_signal_types():
+    data = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
+    return jsonify(data["type"].unique().tolist())
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
