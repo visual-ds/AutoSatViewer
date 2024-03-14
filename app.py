@@ -6,7 +6,7 @@ import geopandas as gpd
 import scipy.sparse
 
 POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid", "NYBlocks", "BLACities"][-1]
-TIME = ["Day", "Month", "5days", "3days", "Year"][4]
+TIME = ["Day", "Month", "5days", "3days", "Year"][-1]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6

@@ -100,7 +100,7 @@ function DrawOverview(data) {
     // add legend
     var legendNode = legend({
         color: colorScale,
-        title: "Nº regions with changes",
+        title: "Sum of high-frequency coefficients",
         width: 330,
         marginLeft: margin.left,
         ticks: 6
@@ -157,7 +157,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                         // trigger slider change
                         $("#signalMap").val(d.type);
                         $('#slider').data('ionRangeSlider').options.onChange();
-                        
+
 
                         LoadProj(d.type);
                         updateSpatialHighlight(data);

@@ -118,13 +118,16 @@ function DrawProjection(signal, data) {
             return;
         }
         const [[x0, y0], [x1, y1]] = selection;
+        function verify(x, y) {
+            return x0 <= x && x <= x1 && y0 <= y && y <= y1;
+        }
         gDot.selectAll("circle")
-            .classed("selected_proj", d => x0 <= x(d[signal + "_x"]) && x(d[signal + "_x"]) < x1 && y0 <= y(d[signal + "_y"]) && y(d[signal + "_y"]) < y1);
+            .classed("selected_proj", d => verify(x(d[signal + "_x"]), y(d[signal + "_y"])) && d.mean_coeff > quant);
 
         var dataHighlight = data.map(d => {
             d_ = { ...d }
             d_["highlight"] = false;
-            if (x0 <= x(d[signal + "_x"]) && x(d[signal + "_x"]) < x1 && y0 <= y(d[signal + "_y"]) && y(d[signal + "_y"]) < y1) {
+            if (verify(x(d[signal + "_x"]), y(d[signal + "_y"])) && d.mean_coeff > quant) {
                 d_["highlight"] = true;
             }
             return d_;
