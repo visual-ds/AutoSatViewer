@@ -27,7 +27,7 @@ function DrawProjection(signal, data) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 60, right: 20, bottom: 20, left: 20 },
+    var margin = { top: 30, right: 20, bottom: 15, left: 15 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
