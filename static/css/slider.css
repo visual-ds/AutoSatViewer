@@ -72,8 +72,10 @@
 }
 
 #timeline {
-  /* top: 10px; */
-  float: right;
+  top: 5%;
+  right:0px;
+  position: absolute;
+  /*float: right;*/
   width: calc(60vw - 30px);
   height: 40px;
   /* margin-left: 15px; */

@@ -1,22 +1,37 @@
-function shrinkGeral(container, button) {
+function shrinkGeral(container, button, symbol1='-', symbol2='+') {
     var configContainer = document.querySelector(container);
     var shrinkButton = document.querySelector(button);
 
+    
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
-        shrinkButton.textContent = '-';
+        shrinkButton.textContent = symbol1;
     } else {
         // Shrink the div
         configContainer.classList.add('shrink');
-        shrinkButton.textContent = '+';
+        shrinkButton.textContent = symbol2;
     }
 
 }
 
 function shrinkConfig() {
-    shrinkGeral('.config-container', '.shrink-button1');
-
+    /*shrinkGeral('.config-container', '.shrink-button1', '-', '⚙');*/
+    var configContainer = document.querySelector('.config-container');
+    var shrinkButton = document.querySelector('.shrink-button1');
+    var configMenu = document.querySelector('#config-menu');
+    
+    if (configContainer.classList.contains('shrink')) {
+        // Expand the div
+        configContainer.classList.remove('shrink');
+        configMenu.style.display = 'flex';
+        shrinkButton.textContent = '-';
+    } else {
+        // Shrink the div
+        configContainer.classList.add('shrink');
+        shrinkButton.textContent = '⚙';
+        configMenu.style.display = 'none';
+    }
 }
 
 function shrinkLeft() {
