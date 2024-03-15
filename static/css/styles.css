@@ -16,24 +16,25 @@ body {
     height: 3%;
     position: fixed;
     top: 0px;
-    background-color: #ffffff;
+    background-color: #d1e3d5;
     left: 0px;
     padding-top: 5px;
-    padding-left: 45px;
+    padding-left: 50px;
+    font-family: "Roboto", sans-serif;
 }
 
 .bottom-container {
     width: calc(102vw - 655px);
-    height: calc(26vh - 2px);
+    height: calc(28vh - 2px);
     margin-bottom: 5px;
     margin-left: 5px;
 }
 
 .config-container {
     width: 300px;
-    height: calc(73vh - 2px);
-    padding-left: 10px;
-    padding-right: 10px;
+    height: calc(57vh - 2px);
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .left-container {
@@ -83,7 +84,7 @@ body {
 .bottom-container {
     position: fixed;
     bottom: 0px;
-    background-color: #ffffff;
+    background-color: #b3c4b7;
     right: 5px;
 }
 
@@ -97,14 +98,14 @@ body {
     position: fixed;
     right: 5px;
     top: 5px;
-    background-color: #ffffff;
+    background-color: #b3c4b7;
 }
 
 .left-container {
     float: left;
     left: 5px;
     top: 5px;
-    background-color: #ffffff;
+    background-color: #b3c4b7;
 }
 
 #map {
@@ -147,20 +148,44 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 60%;
+    height: 95%;
 }
 
-
 #heatmapControl{
-    background-color: #f5f5f5;
-    box-shadow: 1px 2px 3px rgba(0,0,0,0.15);
+    padding: 15px;
+    background-color:#ffffff;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 40%;
+    height: 45%;
 }
+
 #mapControl{
-    background-color: #f5f5f5;
-    box-shadow: 1px 2px 3px rgba(0,0,0,0.15);
-    height: 40%;
+    padding: 15px;
+    background-color:#ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 45%;
+}
+
+#similarity_table{
+    background-color:#ffffff;
+    width: 100%;
+}
+#projection_scatter{
+    background-color:#ffffff;
+    width: 100%;
+}
+
+#heatmap{
+    background-color:#ffffff;
+    width: 100%;
+}
+
+h4{
+    text-align: center;
+    background-color:#cadbce;
+    margin-top: -15px;
+    margin-bottom: 5px;
 }

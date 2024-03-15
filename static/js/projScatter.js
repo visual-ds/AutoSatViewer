@@ -92,6 +92,16 @@ function DrawProjection(signal, data) {
         .style("font-size", "13px")
         .text(signal);
 
+        // add border
+    gAll.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
+
     var brush = d3.brush()
         .extent([[0, 0], [width, height]])
         .on("start brush end", brushed);
@@ -143,14 +153,6 @@ function DrawProjection(signal, data) {
 
     }
 
-    // add border
-    gAll.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("height", height)
-        .attr("width", width)
-        .style("stroke", "gray")
-        .style("fill", "transparent")
-        .style("stroke-width", 1);
+
 
 }
