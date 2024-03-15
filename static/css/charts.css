@@ -44,3 +44,17 @@
     display: inline-block;
     box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1);
 }
+
+
+/*transparent axis*/
+.x-axis path, .x-axis line,.y-axis path, .y-axis line {
+  fill: none;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+.x-axis text, .y-axis text {
+    fill: #8FA2AC;
+    text-anchor: middle;
+    font-family: Baloo Thambi;
+
+}

@@ -23,8 +23,8 @@ body {
 }
 
 .bottom-container {
-    width: calc(100vw - 640px);
-    height: calc(23vh - 2px);
+    width: calc(102vw - 655px);
+    height: calc(26vh - 2px);
     margin-bottom: 5px;
     margin-left: 5px;
 }
@@ -82,7 +82,7 @@ body {
 
 .bottom-container {
     position: fixed;
-    bottom: 5px;
+    bottom: 0px;
     background-color: #ffffff;
     right: 5px;
 }

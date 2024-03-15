@@ -46,11 +46,11 @@ function DrawProjection(signal, data) {
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const gx = gAll.append("g")
-        .attr("class", "axis")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0,${height})`);
 
     const gy = gAll.append("g")
-        .attr("class", "axis");
+        .attr("class", "y-axis");
 
     var clip = gAll.append("defs").append("clipPath")
         .attr("id", "clip_top")
@@ -142,4 +142,15 @@ function DrawProjection(signal, data) {
             .style("stroke-width", 2);
 
     }
+
+    // add border
+    gAll.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
+
 }

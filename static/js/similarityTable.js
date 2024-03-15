@@ -46,10 +46,10 @@ function DrawTable(data) {
         .padding(0.1);
 
     var gAll = svg.append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+        .attr("transform", `translate(${margin.left},${margin.top})`)
 
     gAll.append("g")
-        .attr("class", "x axis")
+        .attr("class", "x-axis")
         .call(d3.axisTop(x))
         .selectAll("text")
         .style("text-anchor", "start")
@@ -57,7 +57,7 @@ function DrawTable(data) {
 
     // add yAxis with labels with the anchor at the end
     gAll.append("g")
-        .attr("class", "y axis")
+        .attr("class", "y-axis")
         .call(d3.axisLeft(y))
         .selectAll("text")
         .style("text-anchor", "end");
@@ -92,4 +92,14 @@ function DrawTable(data) {
         .style('fill', d => d.value > q2 ? 'white' : 'black')
         .text(d => d.value.toFixed(2))
         .style('z-index', 100);
+
+    // add border
+    gAll.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
 }

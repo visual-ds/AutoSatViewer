@@ -5,7 +5,7 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     const viz_width = miDiv.offsetWidth,
         viz_height = miDiv.offsetHeight;
 
-    const margin = { top: 20, right: 5, bottom: 30, left: 20 },
+    const margin = { top: 20, right: 5, bottom: 50, left: 20 },
         width = viz_width - margin.left - margin.right,
         height = viz_height - margin.top - margin.bottom;
 
@@ -38,18 +38,25 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .x(d => x(d.date))
         .y(d => y(d.value))
     //.curve(d3.curveNatural);
-
     svg.append("g")
-        .attr("class", "axis")
+        .attr("class", "x-axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat(sameYear ? "%m/%d" : "%y/%m/%d")).tickValues(ticks))
+        .call(d3.axisBottom(x)
+            .tickFormat(d3.timeFormat(sameYear ? "%m/%d" : "%y/%m/%d"))
+            .tickValues(ticks)
+        )
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .style("font-size", "9.5px")
+        .style("font-weight", "bold")
+        .attr("transform", "rotate(-45)")
     // .selectAll("g")
     // .append("line")
     // .style('stroke', '#E3E9ED')
     // .attr("y2", -height);
 
     svg.append("g")
-        .attr("class", "axis")
+        .attr("class", "y-axis")
         .call(d3.axisLeft(y).ticks(6))
     // .selectAll("g")
     // .append("line")
@@ -106,13 +113,22 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     //     .style("fill", color);
 
     legend.append("text")
-        .attr("x", width / 2)
-        .attr("y", -5)
+        .attr("x", 0)
+        .attr("y", -10)
         .attr("dy", ".35em")
-        .style("text-anchor", "center")
+        .style("text-anchor", "start")
         .style("font-weight", Column == signalMap ? "bold" : "normal")
         .text(d => d);
 
+    // add border
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
 }
 
 function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, columns) {
