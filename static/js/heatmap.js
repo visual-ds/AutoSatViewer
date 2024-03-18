@@ -99,7 +99,7 @@ function DrawOverview(data) {
     var legendNode = legend({
         color: colorScale,
         title: "Sum of high-frequency coefficients",
-        width: 330,
+        width: 500,
         marginLeft: margin.left,
         ticks: 6
     });

@@ -14,7 +14,7 @@ const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/maurodiaz7/clt7o0y8u02rm01p69a64boce',
   center: [-46.63296863559315, -23.550705484971235],
-  zoom: 12,
+  zoom: 11,
   antialias: true,
   bearing: 0,
   pitch: 0,

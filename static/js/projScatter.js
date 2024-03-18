@@ -24,7 +24,7 @@ function DrawProjection(data) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 60, right: 20, bottom: 20, left: 20 },
+    var margin = { top: 30, right: 20, bottom: 15, left: 15 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
@@ -43,11 +43,11 @@ function DrawProjection(data) {
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const gx = gAll.append("g")
-        .attr("class", "axis")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0,${height})`);
 
     const gy = gAll.append("g")
-        .attr("class", "axis");
+        .attr("class", "y-axis");
 
     var clip = gAll.append("defs").append("clipPath")
         .attr("id", "clip_top")
@@ -88,6 +88,16 @@ function DrawProjection(data) {
     //     .style("text-anchor", "middle")
     //     .style("font-size", "13px")
     //     .text(signal);
+
+        // add border
+    gAll.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
 
     var brush = d3.brush()
         .extent([[0, 0], [width, height]])
@@ -139,4 +149,7 @@ function DrawProjection(data) {
             .style("stroke-width", 2);
 
     }
+
+
+
 }
