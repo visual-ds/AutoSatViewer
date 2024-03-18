@@ -6,7 +6,7 @@ import geopandas as gpd
 import scipy.sparse
 
 POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid", "NYBlocks", "BLACities"][-1]
-TIME = ["Day", "Month", "5days", "3days", "Year"][-1]
+TIME = ["Day", "Month", "5days", "3days", "Year", "Period1"][-2]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -41,9 +41,13 @@ def get_heatmap_data(request):
 
     def get_high_count(df):
         #return (df.iloc[:, 1:] > threshold).sum(axis=0)
-        return (df.iloc[:, 1:]).mean(axis=0)
-        #return (df.iloc[:, 1:]).quantile(0.95, axis=0)
-    
+        #return (df.iloc[:, 1:]).mean(axis=0, numeric_only=True)
+        #return (df.iloc[:, 1:]).quantile(threshold, axis=0)
+        df_ = df.iloc[:, 2:6]
+        # calculate mean of the values that are bigger than 1e-3
+        return (df_.apply(lambda x: np.mean(x[x > 1e-3]), axis=0))
+        #return (df.iloc[:, 1:].max(axis=0, numeric_only=True))
+        
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
     coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
     coeffs["freq"] = coeffs["freq"].str.replace("mean_freq_", "").astype(int)
@@ -174,8 +178,8 @@ def get_similarity_table(request):
         "columns" : SIGNAL_TYPES
     })
 
-@app.route('/get_projection/<string:request>')
-def get_projection(request):
+@app.route('/get_projection')
+def get_projection():
     df = pd.read_csv(f"wavelet_code/data/projections/{POLY}_{TIME}.csv")
     return jsonify(df.to_dict(orient="records"))
 

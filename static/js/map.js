@@ -1,3 +1,13 @@
+function writeScientificNum(p_num, p_precision) {
+  if (p_num == 0) {
+    return '0';
+  }
+  var n = Math.round(Math.log10(p_num));
+  var m = (p_num * (Math.pow(10, -n))).toFixed(p_precision);
+  return m.toString() + ' x 10<sup>' + n.toString() + '</sup>';
+}
+
+
 var data = null;
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF1cm9kaWF6NyIsImEiOiJjbG8yem91N2sxc2NiMm9qeWt2M2JraTBuIn0.YIX7-YY7VR0AsiK97_vRLA';
 const map = new mapboxgl.Map({
@@ -46,7 +56,7 @@ async function loadFile() {
       var id = e.features[0].properties.id_poly;
       var value = e.features[0].properties.value;
       popup.setLngLat(e.lngLat)
-        .setHTML(`ID: ${id}<br>Value: ${value.toFixed(2)}`)
+        .setHTML(`ID: ${id}<br>Value: ${writeScientificNum(value, 2)}`)
         .addTo(map);
     });
     map.on("mouseleave", "spatial-data", () => {
@@ -59,7 +69,6 @@ async function loadFile() {
     // call time series when clicking on a polygon
     map.on('click', 'spatial-data', (e) => {
       var id = e.features[0].properties.id_poly;
-      console.log($("#bottomPanel").val())
       if (clicked == id) {
         clicked = undefined;
         if ($("#bottomPanel").val() == "timeseries") {
@@ -74,7 +83,6 @@ async function loadFile() {
     });
 
     updateSpatialFill();
-    console.log($("#bottomPanel").val())
     if ($("#bottomPanel").val() == "timeseries") {
       LoadTimeSeries();
     } else if ($("#bottomPanel").val() == "scatter") {
@@ -92,7 +100,7 @@ $('#timeslider')
   .width(slider_width);
 
 function setSlider(data) {
-  var date = data.map(d => new Date(d.date).toDateString());
+  var date = data.map(d => new Date(d.date).toString());
   date = date.filter((v, i, a) => a.indexOf(v) === i);
   var nDates = date.length;
 

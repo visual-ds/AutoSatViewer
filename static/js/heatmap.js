@@ -1,5 +1,3 @@
-// const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
-
 function LoadOverview() {
     var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();

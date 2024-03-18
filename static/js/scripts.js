@@ -119,7 +119,7 @@ window.onload = function () {
             LoadScatter();
         }
     });
-    
+
 
     fetch('/get_signal_types')
         .then(response => response.json())
@@ -129,10 +129,6 @@ window.onload = function () {
                 option.value = d;
                 option.text = d;
                 document.querySelector('#signalMap').appendChild(option);
-                // Ask why this code executes for each signal
-                // document.querySelector(".shrink-button1").click();
-                // document.querySelector('#heatmapUpdate').click();
-                
             })
             document.querySelector(".shrink-button1").click();
             document.querySelector('#heatmapUpdate').click();
