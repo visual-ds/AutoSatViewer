@@ -11,10 +11,6 @@ function LoadProj(signal) {
 }
 
 function DrawProjection(data) {
-
-    var threshold = $("#threshold").val();
-    //var quant = d3.quantile(data.map(d => d.mean_coeff), threshold);
-
     const fullHeight = 280;
     const fullWidth = 280;
 
@@ -71,25 +67,11 @@ function DrawProjection(data) {
         .style("fill", d => d.color)// "#0047ab")
         .style("stroke", "none")
         .style("stroke-width", 2)
-    //.style("opacity", d => d.mean_coeff > quant ? 0.85 : 0.05);
-
-    var zoom = d3.zoom()
-        .scaleExtent([1, 10])
-        .on("zoom", zoomed);
-
-    //svg.call(zoom).call(zoom.transform, d3.zoomIdentity);
+        .style("opacity", 0.6);
 
     gx.call(xAxis, x);
     gy.call(yAxis, y);
 
-    // add signal name at the top
-    // gAll.append("text")
-    //     .attr("transform", "translate(" + (width / 2) + " ," + (-margin.top / 2) + ")")
-    //     .style("text-anchor", "middle")
-    //     .style("font-size", "13px")
-    //     .text(signal);
-
-        // add border
     gAll.append("rect")
         .attr("x", 0)
         .attr("y", 0)
@@ -148,6 +130,8 @@ function DrawProjection(data) {
             .style("stroke", "black")
             .style("stroke-width", 2);
 
+        var selected_polys = dataHighlight.filter(d => d.highlight).map(d => d.id_poly);
+        LoadTimeSeries(selected_polys);
     }
 
 

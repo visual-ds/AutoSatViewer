@@ -153,21 +153,14 @@ function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, column
 }
 
 function LoadTimeSeries(id) {
-    if (id == undefined) {
-        id = -1;
-    }
-    // var selectedSignals = [];
-    // signalTypes.forEach(signal => {
-    //     if (document.getElementById(signal).checked) {
-    //         selectedSignals.push(signal);
-    //     }
-    // });
     $.ajax({
         url: '/get_time_series',
-        data: { 'block_id': id}, //'signals': selectedSignals },
+        data: JSON.stringify({ 'block_id': id }),
         type: 'POST',
+        contentType: "application/json",
+        dataType: 'JSON',
         success: function (response) {
-            var data = JSON.parse(response);
+            var data = response;
             MultivariateTimeSeriesSmallMultiples('TemporalMultivariateDiv', data.temporal, data.neighbors, data.columns)
         },
         error: function (error) {

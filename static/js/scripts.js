@@ -114,7 +114,7 @@ window.onload = function () {
 
     $("#bottomPanel").on('change', function () {
         if ($("#bottomPanel").val() == "timeseries") {
-            LoadTimeSeries();
+            LoadTimeSeries([]);
         } else if ($("#bottomPanel").val() == "scatter") {
             LoadScatter();
         }
