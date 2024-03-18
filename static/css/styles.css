@@ -2,7 +2,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #e0e0e0;
-    font-family: "Roboto", sans-serif;
+    /*font-family: "Roboto", sans-serif;*/
+    font-family: 'Avenir', 'Helvetica Neue', 'Helvetica', 'Arial';
 }
 
 .container {
@@ -16,18 +17,22 @@ body {
     height: 3%;
     position: fixed;
     top: 0px;
-    background-color: #d1e3d5;
+    background-color: #f0f3fc;
     left: 0px;
-    padding-top: 5px;
     padding-left: 50px;
-    font-family: "Roboto", sans-serif;
+    /*font-family: "Roboto", sans-serif;*/
+    font-size: 25px;
 }
 
 .bottom-container {
-    width: calc(102vw - 655px);
+    /*width: calc(102vw - 655px);*/
+    width: 66.5%;
     height: calc(28vh - 2px);
-    margin-bottom: 5px;
-    margin-left: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    /*margin-bottom: 5px;*/
+    /*margin-left: 5px;*/
 }
 
 .config-container {
@@ -38,8 +43,8 @@ body {
 }
 
 .left-container {
-    width: 600px;
-    height: calc(95vh - 10px);
+    width: 32%;
+    /*height: calc(95vh - 5px);*/
 }
 
 .bottom-container {
@@ -75,6 +80,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 1px 1px 4px black;
 }
 
 .sign {
@@ -83,29 +89,31 @@ body {
 
 .bottom-container {
     position: fixed;
-    bottom: 0px;
-    background-color: #b3c4b7;
+    bottom: 5px;
+    background-color: #9ba1b0;
     right: 5px;
-}
-
-.config-left-container {
-    position: fixed;
-    left: 5px;
-    top: 4%;
 }
 
 .config-container {
     position: fixed;
     right: 5px;
     top: 5px;
-    background-color: #b3c4b7;
+    background-color: #9ba1b0;
 }
 
 .left-container {
-    float: left;
+    /*float: left;*/
+    /*top: 5px;*/
+    position: fixed;
     left: 5px;
-    top: 5px;
-    background-color: #b3c4b7;
+    /*top: 4%;*/
+    bottom: 5px;
+    background-color: #9ba1b0;
+    height: 94%;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    display: block;
 }
 
 #map {
@@ -181,11 +189,21 @@ body {
 #heatmap{
     background-color:#ffffff;
     width: 100%;
+    height: calc(100% - 15px);
 }
 
 h4{
-    text-align: center;
-    background-color:#cadbce;
-    margin-top: -15px;
+    text-align: left;
+    background-color:#c5c9d6;
+    margin-top: -10px;
     margin-bottom: 5px;
+    padding-left: 25px;
+}
+
+#left-menu{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 15px);
+    width: 100%;
 }

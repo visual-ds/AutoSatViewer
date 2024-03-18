@@ -41,33 +41,32 @@
         <div id="map"></div>
     </div>
 
-    <div class="config-left-container">
+    <!--<div class="config-left-container">-->
 
         <div class="container left-container">
             <div class="shrink-button2 sign" onclick="shrinkLeft()">-</div>
             <div id="left-menu">
-            <div id="similarity_projection" style="display: flex;justify-content: space-around;">
-                <div style="width:54%; margin-right:2px;margin-left: 2px;">
-                    <h4>Similarity Table</h4>
-                    <div id="similarity_table" class="chart">
+                <div id="similarity_projection" style="display: flex;height: 100%;">
+                    <div style="width:100%; padding-right: 5px;">
+                        <h4>Similarity Table</h4>
+                        <div id="similarity_table" class="chart">
+                        </div>
+                    </div>
+                    <div style="width:100%;">
+                        <h4>Wavelet Projection</h4>
+                        <div id="projection_scatter" class="chart">
+                        </div>
                     </div>
                 </div>
-                <div style="width:45%;margin-left:2px;margin-right:2px;">
-                    <h4>Projection Scatter</h4>
-                <!--<div id="projection_scatter" class="chart" style="flex-grow: 1;">-->
-                    <div id="projection_scatter" class="chart">
+                <div style="width:100%;height:100%;">
+                    <h4>Heatmap of Changes</h4>
+                    <div id="heatmap" class="chart">
+                        <svg id="heatmapSVG"></svg>
                     </div>
                 </div>
-            </div>
-            <div style="margin-top:20px; margin-right: 2px;margin-left: 2px;">
-                <h4>Heatmap</h4>
-                <div id="heatmap" class="chart">
-                    <svg id="heatmapSVG"></svg>
-                </div>
-            </div>
             </div>
         </div>
-    </div>
+    <!--</div>-->
 
     <div id="timeline">
         <div class="timeslider" id="timeslider" style="float: right;">
@@ -80,7 +79,7 @@
     <div class="container bottom-container">
         <div class="shrink-button3 sign" onclick="shrinkBottom()">-</div>
         <div id="bottom-menu"style="height: 100%;">
-            <h4>Temporal series</h4>
+            <h4>Time Series</h4>
             <div class="content" id="TemporalMultivariateDiv" style="height: 99%;"></div>
         </div>
     </div>

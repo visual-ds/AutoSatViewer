@@ -45,7 +45,7 @@ function shrinkLeft() {
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
-        configMenu.style.display = 'block';
+        configMenu.style.display = 'flex';
         shrinkButton.textContent = '-';
     } else {
         // Shrink the div
