@@ -88,7 +88,6 @@ function LoadTimeSeries(id) {
         type: 'POST',
         success: function (response) {
             var data = JSON.parse(response);
-            console.log(data);
             MultivariateTimeSeries_Real('TemporalMultivariateDiv', data.temporal, data.columns)
         },
         error: function (error) {

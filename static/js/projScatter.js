@@ -1,22 +1,19 @@
 function LoadProj(signal) {
-    if (signal == undefined) {
-        var signal = $("#signalMap").val();
-    }
-    var url = `/get_projection/${signal}`;
+    var url = `/get_projection`;
     $.ajax({
         url: url,
         type: "GET",
         success: function (data) {
             d3.select("#projScatterSVG").remove();
-            DrawProjection(signal, data);
+            DrawProjection(data);
         }
     })
 }
 
-function DrawProjection(signal, data) {
+function DrawProjection(data) {
 
     var threshold = $("#threshold").val();
-    var quant = d3.quantile(data.map(d => d.mean_coeff), threshold);
+    //var quant = d3.quantile(data.map(d => d.mean_coeff), threshold);
 
     const fullHeight = 280;
     const fullWidth = 280;
@@ -69,12 +66,12 @@ function DrawProjection(signal, data) {
         .append("circle")
         .attr("class", "projDot")
         .attr("r", 4)
-        .attr("cx", d => x(d[signal + "_x"]))
-        .attr("cy", d => y(d[signal + "_y"]))
+        .attr("cx", d => x(d.x))
+        .attr("cy", d => y(d.y))
         .style("fill", d => d.color)// "#0047ab")
         .style("stroke", "none")
         .style("stroke-width", 2)
-        .style("opacity", d => d.mean_coeff > quant ? 0.85 : 0.05);
+    //.style("opacity", d => d.mean_coeff > quant ? 0.85 : 0.05);
 
     var zoom = d3.zoom()
         .scaleExtent([1, 10])
@@ -86,11 +83,11 @@ function DrawProjection(signal, data) {
     gy.call(yAxis, y);
 
     // add signal name at the top
-    gAll.append("text")
-        .attr("transform", "translate(" + (width / 2) + " ," + (-margin.top / 2) + ")")
-        .style("text-anchor", "middle")
-        .style("font-size", "13px")
-        .text(signal);
+    // gAll.append("text")
+    //     .attr("transform", "translate(" + (width / 2) + " ," + (-margin.top / 2) + ")")
+    //     .style("text-anchor", "middle")
+    //     .style("font-size", "13px")
+    //     .text(signal);
 
     var brush = d3.brush()
         .extent([[0, 0], [width, height]])
@@ -102,8 +99,8 @@ function DrawProjection(signal, data) {
         const zx = transform.rescaleX(x);
         const zy = transform.rescaleY(y);
         gDot.selectAll("circle")
-            .attr("cx", d => zx(d[signal + "_x"]))
-            .attr("cy", d => zy(d[signal + "_y"]))
+            .attr("cx", d => zx(d.x))
+            .attr("cy", d => zy(d.y))
             .attr("r", 3 * transform.k);
         gx.call(xAxis, zx);
         gy.call(yAxis, zy);
@@ -122,12 +119,12 @@ function DrawProjection(signal, data) {
             return x0 <= x && x <= x1 && y0 <= y && y <= y1;
         }
         gDot.selectAll("circle")
-            .classed("selected_proj", d => verify(x(d[signal + "_x"]), y(d[signal + "_y"])) && d.mean_coeff > quant);
+            .classed("selected_proj", d => verify(x(d.x), y(d.y)));
 
         var dataHighlight = data.map(d => {
             d_ = { ...d }
             d_["highlight"] = false;
-            if (verify(x(d[signal + "_x"]), y(d[signal + "_y"])) && d.mean_coeff > quant) {
+            if (verify(x(d.x), y(d.y))) {
                 d_["highlight"] = true;
             }
             return d_;
