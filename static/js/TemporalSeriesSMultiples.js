@@ -5,7 +5,7 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     const viz_width = miDiv.offsetWidth,
         viz_height = miDiv.offsetHeight;
 
-    const margin = { top: 20, right: 10, bottom: 50, left: 25 },
+    const margin = { top: 20, right: 10, bottom: 30, left: 20 },
         width = viz_width - margin.left - margin.right,
         height = viz_height - margin.top - margin.bottom;
 

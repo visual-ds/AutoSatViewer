@@ -15,8 +15,12 @@ function DrawProjection(data) {
     var threshold = $("#threshold").val();
     //var quant = d3.quantile(data.map(d => d.mean_coeff), threshold);
 
-    const fullHeight = 280;
-    const fullWidth = 280;
+    /*const fullHeight = 280;
+    const fullWidth = 330;*/
+
+    const element = d3.select('#projection_scatter');
+    const fullWidth = element.node().clientWidth;
+    const fullHeight = element.node().clientHeight;
 
     var svg = d3.select("#projection_scatter")
         .append("svg")
