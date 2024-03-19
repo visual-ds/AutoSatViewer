@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid", "NYBlocks", "BLACities"][-1]
-TIME = ["Day", "Month", "5days", "3days", "Year", "Period1"][-2]
+POLY = ["SpCenterCensus5k", "NYBlocks", "BLACities"][0]
+TIME = ["Year", "Period1", "Period2"][-1]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -51,6 +51,7 @@ def get_heatmap_data(request):
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
     coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
     coeffs["freq"] = coeffs["freq"].str.replace("mean_freq_", "").astype(int)
+    coeffs = coeffs.fillna(0)
     return jsonify(coeffs.to_dict(orient="records"))
     
 
@@ -59,7 +60,6 @@ def get_high_coefficients(request):
     typ, date, freq, change_type = request.split("_")
     typ = typ.replace("%20", " ")
     freq = int(freq)
-    date = pd.to_datetime(date)
     if change_type == "spatiotemporal":
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
     elif change_type == "spatial":
@@ -67,6 +67,8 @@ def get_high_coefficients(request):
     coeffs["date"] = pd.to_datetime(coeffs["date"])
     coeffs = coeffs[coeffs.type == typ]
     threshold = np.quantile(coeffs[f"mean_freq_{freq}"], configs["threshold"])
+    dates = coeffs["date"].unique()
+    date = dates[int(date)]
     coeffs = coeffs[coeffs["date"] == date]
     idx_high = coeffs[f"mean_freq_{freq}"] > threshold
     coeffs["highlight"] = idx_high
@@ -76,29 +78,42 @@ def get_high_coefficients(request):
     
 @app.route('/get_time_series', methods=["GET", "POST"])
 def get_time_series():
-    block_id = int(request.form['block_id'])
+    block_id = request.get_json()["block_id"]
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
     try:
         adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
-        if block_id != -1:
-            neighbors = np.where(adj_matrix[block_id] > 0)[0]
-        else:
-            neighbors = np.arange(adj_matrix.shape[0])
     except:
-        adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz")
-        if block_id != -1:
-            neighbors = adj_matrix[block_id].nonzero()[1]
-        else:
-            neighbors = np.arange(adj_matrix.shape[0])
-    neighbors = list(neighbors)
-    if block_id == -1: # get mean data as neighbors
-        temporal = df[df["id_poly"] == 0]
-        temporal.iloc[:, 2:] = temporal.iloc[:, 2:] * 0
-        temporal_neigh = df
-    else:
-        temporal = df[df['id_poly'] == block_id]
-        temporal_neigh = df[df['id_poly'].isin(neighbors)]
-    temporal_neigh = temporal_neigh.groupby('date').mean().reset_index()
+        adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz").toarray()
+
+    if len(block_id) == 0: # no block selected
+        neighbors = np.arange(adj_matrix.shape[0]).tolist()
+        block_id = 0
+        multiply_by_zero = True
+    elif len(block_id) == 1: # one block selected
+        block_id = block_id[0]
+        neighbors = np.where(adj_matrix[block_id, :] > 0)[0].tolist()
+        multiply_by_zero = False
+    else: # multiple blocks selecteds
+        neighbors = block_id
+        block_id = 0
+        multiply_by_zero = True
+       
+    temporal = df[df['id_poly'] == block_id]
+    if multiply_by_zero:
+        cols = temporal.columns.tolist()[2:]
+        temporal[cols] = -777
+    temporal_neigh = df[df['id_poly'].isin(neighbors)]
+    func_1_quantile = lambda x: np.quantile(x, 0.)
+    func_3_quantile = lambda x: np.quantile(x, 1)
+    agg_cols = temporal.columns.tolist()[2:]
+    temporal_neigh = temporal_neigh.groupby('date').agg(
+        {col: [func_1_quantile, func_3_quantile] for col in agg_cols}
+    )
+    temporal_neigh.columns = [
+        f"{col}_{func}" for col in agg_cols for func in ["1", "3"]
+    ]
+    temporal_neigh = temporal_neigh.reset_index()
+    print(temporal_neigh.head())
     return json.dumps({
         'temporal': json.loads(temporal.to_json(orient='records')), 
         'columns': temporal.columns.values.tolist()[2:], 
@@ -150,7 +165,7 @@ def get_spatial_data(request):
         df = df[df["type"] == typ]
         coeff_idx = [int(s) for s in value if s.isdigit()][0]
         df["value"] = df[f"mean_freq_{coeff_idx}"]
-    df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
+    df["date"] = pd.to_datetime(df["date"])
     q = [i/8 for i in range(1, 9)]
     if value == "signal":
         values = df[typ].values

@@ -1,8 +1,8 @@
-function shrinkGeral(container, button, symbol1='-', symbol2='+') {
+function shrinkGeral(container, button, symbol1 = '-', symbol2 = '+') {
     var configContainer = document.querySelector(container);
     var shrinkButton = document.querySelector(button);
 
-    
+
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
@@ -20,7 +20,7 @@ function shrinkConfig() {
     var configContainer = document.querySelector('.config-container');
     var shrinkButton = document.querySelector('.shrink-button1');
     var configMenu = document.querySelector('#config-menu');
-    
+
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
@@ -41,7 +41,7 @@ function shrinkLeft() {
     var configContainer = document.querySelector('.left-container');
     var shrinkButton = document.querySelector('.shrink-button2');
     var configMenu = document.querySelector('#left-menu');
-    
+
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
@@ -60,7 +60,7 @@ function shrinkBottom() {
     var configContainer = document.querySelector('.bottom-container');
     var shrinkButton = document.querySelector('.shrink-button3');
     var configMenu = document.querySelector('#bottom-menu');
-    
+
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
@@ -110,11 +110,12 @@ window.onload = function () {
     });
     $("#threshold").on('input', function () {
         $("#thresholdValue").text("Thresh.:" + $(this).val());
+        LoadProj();
     });
 
     $("#bottomPanel").on('change', function () {
         if ($("#bottomPanel").val() == "timeseries") {
-            LoadTimeSeries();
+            LoadTimeSeries([]);
         } else if ($("#bottomPanel").val() == "scatter") {
             LoadScatter();
         }
@@ -134,6 +135,7 @@ window.onload = function () {
             document.querySelector('#heatmapUpdate').click();
             loadFile();
             LoadTable();
+
             LoadProj();
         });
 }

@@ -72,19 +72,19 @@ async function loadFile() {
       if (clicked == id) {
         clicked = undefined;
         if ($("#bottomPanel").val() == "timeseries") {
-          LoadTimeSeries();
+          LoadTimeSeries([]);
         }
       } else {
         clicked = id;
         if ($("#bottomPanel").val() == "timeseries") {
-          LoadTimeSeries(id);
+          LoadTimeSeries([id]);
         }
       }
     });
 
     updateSpatialFill();
     if ($("#bottomPanel").val() == "timeseries") {
-      LoadTimeSeries();
+      LoadTimeSeries([]);
     } else if ($("#bottomPanel").val() == "scatter") {
       LoadScatter();
     }
