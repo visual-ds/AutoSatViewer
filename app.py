@@ -80,44 +80,35 @@ def get_high_coefficients(request):
 def get_time_series():
     block_id = request.get_json()["block_id"]
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
-    try:
-        adj_matrix = np.load(f"wavelet_code/data/adj_matrix/{POLY}.npy")
-    except:
-        adj_matrix = scipy.sparse.load_npz(f"wavelet_code/data/adj_matrix/{POLY}.npz").toarray()
+    all_polys = df['id_poly'].unique()
 
     if len(block_id) == 0: # no block selected
-        neighbors = np.arange(adj_matrix.shape[0]).tolist()
-        block_id = 0
+        block_id = [0]
         multiply_by_zero = True
-    elif len(block_id) == 1: # one block selected
-        block_id = block_id[0]
-        neighbors = np.where(adj_matrix[block_id, :] > 0)[0].tolist()
+    else:
         multiply_by_zero = False
-    else: # multiple blocks selecteds
-        neighbors = block_id
-        block_id = 0
-        multiply_by_zero = True
        
-    temporal = df[df['id_poly'] == block_id]
+    temporal = df[df['id_poly'].isin(block_id)]
     if multiply_by_zero:
         cols = temporal.columns.tolist()[2:]
+        print(cols)
         temporal[cols] = -777
-    temporal_neigh = df[df['id_poly'].isin(neighbors)]
+    temporal_all = df[df['id_poly'].isin(all_polys)]
     func_1_quantile = lambda x: np.quantile(x, 0.)
     func_3_quantile = lambda x: np.quantile(x, 1)
     agg_cols = temporal.columns.tolist()[2:]
-    temporal_neigh = temporal_neigh.groupby('date').agg(
-        {col: [func_1_quantile, func_3_quantile] for col in agg_cols}
-    )
-    temporal_neigh.columns = [
-        f"{col}_{func}" for col in agg_cols for func in ["1", "3"]
-    ]
-    temporal_neigh = temporal_neigh.reset_index()
-    print(temporal_neigh.head())
+    agg = {col: [func_1_quantile, func_3_quantile] for col in agg_cols}
+    new_columns = [f"{col}_{func}" for col in agg_cols for func in ["1", "3"]]
+    temporal = temporal.groupby('date').agg(agg)
+    temporal.columns = new_columns
+    temporal = temporal.reset_index()
+    temporal_all = temporal_all.groupby('date').agg(agg)
+    temporal_all.columns = new_columns
+    temporal_all = temporal_all.reset_index()
     return json.dumps({
-        'temporal': json.loads(temporal.to_json(orient='records')), 
-        'columns': temporal.columns.values.tolist()[2:], 
-        'neighbors': json.loads(temporal_neigh.to_json(orient='records'))
+        'selected': json.loads(temporal.to_json(orient='records')), 
+        'columns': agg_cols, 
+        'all': json.loads(temporal_all.to_json(orient='records'))
     })
 
 @app.route('/get_scatter_data/<string:request>')

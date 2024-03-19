@@ -30,7 +30,8 @@ function shrinkConfig() {
     } else {
         // Shrink the div
         configContainer.classList.add('shrink');
-        shrinkButton.textContent = '⚙';
+        shrinkButton.innerHTML = `<span
+        style="font-family: Noto Emoji Regular;">⚙️</span>`;
         configMenu.style.display = 'none';
         configContainer.style.top = '5px';
     }
