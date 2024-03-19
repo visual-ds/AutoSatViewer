@@ -12,8 +12,9 @@ function LoadProj() {
 }
 
 function DrawProjection(data, columns) {
-    const fullHeight = 280;
-    const fullWidth = 280;
+    const element = d3.select('#projection_scatter');
+    const fullWidth = element.node().clientWidth;
+    const fullHeight = element.node().clientHeight;
 
     const threshold = $("#threshold").val();
     var quantile = {}
