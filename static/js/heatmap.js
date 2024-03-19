@@ -157,9 +157,9 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                         $("#signalMap").val(d.type);
                         $('#slider').data('ionRangeSlider').options.onChange();
 
-
-                        LoadProj(d.type);
                         updateSpatialHighlight(data);
+                        var id_poly = data.filter(d => d.highlight).map(d => d.id_poly);
+                        LoadTimeSeries(id_poly);
                     }
                 });
             }, 1000);

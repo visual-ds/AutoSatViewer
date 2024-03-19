@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus2k", "SpCenterCensus5k", "SpDistricts", "SpGrid", "NYBlocks", "BLACities"][1]
-TIME = ["Day", "Month", "5days", "3days", "Year", "Period1"][-1]
+POLY = ["SpCenterCensus5k", "NYBlocks", "BLACities"][0]
+TIME = ["Year", "Period1", "Period2"][-1]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -101,9 +101,19 @@ def get_time_series():
     temporal = df[df['id_poly'] == block_id]
     if multiply_by_zero:
         cols = temporal.columns.tolist()[2:]
-        temporal[cols] = temporal[cols] * 0
+        temporal[cols] = -777
     temporal_neigh = df[df['id_poly'].isin(neighbors)]
-    temporal_neigh = temporal_neigh.groupby('date').mean().reset_index()
+    func_1_quantile = lambda x: np.quantile(x, 0.)
+    func_3_quantile = lambda x: np.quantile(x, 1)
+    agg_cols = temporal.columns.tolist()[2:]
+    temporal_neigh = temporal_neigh.groupby('date').agg(
+        {col: [func_1_quantile, func_3_quantile] for col in agg_cols}
+    )
+    temporal_neigh.columns = [
+        f"{col}_{func}" for col in agg_cols for func in ["1", "3"]
+    ]
+    temporal_neigh = temporal_neigh.reset_index()
+    print(temporal_neigh.head())
     return json.dumps({
         'temporal': json.loads(temporal.to_json(orient='records')), 
         'columns': temporal.columns.values.tolist()[2:], 

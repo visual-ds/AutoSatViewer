@@ -1,18 +1,40 @@
-function LoadProj(signal) {
+function LoadProj() {
     var url = `/get_projection`;
     $.ajax({
         url: url,
         type: "GET",
         success: function (data) {
             d3.select("#projScatterSVG").remove();
-            DrawProjection(data);
+            var columns = Object.keys(data[0]).filter(d => d != "id_poly" && d != "x" && d != "y" && d != "color");
+            DrawProjection(data, columns);
         }
     })
 }
 
-function DrawProjection(data) {
+function DrawProjection(data, columns) {
     const fullHeight = 280;
     const fullWidth = 280;
+
+    const threshold = $("#threshold").val();
+    var quantile = {}
+    for (let i = 0; i < columns.length; i++) {
+        var signal = columns[i];
+        quantile[signal] = d3.quantile(
+            data.map(d => d[signal]), threshold
+        )
+    }
+
+    var verifyHigh = function (d) {
+        var high = false;
+        for (let i = 0; i < columns.length; i++) {
+            var signal = columns[i];
+            if (d[signal] > quantile[signal]) {
+                high = true;
+                break;
+            }
+        }
+        return high;
+    }
 
     var svg = d3.select("#projection_scatter")
         .append("svg")
@@ -60,14 +82,15 @@ function DrawProjection(data) {
         .data(data)
         .enter()
         .append("circle")
-        .attr("class", "projDot")
+        .attr("class", d => verifyHigh(d) ? "projDot highlight" : "projDot")
         .attr("r", 4)
         .attr("cx", d => x(d.x))
         .attr("cy", d => y(d.y))
         .style("fill", d => d.color)// "#0047ab")
         .style("stroke", "none")
         .style("stroke-width", 2)
-        .style("opacity", 0.6);
+        //.style("opacity", 0.6);
+        .style("opacity", d => verifyHigh(d) ? 1 : 0.05);
 
     gx.call(xAxis, x);
     gy.call(yAxis, y);
@@ -83,26 +106,17 @@ function DrawProjection(data) {
 
     var brush = d3.brush()
         .extent([[0, 0], [width, height]])
-        .on("start brush end", brushed);
-
+        .on("end", brushed)
+    //.on("end", brushend);
     gAll.call(brush);
 
-    function zoomed({ transform }) {
-        const zx = transform.rescaleX(x);
-        const zy = transform.rescaleY(y);
-        gDot.selectAll("circle")
-            .attr("cx", d => zx(d.x))
-            .attr("cy", d => zy(d.y))
-            .attr("r", 3 * transform.k);
-        gx.call(xAxis, zx);
-        gy.call(yAxis, zy);
-    }
 
     function brushed({ selection }) {
         if (selection === null) {
             gDot.selectAll("circle").classed("selected_proj", false);
             gDot.selectAll("circle").style("stroke", "none");
             updateSpatialHighlight([]);
+            LoadTimeSeries([]);
 
             return;
         }
@@ -110,7 +124,7 @@ function DrawProjection(data) {
         function verify(x, y) {
             return x0 <= x && x <= x1 && y0 <= y && y <= y1;
         }
-        gDot.selectAll("circle")
+        gDot.selectAll(".projDot.highlight")
             .classed("selected_proj", d => verify(x(d.x), y(d.y)));
 
         var dataHighlight = data.map(d => {

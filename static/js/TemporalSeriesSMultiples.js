@@ -32,12 +32,18 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
 
 
     const x = d3.scaleTime().range([0, width]).domain(d3.extent(data, d => d.date)),
-        y = d3.scaleLinear().range([height, 0]).domain([0, Math.max(d3.max(data, d => d[Column]), d3.max(dataNeighbors, d => d[Column]))]);
+        y = d3.scaleLinear().range([height, 0]).domain([0, Math.max(d3.max(data, d => d[Column]), d3.max(dataNeighbors, d => d[Column + "_3"]))]);
 
     const line = d3.line()
         .x(d => x(d.date))
         .y(d => y(d.value))
     //.curve(d3.curveNatural);
+
+    const area = d3.area()
+        .x(d => x(d.date))
+        .y0(d => y(d[Column + "_1"]))
+        .y1(d => y(d[Column + "_3"]));
+
     svg.append("g")
         .attr("class", "x-axis")
         .attr("transform", "translate(0," + height + ")")
@@ -88,19 +94,20 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
 
     svg.append("path")
         .data([dataNeighbors])
-        .attr("class", "line")
-        .style("stroke", "#cccccc")
-        .style("fill", "none")
-        .style('stroke-width', 2)
-        .attr("d", line.y(d => y(d[Column])));
+        .attr("class", "area")
+        .style("fill", "#cccccc")
+        .style("fill-opacity", 0.5)
+        .attr("d", area);
 
-    svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .style("stroke", color)
-        .style("fill", "none")
-        .style('stroke-width', 2)
-        .attr("d", line.y(d => y(d[Column])));
+    if (d3.max(data , d => d[Column]) >= 0) {
+        svg.append("path")
+            .data([data])
+            .attr("class", "line")
+            .style("stroke", color)
+            .style("fill", "none")
+            .style('stroke-width', 2)
+            .attr("d", line.y(d => y(d[Column])));
+    }
 
     const legend = svg.append("g")
         .attr("class", "legend")
