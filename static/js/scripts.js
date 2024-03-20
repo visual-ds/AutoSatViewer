@@ -1,30 +1,78 @@
-function shrinkGeral(container, button) {
+function shrinkGeral(container, button, symbol1 = '-', symbol2 = '+') {
     var configContainer = document.querySelector(container);
     var shrinkButton = document.querySelector(button);
+
 
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
-        shrinkButton.textContent = '-';
+        shrinkButton.textContent = symbol1;
     } else {
         // Shrink the div
         configContainer.classList.add('shrink');
-        shrinkButton.textContent = '+';
+        shrinkButton.textContent = symbol2;
     }
 
 }
 
 function shrinkConfig() {
-    shrinkGeral('.config-container', '.shrink-button1');
+    /*shrinkGeral('.config-container', '.shrink-button1', '-', '⚙');*/
+    var configContainer = document.querySelector('.config-container');
+    var shrinkButton = document.querySelector('.shrink-button1');
+    var configMenu = document.querySelector('#config-menu');
 
+    if (configContainer.classList.contains('shrink')) {
+        // Expand the div
+        configContainer.classList.remove('shrink');
+        configMenu.style.display = 'flex';
+        configContainer.style.top = '4%';
+        shrinkButton.textContent = '-';
+    } else {
+        // Shrink the div
+        configContainer.classList.add('shrink');
+        shrinkButton.innerHTML = `<span
+        style="font-family: Noto Emoji Regular;">⚙️</span>`;
+        configMenu.style.display = 'none';
+        configContainer.style.top = '5px';
+    }
 }
 
 function shrinkLeft() {
-    shrinkGeral('.left-container', '.shrink-button2');
+    // shrinkGeral('.left-container', '.shrink-button2');
+    var configContainer = document.querySelector('.left-container');
+    var shrinkButton = document.querySelector('.shrink-button2');
+    var configMenu = document.querySelector('#left-menu');
+
+    if (configContainer.classList.contains('shrink')) {
+        // Expand the div
+        configContainer.classList.remove('shrink');
+        configMenu.style.display = 'flex';
+        shrinkButton.textContent = '-';
+    } else {
+        // Shrink the div
+        configContainer.classList.add('shrink');
+        shrinkButton.textContent = '+';
+        configMenu.style.display = 'none';
+    }
 }
 
 function shrinkBottom() {
-    shrinkGeral('.bottom-container', '.shrink-button3');
+    //shrinkGeral('.bottom-container', '.shrink-button3');
+    var configContainer = document.querySelector('.bottom-container');
+    var shrinkButton = document.querySelector('.shrink-button3');
+    var configMenu = document.querySelector('#bottom-menu');
+
+    if (configContainer.classList.contains('shrink')) {
+        // Expand the div
+        configContainer.classList.remove('shrink');
+        configMenu.style.display = 'block';
+        shrinkButton.textContent = '-';
+    } else {
+        // Shrink the div
+        configContainer.classList.add('shrink');
+        shrinkButton.textContent = '+';
+        configMenu.style.display = 'none';
+    }
 }
 
 
@@ -63,16 +111,17 @@ window.onload = function () {
     });
     $("#threshold").on('input', function () {
         $("#thresholdValue").text("Thresh.:" + $(this).val());
+        LoadProj();
     });
 
     $("#bottomPanel").on('change', function () {
         if ($("#bottomPanel").val() == "timeseries") {
-            LoadTimeSeries();
+            LoadTimeSeries([]);
         } else if ($("#bottomPanel").val() == "scatter") {
             LoadScatter();
         }
     });
-    
+
 
     fetch('/get_signal_types')
         .then(response => response.json())
@@ -82,12 +131,12 @@ window.onload = function () {
                 option.value = d;
                 option.text = d;
                 document.querySelector('#signalMap').appendChild(option);
-                
+            })
             document.querySelector(".shrink-button1").click();
             document.querySelector('#heatmapUpdate').click();
-            })
             loadFile();
             LoadTable();
-            LoadProj();
+
+            //LoadProj();
         });
 }

@@ -1,5 +1,3 @@
-// const signalTypes = ["Accident", "Hazard", "Jam", "Road Closed", "Weather Hazard", "Phone Theft", "Phone Robbery", "Temperature", "Precipitation"];
-
 function LoadOverview() {
     var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();
@@ -25,6 +23,7 @@ function LoadOverview() {
                 d.date = new Date(d.date);
             })
             DrawOverview(data);
+            LoadProj();
         }
     })
 }
@@ -101,7 +100,7 @@ function DrawOverview(data) {
     var legendNode = legend({
         color: colorScale,
         title: "Sum of high-frequency coefficients",
-        width: 330,
+        width: 500,
         marginLeft: margin.left,
         ticks: 6
     });
@@ -143,11 +142,12 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
             }
 
             clearTimeout(hoverTimeout);
-            var date = d.date.toISOString().split("T")[0];
+            var date = new Date(d.date);
+            var date_idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
             var changeType = $("#changeType").val();
             hoverTimeout = setTimeout(() => {
                 $.ajax({
-                    url: `/get_high_coefficients/${d.type}_${date}_${d.freq}_${changeType}`,
+                    url: `/get_high_coefficients/${d.type}_${date_idx}_${d.freq}_${changeType}`,
                     type: "GET",
                     success: async function (data) {
                         var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime()); + 1
@@ -158,9 +158,9 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                         $("#signalMap").val(d.type);
                         $('#slider').data('ionRangeSlider').options.onChange();
 
-
-                        LoadProj(d.type);
                         updateSpatialHighlight(data);
+                        var id_poly = data.filter(d => d.highlight).map(d => d.id_poly);
+                        LoadTimeSeries(id_poly);
                     }
                 });
             }, 1000);

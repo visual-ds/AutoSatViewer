@@ -2,7 +2,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #e0e0e0;
-    font-family: "Roboto", sans-serif;
+    /*font-family: "Roboto", sans-serif;*/
+    font-family: 'Avenir', 'Helvetica Neue', 'Helvetica', 'Arial';
 }
 
 .container {
@@ -11,21 +12,40 @@ body {
     border: solid 1px #a5a5aa;
 }
 
+.title-container {
+    width: 100%;
+    height: 4%;
+    position: fixed;
+    top: 0px;
+    background-color: #f0f3fc;
+    left: 0px;
+    padding-left: 50px;
+    /*font-family: "Roboto", sans-serif;*/
+    font-size: 20px;
+}
+
 .bottom-container {
-    width: calc(100vw - 640px);
-    height: calc(23vh - 2px);
-    margin-bottom: 5px;
-    margin-left: 5px;
+    /*width: calc(102vw - 655px);*/
+    width: 60%;
+    height: calc(28vh - 2px);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    /*margin-bottom: 5px;*/
+    /*margin-left: 5px;*/
 }
 
 .config-container {
     width: 300px;
-    height: calc(73vh - 2px);
+    height: calc(57vh - 2px);
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .left-container {
-    width: 600px;
-    height: calc(100vh - 10px);
+    width: 38%;
+    width: 39%;
+    /*height: calc(95vh - 5px);*/
 }
 
 .bottom-container {
@@ -61,6 +81,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 1px 1px 4px black;
 }
 
 .sign {
@@ -70,28 +91,30 @@ body {
 .bottom-container {
     position: fixed;
     bottom: 5px;
-    background-color: #ffffff;
+    background-color: #9ba1b0;
     right: 5px;
 }
 
-.config-left-container {
-    position: fixed;
-    left: 5px;
-    top: 5px;
-}
-
 .config-container {
-    float: left;
-    left: 5px;
+    position: fixed;
+    right: 5px;
     top: 5px;
-    background-color: #ffffff;
+    background-color: #9ba1b0;
 }
 
 .left-container {
-    float: left;
+    /*float: left;*/
+    /*top: 5px;*/
+    position: fixed;
     left: 5px;
-    top: 5px;
-    background-color: #ffffff;
+    /*top: 4%;*/
+    bottom: 5px;
+    background-color: #9ba1b0;
+    height: 93%;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    display: block;
 }
 
 #map {
@@ -117,7 +140,7 @@ body {
     width: 250px;
 }
 
-#tooltiptmp{
+#tooltiptmp {
     position: absolute;
     top: 350px;
     right: 650px;
@@ -128,4 +151,63 @@ body {
     text-align: center;
     display: none;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#config-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 95%;
+}
+
+#heatmapControl {
+    padding: 15px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 45%;
+}
+
+#mapControl {
+    padding: 15px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 45%;
+}
+
+#similarity_table {
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+}
+
+#projection_scatter {
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+}
+
+#heatmap {
+    background-color: #ffffff;
+    width: 100%;
+    height: calc(100% - 15px);
+}
+
+h4 {
+    text-align: left;
+    background-color: #c5c9d6;
+    margin-top: -10px;
+    margin-bottom: 5px;
+    padding-left: 25px;
+}
+
+#left-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 15px);
+    width: 100%;
 }

@@ -1,17 +1,19 @@
-function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, color) {
+function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color) {
+
+    console.log(data, all_data)
     const miDiv = document.getElementById(DivID);
     var signalMap = $("#signalMap").val();
 
     const viz_width = miDiv.offsetWidth,
         viz_height = miDiv.offsetHeight;
 
-    const margin = { top: 20, right: 5, bottom: 30, left: 20 },
+    const margin = { top: 20, right: 10, bottom: 30, left: 20 },
         width = viz_width - margin.left - margin.right,
         height = viz_height - margin.top - margin.bottom;
 
     data.forEach(d => { d.date = new Date(d.date) });
-    dataNeighbors.forEach(d => { d.date = new Date(d.date) });
-    var datesArray = data.map(d => d.date);
+    all_data.forEach(d => { d.date = new Date(d.date) });
+    var datesArray = all_data.map(d => d.date);
     datesArray = datesArray.filter((date, i, self) =>
         self.findIndex(d => d.getTime() === date.getTime()) === i
     );
@@ -31,30 +33,38 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    const x = d3.scaleTime().range([0, width]).domain(d3.extent(data, d => d.date)),
-        y = d3.scaleLinear().range([height, 0]).domain([0, Math.max(d3.max(data, d => d[Column]), d3.max(dataNeighbors, d => d[Column]))]);
+    const x = d3.scaleTime().range([0, width]).domain(d3.extent(all_data, d => d.date))
+    const y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([0, d3.max(all_data, d => d[Column + "_3"])]);
+    //.domain([0, d3.max(data, d => d[Column])]);
 
     const line = d3.line()
         .x(d => x(d.date))
-        .y(d => y(d.value))
+        .y(d => y(d[Column]))
     //.curve(d3.curveNatural);
 
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickFormat(d3.timeFormat(sameYear ? "%m/%d" : "%y/%m/%d")).tickValues(ticks))
-    // .selectAll("g")
-    // .append("line")
-    // .style('stroke', '#E3E9ED')
-    // .attr("y2", -height);
+    const area = d3.area()
+        .x(d => x(d.date))
+        .y0(d => y(d[Column + "_1"]))
+        .y1(d => y(d[Column + "_3"]));
 
     svg.append("g")
-        .attr("class", "axis")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x)
+            .tickFormat(d3.timeFormat(sameYear ? "%m/%d" : "%y/%m/%d"))
+            .tickValues(ticks)
+        )
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .style("font-size", "9.5px")
+        .style("font-weight", "bold")
+        .attr("transform", "rotate(-45)")
+
+    svg.append("g")
+        .attr("class", "y-axis")
         .call(d3.axisLeft(y).ticks(6))
-    // .selectAll("g")
-    // .append("line")
-    // .style('stroke', '#E3E9ED')
-    // .attr("x2", width);
 
     // Draw vertical line at slider position
     var slideridx;
@@ -80,20 +90,34 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
         });
 
     svg.append("path")
-        .data([dataNeighbors])
-        .attr("class", "line")
-        .style("stroke", "#cccccc")
-        .style("fill", "none")
-        .style('stroke-width', 2)
-        .attr("d", line.y(d => y(d[Column])));
+        .data([all_data])
+        .attr("class", "area")
+        .style("fill", "#cccccc")
+        .style("fill-opacity", 0.5)
+        .attr("d", area);
 
-    svg.append("path")
-        .data([data])
+
+
+    // if (d3.max(data, d => d[Column + "_1"]) >= 0) {
+    //     svg.append("path")
+    //         .data([data])
+    //         .attr("class", "area")
+    //         //.style("stroke", color)
+    //         .style("fill", color)
+    //         //.style('stroke-width', 2)
+    //         .attr("d", area);
+    // }
+
+    svg.selectAll(".line")
+        .data(d3.group(data, d => d.id_poly))
+        .enter()
+        .append("path")
         .attr("class", "line")
+        .attr("fill", "none")
         .style("stroke", color)
-        .style("fill", "none")
-        .style('stroke-width', 2)
-        .attr("d", line.y(d => y(d[Column])));
+        .style("stroke-width", 2)
+        .style("stroke-opacity", 0.7)
+        .attr("d", d => line(Array.from(d[1])));
 
     const legend = svg.append("g")
         .attr("class", "legend")
@@ -106,16 +130,25 @@ function MultivariateTimeSeries_Individual(DivID, data, dataNeighbors, Column, c
     //     .style("fill", color);
 
     legend.append("text")
-        .attr("x", width / 2)
-        .attr("y", -5)
+        .attr("x", 0)
+        .attr("y", -10)
         .attr("dy", ".35em")
-        .style("text-anchor", "center")
+        .style("text-anchor", "start")
         .style("font-weight", Column == signalMap ? "bold" : "normal")
         .text(d => d);
 
+    // add border
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
 }
 
-function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, columns) {
+function MultivariateTimeSeriesSmallMultiples(DivID, data, all_data, columns) {
     const container = d3.select('#' + DivID);
 
     container.selectAll('*').remove();
@@ -132,27 +165,20 @@ function MultivariateTimeSeriesSmallMultiples(DivID, data, dataNeighbors, column
         .attr('id', d => 'id_temporal' + d.replace(/\s/g, ''))
         .attr('class', 'simpleTemporalChart')
         .each(function (d, i) {
-            MultivariateTimeSeries_Individual('id_temporal' + d.replace(/\s/g, ''), data, dataNeighbors, d, color(d));
+            MultivariateTimeSeries_Individual('id_temporal' + d.replace(/\s/g, ''), data, all_data, d, color(d));
         })
 }
 
 function LoadTimeSeries(id) {
-    if (id == undefined) {
-        id = -1;
-    }
-    // var selectedSignals = [];
-    // signalTypes.forEach(signal => {
-    //     if (document.getElementById(signal).checked) {
-    //         selectedSignals.push(signal);
-    //     }
-    // });
     $.ajax({
         url: '/get_time_series',
-        data: { 'block_id': id}, //'signals': selectedSignals },
+        data: JSON.stringify({ 'block_id': id }),
         type: 'POST',
+        contentType: "application/json",
+        dataType: 'JSON',
         success: function (response) {
-            var data = JSON.parse(response);
-            MultivariateTimeSeriesSmallMultiples('TemporalMultivariateDiv', data.temporal, data.neighbors, data.columns)
+            var data = response;
+            MultivariateTimeSeriesSmallMultiples('TemporalMultivariateDiv', data.selected, data.all, data.columns)
         },
         error: function (error) {
             console.log(error);

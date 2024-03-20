@@ -72,9 +72,12 @@
 }
 
 #timeline {
-  /* top: 10px; */
-  float: right;
-  width: calc(60vw - 30px);
+  top: 5%;
+  right:0px;
+  position: absolute;
+  /*float: right;*/
+  /*width: calc(60vw - 30px);*/
+  width: calc(60% - 10px);
   height: 40px;
   /* margin-left: 15px; */
   border-radius: 0px;
@@ -82,7 +85,8 @@
 }
 
 .timeslider {
-  width: calc(100vw - 650px) !important;
+  /*width: calc(100vw - 650px) !important;*/
+  width: 100%;
   padding-right: 10px;
 }
 
