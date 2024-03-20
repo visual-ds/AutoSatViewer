@@ -2,17 +2,7 @@ function LoadOverview() {
     var changeType = $("#changeType").val();
     var N_FREQS = $("#nFreqs").val();
     var THRESHOLD = $("#threshold").val();
-    // var selectedSignals = [];
-    // signalTypes.forEach(signal => {
-    //     if (document.getElementById(signal).checked) {
-    //         selectedSignals.push(signal);
-    //     }
-    // });
-
     var url = `/get_heatmap_data/${changeType}_${N_FREQS}_${THRESHOLD}`
-    // for (let i = 0; i < selectedSignals.length; i++) {
-    //     url += `_${selectedSignals[i]}`;
-    // }
 
     $.ajax({
         url: url,
@@ -30,6 +20,7 @@ function LoadOverview() {
 
 function DrawOverview(data) {
     var N_FREQS = $("#nFreqs").val();
+    var sharedScale = $("#sharedColor").is(":checked");
     var FreqsArray = [];
     for (let i = 1; i <= N_FREQS; i++) {
         FreqsArray.push(4 - i);
@@ -59,10 +50,17 @@ function DrawOverview(data) {
         .domain(FreqsArray)
         .padding(0.1);
 
+    if (!sharedScale) {
+        var maxValues = {};
+        for (let i = 0; i < N_SIGNALS; i++) {
+            var signal = SIGNAL_TYPES[i];
+            maxValues[signal] = d3.max(data.filter(d => d.type == signal), d => d.value);
+        }
 
-    //var colorScale = d3.scaleLinear()
-    //    .domain([0, d3.max(data, d => d.value)])
-    //    .range(["#ffffff", "#ff0000"]);
+        data.forEach(d => {
+            d.value = d.value / maxValues[d.type];
+        });
+    }
 
     var colorScale = d3.scaleSequential(d3.interpolateGreens)
         .domain([0, d3.max(data, d => d.value)]);
@@ -88,7 +86,7 @@ function DrawOverview(data) {
         if (i == N_SIGNALS - 1) {
             g.append("g")
                 .attr("transform", "translate(0," + heatmapHeight + ")")
-                .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%Y")).ticks(3));
+                .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d")))
             g.append("text")
                 .attr("transform", "translate(" + (width / 2) + "," + (heatmapHeight + 30) + ")")
                 .style("text-anchor", "middle")

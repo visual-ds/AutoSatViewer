@@ -1,6 +1,4 @@
 function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color) {
-
-    console.log(data, all_data)
     const miDiv = document.getElementById(DivID);
     var signalMap = $("#signalMap").val();
 
