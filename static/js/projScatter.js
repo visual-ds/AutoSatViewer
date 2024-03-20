@@ -88,11 +88,10 @@ function DrawProjection(data, columns) {
         .attr("r", 4)
         .attr("cx", d => x(d.x))
         .attr("cy", d => y(d.y))
-        .style("fill", d => d.color)// "#0047ab")
-        .style("stroke", "none")
-        .style("stroke-width", 2)
-        //.style("opacity", 0.6);
-        .style("opacity", d => verifyHigh(d) ? 1 : 0.05);
+        .style("fill", d => verifyHigh(d) ? d.color : "#dddddd")
+        .style("stroke", "#303030")
+        .style("stroke-width", d => verifyHigh(d) ? 0.75 : 0)
+        .style("opacity", d => verifyHigh(d) ? 0.85 : 0.05);
 
     gx.call(xAxis, x);
     gy.call(yAxis, y);
@@ -108,15 +107,13 @@ function DrawProjection(data, columns) {
 
     var brush = d3.brush()
         .extent([[0, 0], [width, height]])
-        .on("end", brushed)
-    //.on("end", brushend);
+        .on("end", brushed);
     gAll.call(brush);
 
 
     function brushed({ selection }) {
         if (selection === null) {
             gDot.selectAll("circle").classed("selected_proj", false);
-            gDot.selectAll("circle").style("stroke", "none");
             updateSpatialHighlight([]);
             LoadTimeSeries([]);
 
@@ -139,13 +136,6 @@ function DrawProjection(data, columns) {
         })
 
         updateSpatialHighlight(dataHighlight);
-        // update circles that have selected_proj class
-        gDot.selectAll("circle")
-            .style("stroke", "none");
-        gDot.selectAll("circle.selected_proj")
-            .style("stroke", "black")
-            .style("stroke-width", 2);
-
         var selected_polys = dataHighlight.filter(d => d.highlight).map(d => d.id_poly);
         LoadTimeSeries(selected_polys);
     }
