@@ -1,5 +1,6 @@
 function LoadProj() {
-    var url = `/get_projection`;
+    var changeType = $("#changeType").val();
+    var url = `/get_projection/${changeType}`;
     $.ajax({
         url: url,
         type: "GET",

@@ -13,7 +13,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
 
     data.forEach(d => { d.date = new Date(d.date) });
     all_data.forEach(d => { d.date = new Date(d.date) });
-    var datesArray = data.map(d => d.date);
+    var datesArray = all_data.map(d => d.date);
     datesArray = datesArray.filter((date, i, self) =>
         self.findIndex(d => d.getTime() === date.getTime()) === i
     );
@@ -33,14 +33,15 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    const x = d3.scaleTime().range([0, width]).domain(d3.extent(data, d => d.date))
+    const x = d3.scaleTime().range([0, width]).domain(d3.extent(all_data, d => d.date))
     const y = d3.scaleLinear()
         .range([height, 0])
         .domain([0, d3.max(all_data, d => d[Column + "_3"])]);
+    //.domain([0, d3.max(data, d => d[Column])]);
 
-    // const line = d3.line()
-    //     .x(d => x(d.date))
-    //     .y(d => y(d.value))
+    const line = d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d[Column]))
     //.curve(d3.curveNatural);
 
     const area = d3.area()
@@ -88,8 +89,6 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
             d3.select(this).attr("x1", x(sliderDate)).attr("x2", x(sliderDate));
         });
 
-    console.log(Column)
-
     svg.append("path")
         .data([all_data])
         .attr("class", "area")
@@ -97,15 +96,28 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .style("fill-opacity", 0.5)
         .attr("d", area);
 
-    if (d3.max(data, d => d[Column + "_0"]) >= 0) {
-        svg.append("path")
-            .data([data])
-            .attr("class", "area")
-            //.style("stroke", color)
-            .style("fill", color)
-            //.style('stroke-width', 2)
-            .attr("d", area);
-    }
+
+
+    // if (d3.max(data, d => d[Column + "_1"]) >= 0) {
+    //     svg.append("path")
+    //         .data([data])
+    //         .attr("class", "area")
+    //         //.style("stroke", color)
+    //         .style("fill", color)
+    //         //.style('stroke-width', 2)
+    //         .attr("d", area);
+    // }
+
+    svg.selectAll(".line")
+        .data(d3.group(data, d => d.id_poly))
+        .enter()
+        .append("path")
+        .attr("class", "line")
+        .attr("fill", "none")
+        .style("stroke", color)
+        .style("stroke-width", 2)
+        .style("stroke-opacity", 0.7)
+        .attr("d", d => line(Array.from(d[1])));
 
     const legend = svg.append("g")
         .attr("class", "legend")

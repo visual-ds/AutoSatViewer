@@ -137,6 +137,6 @@ window.onload = function () {
             loadFile();
             LoadTable();
 
-            LoadProj();
+            //LoadProj();
         });
 }

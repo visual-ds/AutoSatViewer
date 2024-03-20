@@ -23,6 +23,7 @@ function LoadOverview() {
                 d.date = new Date(d.date);
             })
             DrawOverview(data);
+            LoadProj();
         }
     })
 }

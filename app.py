@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus5k", "NYBlocks", "BLACities"][0]
-TIME = ["Year", "Period1", "Period2"][-1]
+POLY = ["SpCenterCensus5k", "NYBlocks", "BLACities"][-1]
+TIME = ["Year", "Period1", "Period2"][0]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -83,25 +83,21 @@ def get_time_series():
     all_polys = df['id_poly'].unique()
 
     if len(block_id) == 0: # no block selected
-        block_id = [0]
+        block_id = [-777]
         multiply_by_zero = True
     else:
         multiply_by_zero = False
        
     temporal = df[df['id_poly'].isin(block_id)]
-    if multiply_by_zero:
-        cols = temporal.columns.tolist()[2:]
-        print(cols)
-        temporal[cols] = -777
     temporal_all = df[df['id_poly'].isin(all_polys)]
     func_1_quantile = lambda x: np.quantile(x, 0.)
     func_3_quantile = lambda x: np.quantile(x, 1)
     agg_cols = temporal.columns.tolist()[2:]
     agg = {col: [func_1_quantile, func_3_quantile] for col in agg_cols}
     new_columns = [f"{col}_{func}" for col in agg_cols for func in ["1", "3"]]
-    temporal = temporal.groupby('date').agg(agg)
-    temporal.columns = new_columns
-    temporal = temporal.reset_index()
+    #temporal = temporal.groupby('date').agg(agg)
+    #temporal.columns = new_columns
+    #temporal = temporal.reset_index()
     temporal_all = temporal_all.groupby('date').agg(agg)
     temporal_all.columns = new_columns
     temporal_all = temporal_all.reset_index()
@@ -184,9 +180,12 @@ def get_similarity_table(request):
         "columns" : SIGNAL_TYPES
     })
 
-@app.route('/get_projection')
-def get_projection():
-    df = pd.read_csv(f"wavelet_code/data/projections/{POLY}_{TIME}.csv")
+@app.route('/get_projection/<string:change_type>')
+def get_projection(change_type):
+    if change_type == "spatiotemporal":
+        df = pd.read_csv(f"wavelet_code/data/projections/{POLY}_{TIME}.csv")
+    elif change_type == "spatial":
+        df = pd.read_csv(f"wavelet_code/data/projections_spatial/{POLY}_{TIME}.csv")
     return jsonify(df.to_dict(orient="records"))
 
 
