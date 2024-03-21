@@ -40,7 +40,7 @@
 }
 
 .simpleTemporalChart {
-    width: 150px;
+    width: calc((100% - 10px)/5); /*show at least 5 plots at start*/
     /*margin: 10px 2px 10px 0px;*/
     /*margin-top:0px;*/
     margin-left:2px;

@@ -17,7 +17,7 @@ body {
     height: 4%;
     position: fixed;
     top: 0px;
-    background-color: #f0f3fc;
+    background-color: #e6ecfa;
     left: 0px;
     padding-left: 50px;
     /*font-family: "Roboto", sans-serif;*/
@@ -44,7 +44,6 @@ body {
 
 .left-container {
     width: 38%;
-    width: 39%;
     /*height: calc(95vh - 5px);*/
 }
 
@@ -134,7 +133,16 @@ body {
 #mapLegend {
     position: absolute;
     top: 100px;
-    right: 5px;
+    right: 10px;
+    z-index: 1px;
+    height: 40px;
+    width: 250px;
+}
+
+#heatmapLegend {
+    position: absolute;
+    bottom: 30px;
+    left: calc(38%/2 - 250px/2);
     z-index: 1px;
     height: 40px;
     width: 250px;
@@ -210,4 +218,9 @@ h4 {
     justify-content: space-between;
     height: calc(100% - 15px);
     width: 100%;
+}
+
+.transparent-background{
+    background-color: transparent;
+    border: solid transparent;
 }

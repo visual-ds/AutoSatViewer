@@ -7,9 +7,9 @@ function Legend(color, {
     width = 320,
     height = 44 + tickSize,
     marginTop = 18,
-    marginRight = 0,
+    marginRight = 10,
     marginBottom = 16 + tickSize,
-    marginLeft = 0,
+    marginLeft = 10,
     ticks = width / 64,
     tickFormat,
     tickValues
@@ -32,7 +32,9 @@ function Legend(color, {
         .attr("height", height)
         .attr("viewBox", [0, 0, width, height])
         .style("overflow", "visible")
-        .style("display", "block");
+        .style("display", "block")
+        .style("background-color", "#e6ecfa")
+        .style("box-shadow", "3px 3px 5px #c9c9c9");
 
     let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
     let x;
