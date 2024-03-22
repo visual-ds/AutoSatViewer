@@ -125,8 +125,8 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         .attr("width", x(minDistance) - x(0))
         .attr("height", y.bandwidth())
         .style("fill", d => colorScale(d.value))
-        .style("stroke", "#000000")
-        .style("stroke-width", x(minDistance) - x(0) > 3 ? 1 : 0)
+        .style("stroke", "#606060")
+        .style("stroke-width", x(minDistance) - x(0) > 4 ? 0.5 : 0)
         .on("click", function (event, d) {
             d3.select(this).classed("click", !d3.select(this).classed("click"));
         })

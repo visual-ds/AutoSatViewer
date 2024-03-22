@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus5k", "NYBlocks", "BLACities"][-1]
-TIME = ["Year", "Period1", "Period2"][0]
+POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][0]
+TIME = ["Year", "Period1", "Period2"][2]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -40,13 +40,9 @@ def get_heatmap_data(request):
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
 
     def get_high_count(df):
-        #return (df.iloc[:, 1:] > threshold).sum(axis=0)
-        #return (df.iloc[:, 1:]).mean(axis=0, numeric_only=True)
-        #return (df.iloc[:, 1:]).quantile(threshold, axis=0)
         df_ = df.iloc[:, 2:6]
         # calculate mean of the values that are bigger than 1e-3
-        return (df_.apply(lambda x: np.mean(x[x > 1e-3]), axis=0))
-        #return (df.iloc[:, 1:].max(axis=0, numeric_only=True))
+        return (df_.apply(lambda x: np.mean(x[x > 1e-2]), axis=0))
         
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
     coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
@@ -80,14 +76,7 @@ def get_high_coefficients(request):
 def get_time_series():
     block_id = request.get_json()["block_id"]
     df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
-    all_polys = df['id_poly'].unique()
-
-    if len(block_id) == 0: # no block selected
-        block_id = [-777]
-        multiply_by_zero = True
-    else:
-        multiply_by_zero = False
-       
+    all_polys = df['id_poly'].unique()       
     temporal = df[df['id_poly'].isin(block_id)]
     temporal_all = df[df['id_poly'].isin(all_polys)]
     func_1_quantile = lambda x: np.quantile(x, 0.)
@@ -95,9 +84,6 @@ def get_time_series():
     agg_cols = temporal.columns.tolist()[2:]
     agg = {col: [func_1_quantile, func_3_quantile] for col in agg_cols}
     new_columns = [f"{col}_{func}" for col in agg_cols for func in ["1", "3"]]
-    #temporal = temporal.groupby('date').agg(agg)
-    #temporal.columns = new_columns
-    #temporal = temporal.reset_index()
     temporal_all = temporal_all.groupby('date').agg(agg)
     temporal_all.columns = new_columns
     temporal_all = temporal_all.reset_index()
