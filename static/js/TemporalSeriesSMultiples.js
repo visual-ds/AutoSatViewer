@@ -34,7 +34,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
     const x = d3.scaleTime().range([0, width]).domain(d3.extent(all_data, d => d.date))
     const y = d3.scaleLinear()
         .range([height, 0])
-        .domain([0, d3.max(all_data, d => d[Column + "_3"])]);
+        .domain([d3.min(all_data, d => d[Column + "_1"]), d3.max(all_data, d => d[Column + "_3"])]);
     //.domain([0, d3.max(data, d => d[Column])]);
 
     const line = d3.line()

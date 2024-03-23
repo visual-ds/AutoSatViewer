@@ -25,6 +25,7 @@ function DrawOverview(data) {
     for (let i = 1; i <= N_FREQS; i++) {
         FreqsArray.push(4 - i);
     }
+    FreqsArray = FreqsArray.reverse();
     var MinFreq = 4 - N_FREQS;
     data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
@@ -131,6 +132,8 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
             d3.select(this).classed("click", !d3.select(this).classed("click"));
         })
         .on("mouseover", function (event, d) {
+
+            console.log(d.date, d.freq)
             // verify that there isn't any other rect with the click class
             var clicked = d3.selectAll(".heatmapRect").filter(".click");
             if (clicked.size() > 0) {
