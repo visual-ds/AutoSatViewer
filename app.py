@@ -6,7 +6,7 @@ import geopandas as gpd
 import scipy.sparse
 
 POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][0]
-TIME = ["Year", "Period1", "Period2"][2]
+TIME = ["Year", "Year2", "Period1", "Period2"][3]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
@@ -42,7 +42,7 @@ def get_heatmap_data(request):
     def get_high_count(df):
         df_ = df.iloc[:, 2:6]
         # calculate mean of the values that are bigger than 1e-3
-        return (df_.apply(lambda x: np.mean(x[x > 1e-2]), axis=0))
+        return (df_.apply(lambda x: np.mean(x[x >= 0]), axis=0))
         
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
     coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
@@ -155,10 +155,8 @@ def get_spatial_data(request):
     return jsonify({"data" : df.to_dict(orient="records"), "quantiles": quantiles})
 
 
-@app.route('/get_similarity_table/<string:request>')
-def get_similarity_table(request):
-    request = request.split("_")
-    similarity = request[0]
+@app.route('/get_similarity_table')
+def get_similarity_table():
     data = pd.read_csv(f"wavelet_code/data/similarity_matrix/{POLY}_{TIME}.csv")
     SIGNAL_TYPES = data["row"].unique().tolist()
     return jsonify({

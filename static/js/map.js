@@ -102,15 +102,18 @@ $('#timeslider')
 function setSlider(data) {
   var date = data.map(d => new Date(d.date).toString());
   date = date.filter((v, i, a) => a.indexOf(v) === i);
+  date = date.map(d => new Date(d));
   var nDates = date.length;
 
   var slider = $("#slider").ionRangeSlider({
     type: 'single',
     skin: 'round',
-    min: 1,
-    max: nDates,
+    min: 0,
+    max: nDates - 1,
     ticks: true,
-    value: 1,
+    snaps: true,
+    prettify: d => date[d].toISOString().split("T")[0] + " " + date[d].getHours() + "h",
+    value: 0,
     onChange: function (newRange) {
       // triger click on TimeIndicator
       d3.selectAll(".TimeIndicator").dispatch("click");
@@ -128,7 +131,7 @@ function updateSpatialFill() {
   if ($("#slider").data("ionRangeSlider") == undefined) {
     T = 0;
   } else {
-    T = $("#slider").data("ionRangeSlider").old_from - 1;
+    T = $("#slider").data("ionRangeSlider").old_from;
   }
   var type = $("#signalMap").val();
   var value = $("#valueType").val();

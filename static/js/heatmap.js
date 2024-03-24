@@ -35,6 +35,10 @@ function DrawOverview(data) {
 
     setSlider(data);
 
+    var datesArray = data.map(d => new Date(d.date).toString());
+    datesArray = datesArray.filter((v, i, a) => a.indexOf(v) === i);
+    datesArray = datesArray.map(d => new Date(d));
+
     var margin = { top: 20, right: 20, bottom: 30, left: 100 },
         width = 600 - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
@@ -76,7 +80,7 @@ function DrawOverview(data) {
         var g = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + (margin.top + i * (heatmapHeight + heatmapPadding)) + ")");
         var dataSignal = data.filter(d => d.type == SIGNAL_TYPES[i]);
-        DrawOverviewHeatmap(g, dataSignal, x, y, colorScale, heatmapHeight);
+        DrawOverviewHeatmap(g, dataSignal, datesArray, x, y, colorScale, heatmapHeight);
 
         g.append("text")
             .attr("y", heatmapHeight / 2)
@@ -108,11 +112,7 @@ function DrawOverview(data) {
     heatmapDiv.appendChild(legendNode);
 }
 
-function DrawOverviewHeatmap(g, data, x, y, colorScale) {
-    var datesArray = data.map(d => d.date);
-    datesArray = datesArray.filter((date, i, self) =>
-        self.findIndex(d => d.getTime() === date.getTime()) === i
-    );
+function DrawOverviewHeatmap(g, data, datesArray, x, y, colorScale) {
     var minDistance = datesArray[1] - datesArray[0];
 
     var hoverTimeout;
@@ -133,7 +133,6 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
         })
         .on("mouseover", function (event, d) {
 
-            console.log(d.date, d.freq)
             // verify that there isn't any other rect with the click class
             var clicked = d3.selectAll(".heatmapRect").filter(".click");
             if (clicked.size() > 0) {
@@ -151,7 +150,7 @@ function DrawOverviewHeatmap(g, data, x, y, colorScale) {
                     url: `/get_high_coefficients/${d.type}_${date_idx}_${d.freq}_${changeType}`,
                     type: "GET",
                     success: async function (data) {
-                        var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime()); + 1
+                        var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
                         $("#slider").data("ionRangeSlider").update({
                             from: idx
                         });
