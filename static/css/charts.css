@@ -45,7 +45,7 @@
     /*margin-top:0px;*/
     margin-left:2px;
     margin-right:2px;
-    height: calc(100% - 5px); /*5 from edge to component border and 5 from border to content*/
+    height: calc(100% - 5px); /*5 from edge to component border*/
     /*box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1);*/
     background-color: #ffffff;
     display: inline-block;
@@ -59,6 +59,18 @@
   shape-rendering: crispEdges;
 }
 .x-axis text, .y-axis text {
+    fill: #8FA2AC;
+    text-anchor: middle;
+    font-family: Baloo Thambi;
+
+}
+
+/*solid axis*/
+.x-axis-s path, .x-axis-s line,.y-axis-s path, .y-axis-s line {
+    stroke-width: 0.5px;
+    stroke: gray;
+}
+.x-axis-s text, .y-axis-s text {
     fill: #8FA2AC;
     text-anchor: middle;
     font-family: Baloo Thambi;
