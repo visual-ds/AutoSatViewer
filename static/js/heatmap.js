@@ -120,7 +120,7 @@ function DrawOverviewHeatmap(g, data, datesArray, x, y, colorScale) {
         .data(data)
         .enter()
         .append("rect")
-        .attr("class", "heatmapRect")
+        .attr("class", d => "heatmapRect " + "rect" + d.type)
         .attr("x", d => x(d.date))
         .attr("y", d => y(d.freq))
         .attr("width", x(minDistance) - x(0))
@@ -129,63 +129,125 @@ function DrawOverviewHeatmap(g, data, datesArray, x, y, colorScale) {
         .style("stroke", "#606060")
         .style("stroke-width", x(minDistance) - x(0) > 4 ? 0.5 : 0)
         .on("click", function (event, d) {
-            d3.select(this).classed("click", !d3.select(this).classed("click"));
-        })
-        .on("mouseover", function (event, d) {
-
-            // verify that there isn't any other rect with the click class
-            var clicked = d3.selectAll(".heatmapRect").filter(".click");
-            if (clicked.size() > 0) {
-                if (!d3.select(this).classed("click")) {
-                    return;
-                }
-            }
-
-            clearTimeout(hoverTimeout);
+            // verify if there is any object of class .rect+d.type with the click class
+            var clicked = d3.select(this).classed("click");
             var date = new Date(d.date);
             var date_idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
             var changeType = $("#changeType").val();
-            hoverTimeout = setTimeout(() => {
+
+            if (clicked) {
+                // verify if it is the current one clicked and remove
+                //if (d3.select(this).classed("click")) {
+                    d3.select(this)
+                        .classed("click", false)
+                        .transition()
+                        .duration(1000)
+                        .attr("y", d => y(d.freq))
+                        .attr("height", y.bandwidth());
+
+                    // remove click from server
+                    $.ajax({
+                        url: `/clean_high_coefficients/${d.type}_${date_idx}_${d.freq}_${changeType}`,
+                        type: "GET",
+                        success: async function (data) {
+                            $("#slider").data("ionRangeSlider").update({ from: date_idx });
+                            // trigger slider change
+                            $("#signalMap").val(d.type);
+                            $('#slider').data('ionRangeSlider').options.onChange();
+                            var id_poly = data.filter(d => d.highlight).map(d => d.id_poly);
+                            updateSpatialHighlight(id_poly.length > 0 ? data : []);
+
+                            LoadTimeSeries(id_poly);
+                        }
+                    });
+
+                //}
+            } else {
+                d3.select(this).classed("click", true);
+
+
+                // create an animation of 0.5s of the height increasing
+                d3.select(this)
+                    .transition()
+                    .duration(1000)
+                    .attr("y", d => y(d.freq) - 5)
+                    .attr("height", y.bandwidth() + 10);
+
+                // add click to server
                 $.ajax({
                     url: `/get_high_coefficients/${d.type}_${date_idx}_${d.freq}_${changeType}`,
                     type: "GET",
                     success: async function (data) {
-                        var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
-                        $("#slider").data("ionRangeSlider").update({
-                            from: idx
-                        });
+                        $("#slider").data("ionRangeSlider").update({ from: date_idx });
                         // trigger slider change
                         $("#signalMap").val(d.type);
                         $('#slider').data('ionRangeSlider').options.onChange();
-
                         updateSpatialHighlight(data);
                         var id_poly = data.filter(d => d.highlight).map(d => d.id_poly);
                         LoadTimeSeries(id_poly);
                     }
                 });
-            }, 1000);
+            }
 
-            // create an animation of 0.5s of the height increasing
-            d3.select(this)
-                .transition()
-                .duration(1000)
-                .attr("y", d => y(d.freq) - 5)
-                .attr("height", y.bandwidth() + 10);
         })
-        .on("mouseleave", function (event, d) {
-            if (d3.select(this).classed("click")) {
-                return;
-            }
-            d3.select(this).interrupt();
-            d3.select(this)
-                .attr("y", d => y(d.freq))
-                .attr("height", y.bandwidth());
-            clearTimeout(hoverTimeout);
-            var clicked = d3.selectAll(".heatmapRect").filter(".click");
-            if (clicked.size() == 0) {
-                updateSpatialHighlight([]);
-            }
-        });
+    // .on("click", function (event, d) {
+    //     d3.select(this).classed("click", !d3.select(this).classed("click"));
+    // })
+    // .on("mouseover", function (event, d) {
+
+    //     // verify that there isn't any other rect with the click class
+    //     var clicked = d3.selectAll(".heatmapRect").filter(".click");
+    //     if (clicked.size() > 0) {
+    //         if (!d3.select(this).classed("click")) {
+    //             return;
+    //         }
+    //     }
+
+    //     clearTimeout(hoverTimeout);
+    //     var date = new Date(d.date);
+    //     var date_idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
+    //     var changeType = $("#changeType").val();
+    //     hoverTimeout = setTimeout(() => {
+    //         $.ajax({
+    //             url: `/get_high_coefficients/${d.type}_${date_idx}_${d.freq}_${changeType}`,
+    //             type: "GET",
+    //             success: async function (data) {
+    //                 var idx = datesArray.findIndex(dateArray => dateArray.getTime() === d.date.getTime());
+    //                 $("#slider").data("ionRangeSlider").update({
+    //                     from: idx
+    //                 });
+    //                 // trigger slider change
+    //                 $("#signalMap").val(d.type);
+    //                 $('#slider').data('ionRangeSlider').options.onChange();
+
+    //                 updateSpatialHighlight(data);
+    //                 var id_poly = data.filter(d => d.highlight).map(d => d.id_poly);
+    //                 LoadTimeSeries(id_poly);
+    //             }
+    //         });
+    //     }, 1000);
+
+    //     // create an animation of 0.5s of the height increasing
+    //     d3.select(this)
+    //         .transition()
+    //         .duration(1000)
+    //         .attr("y", d => y(d.freq) - 5)
+    //         .attr("height", y.bandwidth() + 10);
+    // })
+    // .on("mouseleave", function (event, d) {
+    //     if (d3.select(this).classed("click")) {
+    //         return;
+    //     }
+    //     d3.select(this).interrupt();
+    //     d3.select(this)
+    //         .attr("y", d => y(d.freq))
+    //         .attr("height", y.bandwidth());
+    //     clearTimeout(hoverTimeout);
+    //     var clicked = d3.selectAll(".heatmapRect").filter(".click");
+    //     if (clicked.size() == 0) {
+    //         updateSpatialHighlight([]);
+    //     }
+    // });
 
     g.append("g")
         .call(d3.axisLeft(y).tickValues([]));

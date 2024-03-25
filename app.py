@@ -5,14 +5,31 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
-POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][0]
-TIME = ["Year", "Year2", "Period1", "Period2"][3]
+POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][-1]
+TIME = ["Year", "Year2", "Period1", "Period2"][1]
 configs = {
     "n_freqs": 4,
     "threshold": 0.6
 }
+SELECTIONS = {
+    "projection" : [],
+    "map" : [],
+    "heatmap" : [],
+}
 
 app = Flask(__name__)
+
+def get_intersection_lists():
+    global SELECTIONS
+    intersec = lambda x, y : list(set(x) & set(y))
+    # get all lists that are not empty
+    intersec_lists = [l for l in SELECTIONS.values() if len(l) > 0]
+    if len(intersec_lists) == 0: # if no list is not empty, return empty list
+        return []
+    intersection = intersec_lists[0]
+    for l in intersec_lists:
+        intersection = intersec(intersection, l)
+    return intersection
 
 
 @app.route('/')
@@ -50,11 +67,48 @@ def get_heatmap_data(request):
     coeffs = coeffs.fillna(0)
     return jsonify(coeffs.to_dict(orient="records"))
     
+@app.route('/clean_high_coefficients/<string:request>')
+def clean_high_coefficients(request):
+    global SELECTIONS
+    typ, date, freq, change_type = request.split("_")
+    typ = typ.replace("%20", " ")
+    key = f"heatmap_{typ}_{date}_{freq}"
+    if key in SELECTIONS:
+        SELECTIONS[key] = []
+
+    freq = int(freq)
+    if change_type == "spatiotemporal":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
+    elif change_type == "spatial":
+        coeffs = pd.read_csv(f"wavelet_code/data/coeffs_spatial/{POLY}_{TIME}.csv")
+    coeffs["date"] = pd.to_datetime(coeffs["date"])
+    coeffs = coeffs[coeffs.type == typ]
+    dates = coeffs["date"].unique()
+    date = dates[int(date)]
+    coeffs = coeffs[coeffs["date"] == date]
+
+    intersection_list = get_intersection_lists()
+    # create array with ones at the indexes of intersection_list
+    intersection_array = np.zeros(coeffs.shape[0])
+    if len(intersection_list) > 0:
+        intersection_array[np.array(intersection_list)] = 1
+    
+   
+    coeffs["highlight"] = intersection_array.astype(bool)
+
+    return jsonify(coeffs.to_dict(orient="records"))
+
+    
 
 @app.route('/get_high_coefficients/<string:request>')
 def get_high_coefficients(request):
+    global SELECTIONS
     typ, date, freq, change_type = request.split("_")
     typ = typ.replace("%20", " ")
+    key = f"heatmap_{typ}_{date}_{freq}"
+    if not key in SELECTIONS:
+        SELECTIONS[key] = []
+    
     freq = int(freq)
     if change_type == "spatiotemporal":
         coeffs = pd.read_csv(f"wavelet_code/data/coeffs/{POLY}_{TIME}.csv")
@@ -67,8 +121,18 @@ def get_high_coefficients(request):
     date = dates[int(date)]
     coeffs = coeffs[coeffs["date"] == date]
     idx_high = coeffs[f"mean_freq_{freq}"] > threshold
-    coeffs["highlight"] = idx_high
-    coeffs["value"] = coeffs[f"mean_freq_{freq}"]
+
+    if idx_high.sum() > 0:
+        SELECTIONS[key] = np.where(idx_high)[0].tolist()
+
+    intersection_list = get_intersection_lists()
+    # create array with ones at the indexes of intersection_list
+    intersection_array = np.zeros(coeffs.shape[0])
+    if len(intersection_list) > 0:
+        intersection_array[np.array(intersection_list)] = 1
+   
+    coeffs["highlight"] = intersection_array.astype(bool)
+
     return jsonify(coeffs.to_dict(orient="records"))
 
     
@@ -92,6 +156,44 @@ def get_time_series():
         'columns': agg_cols, 
         'all': json.loads(temporal_all.to_json(orient='records'))
     })
+
+@app.route('/set_proj_selection', methods=["POST"])
+def set_proj_selection():
+    global SELECTIONS
+    data = request.get_json()
+    SELECTIONS["projection"] = data
+    intersection_list = get_intersection_lists()
+    df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    df = df.drop_duplicates(subset=["id_poly"])
+    df["highlight"] = False
+    intersection_array = np.zeros(df.shape[0])
+    if len(intersection_list) > 0:
+        intersection_array[np.array(intersection_list)] = 1
+    df["highlight"] = intersection_array.astype(bool)
+    return jsonify(df.to_dict(orient="records"))
+
+@app.route('/set_map_selection', methods=["POST"])
+def set_map_selection():
+    global SELECTIONS
+    data = request.get_json()
+    if len(data) == 0:
+        SELECTIONS["map"] = []
+    else:
+        data = data[0]
+        if data in SELECTIONS["map"]:
+            SELECTIONS["map"].remove(data)
+        else:
+            SELECTIONS["map"].append(data)
+
+    intersection_list = get_intersection_lists()
+    df = pd.read_csv(f"wavelet_code/data/polygon_data/{POLY}_{TIME}.csv")
+    df = df.drop_duplicates(subset=["id_poly"])
+    df["highlight"] = False
+    intersection_array = np.zeros(df.shape[0])
+    if len(intersection_list) > 0:
+        intersection_array[np.array(intersection_list)] = 1
+    df["highlight"] = intersection_array.astype(bool)
+    return jsonify(df.to_dict(orient="records"))
 
 @app.route('/get_scatter_data/<string:request>')
 def get_scatter_plot(request):
