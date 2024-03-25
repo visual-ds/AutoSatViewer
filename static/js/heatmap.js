@@ -41,7 +41,7 @@ function DrawOverview(data) {
 
 
     var margin = { top: 20, right: 30, bottom: 30, left: 100 },
-        width = parentWidth - margin.left - margin.right,
+        width = parentWidth - margin.left - margin.right;
 
     var datesArray = data.map(d => new Date(d.date).toString());
     datesArray = datesArray.filter((v, i, a) => a.indexOf(v) === i);
