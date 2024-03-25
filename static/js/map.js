@@ -195,14 +195,12 @@ function updateSpatialFill() {
 
       map.setPaintProperty('spatial-data', 'fill-color', ['step', ['get', 'value'], colors[0], quantiles[0], colors[1], quantiles[1], colors[2], quantiles[2], colors[3], quantiles[3], colors[4], quantiles[4], colors[5], quantiles[5], colors[6], quantiles[6], colors[7], quantiles[7], colors[8]]);
 
-
-
       var svg_node = legend({
         color: colorScale,
         title: type + " " + value,
         ticks: 5,
         tickFormat: quantiles[7] <= 1 ? ".2f" : "d",
-        width: 200,
+        width: 250,
       });
 
       var legendDiv = document.getElementById('mapLegend');

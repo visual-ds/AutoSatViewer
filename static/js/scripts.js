@@ -24,12 +24,14 @@ function shrinkConfig() {
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
+        configContainer.classList.remove('transparent-background');
         configMenu.style.display = 'flex';
-        configContainer.style.top = '4%';
+        configContainer.style.top = '5%';
         shrinkButton.textContent = '-';
     } else {
         // Shrink the div
         configContainer.classList.add('shrink');
+        configContainer.classList.add('transparent-background');
         shrinkButton.innerHTML = `<span
         style="font-family: Noto Emoji Regular;">⚙️</span>`;
         configMenu.style.display = 'none';
@@ -46,11 +48,13 @@ function shrinkLeft() {
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
+        configContainer.classList.remove('transparent-background');
         configMenu.style.display = 'flex';
         shrinkButton.textContent = '-';
     } else {
         // Shrink the div
         configContainer.classList.add('shrink');
+        configContainer.classList.add('transparent-background');
         shrinkButton.textContent = '+';
         configMenu.style.display = 'none';
     }
@@ -65,11 +69,13 @@ function shrinkBottom() {
     if (configContainer.classList.contains('shrink')) {
         // Expand the div
         configContainer.classList.remove('shrink');
+        configContainer.classList.remove('transparent-background');
         configMenu.style.display = 'block';
         shrinkButton.textContent = '-';
     } else {
         // Shrink the div
         configContainer.classList.add('shrink');
+        configContainer.classList.add('transparent-background');
         shrinkButton.textContent = '+';
         configMenu.style.display = 'none';
     }

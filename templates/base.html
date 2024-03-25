@@ -48,23 +48,24 @@
     <div class="container left-container">
         <div class="shrink-button2 sign" onclick="shrinkLeft()">-</div>
         <div id="left-menu">
-            <div id="similarity_projection" style="display: flex;height: 42%;">
-                <div style="width:100%; padding-right: 5px;">
-                    <h4>Similarity Table</h4>
-                    <div id="similarity_table" class="chart">
-                    </div>
+            <div id="similarity_projection" class="panel" style="flex-direction: row;height: 45%;">
+                <div class="panel" style="width: calc(55% - 5px);margin-right: 5px;">
+                    <div id="subtitle1" class="subtitle">Similarity Table</div>
+                    <div id="similarity_table" class="panel-content chart"></div>
                 </div>
-                <div style="width:100%;">
-                    <h4>Wavelet Projection</h4>
-                    <div id="projection_scatter" class="chart">
+                <div class="panel" style="width: 45%;">
+                    <div class="subtitle">Wavelet Projection
+                        <img class="mini-icon" src="static/bremm.png">
                     </div>
+                    <div id="projection_scatter" class="panel-content chart"></div>
                 </div>
             </div>
-            <div style="width:100%;height:53%;">
-                <h4>Heatmap of Changes</h4>
-                <div id="heatmap" class="chart">
-                    <svg id="heatmapSVG"></svg>
-                </div>
+            <div class="panel" style="height: calc(55% - 5px); margin-top: 5px;">
+                    <div class="subtitle">Heatmap of Changes</div>
+                    <div id="heatmap" class="panel-content chart">
+                        <svg id="heatmapSVG"></svg>
+                    </div>
+                    <div id="heatmapLegend"></div>
             </div>
         </div>
     </div>
@@ -81,7 +82,7 @@
     <div class="container bottom-container">
         <div class="shrink-button3 sign" onclick="shrinkBottom()">-</div>
         <div id="bottom-menu" style="height: 100%;">
-            <h4>Time Series</h4>
+            <div class="subtitle">Time Series</div>
             <div class="content" id="TemporalMultivariateDiv"></div>
         </div>
     </div>
@@ -95,37 +96,41 @@
             <!--<div id="signalTypes" style="height: 80px; overflow-y: scroll;">
                         <p>Signal Types</p>
                     </div></br>-->
-            <h4>Heatmap Control</h4>
-            <div id="heatmapControl">
-                <form>
-                    <label for="changeType">Change: </label><select id="changeType">
-                        <option value="spatiotemporal">Spatiotemporal</option>
-                        <option value="spatial">Spatial</option>
-                    </select></br>
-                    <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 95px;">Nº freqs.:
-                        1</label><input type="range" id="nFreqs" min="1" max="4" step="1" value="1"></br>
-                    <label for="threshold" id="thresholdValue" style="display: inline-block; width: 95px;">Thresh.:
-                        0.97</label><input type="range" id="threshold" min="0.6" max="1" step="0.01" value="0.97"></br>
-                    <input type="checkbox" id="sharedColor">Shared Color</checkbox></br>
-                    <input type="button" value="Update" id="heatmapUpdate" onclick="LoadOverview()"></br>
-                </form>
+            <div class="panel">
+                <div class="subtitle">Heatmap Control</div>
+                <div id="heatmapControl" class="panel-content">
+                    <form>
+                        <label for="changeType">Change: </label><select id="changeType">
+                            <option value="spatiotemporal">Spatiotemporal</option>
+                            <option value="spatial">Spatial</option>
+                        </select></br>
+                        <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 95px;">Nº freqs.:
+                            1</label><input type="range" id="nFreqs" min="1" max="4" step="1" value="1"></br>
+                        <label for="threshold" id="thresholdValue" style="display: inline-block; width: 95px;">Thresh.:
+                            0.97</label><input type="range" id="threshold" min="0.6" max="1" step="0.01" value="0.97"></br>
+                        <input type="checkbox" id="sharedColor">Shared Color</checkbox></br>
+                        <input type="button" value="Update" id="heatmapUpdate" onclick="LoadOverview()"></br>
+                    </form>
+                </div>
             </div>
-            <h4 style="text-align: center;">Map Control</h4>
-            <div id="mapControl">
-                <label for="signalMap">Map fill:</label><select id="signalMap"></select></br>
-                <label for="valueType">Value:</label>
-                <select id="valueType">
-                    <option value="signal" selected="selected">Signal</option>
-                    <option value="coeff0">Coeff 0</option>
-                    <option value="coeff1">Coeff 1</option>
-                    <option value="coeff2">Coeff 2</option>
-                    <option value="coeff3">Coeff 3</option>
-                </select>
-                <input type="button" value="Update" id="mapUpdateFill">
-                <select id="bottomPanel">
-                    <option value="timeseries">Temporal Series</option>
-                    <option value="scatter">Scatter</option>
-                </select>
+            <div class="panel" style="margin-top:5px;">
+                <div class="subtitle">Map Control</div>
+                <div id="mapControl" class="panel-content">
+                    <label for="signalMap">Map fill:</label><select id="signalMap"></select></br>
+                    <label for="valueType">Value:</label>
+                    <select id="valueType">
+                        <option value="signal" selected="selected">Signal</option>
+                        <option value="coeff0">Coeff 0</option>
+                        <option value="coeff1">Coeff 1</option>
+                        <option value="coeff2">Coeff 2</option>
+                        <option value="coeff3">Coeff 3</option>
+                    </select>
+                    <input type="button" value="Update" id="mapUpdateFill">
+                    <select id="bottomPanel">
+                        <option value="timeseries">Temporal Series</option>
+                        <option value="scatter">Scatter</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -133,11 +138,11 @@
     </div>
 </body>
 <script src="./static/js/colorLegend.js"></script>
+<script src="./static/js/heatmap.js"></script>
 <script src="./static/js/TemporalSeriesSMultiples.js"></script>
 <script src="./static/js/ScatterMultiples.js"></script>
-<script src="./static/js/heatmap.js"></script>
-<script src="./static/js/similarityTable.js"></script>
 <script src="./static/js/projScatter.js"></script>
+<script src="./static/js/similarityTable.js"></script>
 <script src="./static/js/map.js"></script>
 
 </html>

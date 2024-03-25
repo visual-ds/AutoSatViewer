@@ -12,6 +12,8 @@ function LoadTable() {
 function DrawTable(data) {
 
     const element = d3.select('#similarity_table');
+    const element2 = d3.select('#similarity_projection');
+    const element3 = d3.select('#subtitle1');
 
     /*const fullHeight = 280;
     const fullWidth = 330;*/
@@ -19,13 +21,14 @@ function DrawTable(data) {
     const fullWidth = element.node().clientWidth;
     const fullHeight = element.node().clientHeight;
 
+    
     var svg = d3.select("#similarity_table")
         .append("svg")
         .attr("id", "similaritySVG")
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 35, right: 10, bottom: 15, left: 65 },
+    var margin = { top: 40, right: 10, bottom: 10, left: 70 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 

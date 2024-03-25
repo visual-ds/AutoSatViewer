@@ -19,6 +19,10 @@ function LoadOverview() {
 }
 
 function DrawOverview(data) {
+    const element = d3.select('#heatmap');
+    const parentWidth = element.node().clientWidth;
+    const parentHeight = element.node().clientHeight - 70; // take 60 px reserved for color legend
+
     var N_FREQS = $("#nFreqs").val();
     var sharedScale = $("#sharedColor").is(":checked");
     var FreqsArray = [];
@@ -30,17 +34,19 @@ function DrawOverview(data) {
     data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
-    var fullHeight = Math.min(50 * N_SIGNALS, 300);
+    var fullHeight = Math.min(50 * N_SIGNALS, parentHeight);
 
 
     setSlider(data);
+
+
+    var margin = { top: 20, right: 30, bottom: 30, left: 100 },
+        width = parentWidth - margin.left - margin.right,
 
     var datesArray = data.map(d => new Date(d.date).toString());
     datesArray = datesArray.filter((v, i, a) => a.indexOf(v) === i);
     datesArray = datesArray.map(d => new Date(d));
 
-    var margin = { top: 20, right: 20, bottom: 30, left: 100 },
-        width = 600 - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
     var heatmapPadding = 3;
@@ -103,13 +109,15 @@ function DrawOverview(data) {
     var legendNode = legend({
         color: colorScale,
         title: "Sum of high-frequency coefficients",
-        width: 500,
-        marginLeft: margin.left,
+        width: 250,
         ticks: 6
     });
 
-    var heatmapDiv = document.getElementById("heatmap");
-    heatmapDiv.appendChild(legendNode);
+    /*var heatmapDiv = document.getElementById("heatmap");
+    heatmapDiv.appendChild(legendNode);*/
+    var legendDiv = document.getElementById('heatmapLegend');
+    legendDiv.innerHTML = '';
+    legendDiv.appendChild(legendNode);
 }
 
 function DrawOverviewHeatmap(g, data, datesArray, x, y, colorScale) {

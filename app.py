@@ -5,8 +5,10 @@ import pandas as pd
 import geopandas as gpd
 import scipy.sparse
 
+
 POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][-1]
 TIME = ["Year", "Year2", "Period1", "Period2"][1]
+
 configs = {
     "n_freqs": 4,
     "threshold": 0.6

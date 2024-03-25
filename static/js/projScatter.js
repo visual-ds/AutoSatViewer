@@ -44,7 +44,7 @@ function DrawProjection(data, columns) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 30, right: 20, bottom: 15, left: 15 },
+    var margin = { top: 40, right: 10, bottom: 10, left: 10 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
