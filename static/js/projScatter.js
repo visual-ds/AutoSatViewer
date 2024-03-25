@@ -110,34 +110,46 @@ function DrawProjection(data, columns) {
         .on("end", brushed);
     gAll.call(brush);
 
-
-    function brushed({ selection }) {
-        if (selection === null) {
-            gDot.selectAll("circle").classed("selected_proj", false);
+    // call set_proj_selection to empty the selection
+    $.ajax({
+        url : `/set_proj_selection`,
+        type: "POST",
+        data: JSON.stringify([]),
+        contentType: 'application/json',
+        success: function(dataHighlight) {
             updateSpatialHighlight([]);
             LoadTimeSeries([]);
-
-            return;
         }
-        const [[x0, y0], [x1, y1]] = selection;
-        function verify(x, y) {
-            return x0 <= x && x <= x1 && y0 <= y && y <= y1;
-        }
-        gDot.selectAll(".projDot.highlight")
-            .classed("selected_proj", d => verify(x(d.x), y(d.y)));
+    })
 
-        var dataHighlight = data.map(d => {
-            d_ = { ...d }
-            d_["highlight"] = false;
-            if (verify(x(d.x), y(d.y))) {
-                d_["highlight"] = true;
+    function brushed({ selection }) {
+        var selected_polys = [];
+        if (selection === null) {
+            gDot.selectAll("circle").classed("selected_proj", false);
+        } else {
+            const [[x0, y0], [x1, y1]] = selection;
+            function verify(x, y) {
+                return x0 <= x && x <= x1 && y0 <= y && y <= y1;
             }
-            return d_;
-        })
+            gDot.selectAll(".projDot.highlight")
+                .classed("selected_proj", d => verify(x(d.x), y(d.y)));
 
-        updateSpatialHighlight(dataHighlight);
-        var selected_polys = dataHighlight.filter(d => d.highlight).map(d => d.id_poly);
-        LoadTimeSeries(selected_polys);
+            selected_polys = data.filter(d => verify(x(d.x), y(d.y))).map(d => d.id_poly);
+        }
+        
+
+        $.ajax({
+            url : `/set_proj_selection`,
+            type: "POST",
+            data: JSON.stringify(selected_polys),
+            contentType: 'application/json',
+            success: function(dataHighlight) {
+
+                selected_polys = dataHighlight.filter(d => d.highlight).map(d => d.id_poly);
+                updateSpatialHighlight(selected_polys.length > 0 ? dataHighlight : []);
+                LoadTimeSeries(selected_polys);
+            }
+        })
     }
 
 
