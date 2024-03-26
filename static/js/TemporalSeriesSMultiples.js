@@ -33,16 +33,18 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
 
 
     var y_max = d3.max(all_data, d => d[Column + "_3"]);
+    var y_min = d3.min(all_data, d => d[Column + "_1"]);
 
     const x = d3.scaleTime().range([0, width]).domain(d3.extent(all_data, d => d.date));
     const y = d3.scaleLinear()
         .range([height, 0])
-        .domain([0, y_max]);
+        .domain([y_min, y_max]);
 
     //.domain([0, d3.max(data, d => d[Column])]);
+    // .domain([d3.min(all_data, d => d[Column + "_1"]), d3.max(all_data, d => d[Column + "_3"])]);
 
     var y_ticks = d3.range(6).map(function(d) {
-                return d * (y_max / (5));
+                return y_min + d * (y_max / (5));
             });
 
     /*console.log(DivID);

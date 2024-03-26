@@ -1,16 +1,5 @@
 function LoadTable() {
-    var similarityType = "euclidean";
-    // var selectedSignals = [];
-    // signalTypes.forEach(signal => {
-    //     if (document.getElementById(signal).checked) {
-    //         selectedSignals.push(signal);
-    //     }
-    // });
-
-    var url = `/get_similarity_table/${similarityType}`
-    // for (let i = 0; i < selectedSignals.length; i++) {
-    //     url += `_${selectedSignals[i]}`;
-    // }
+    var url = `/get_similarity_table`
     $.ajax({
         url: url,
         type: "GET",
@@ -70,12 +59,8 @@ function DrawTable(data) {
         .selectAll("text")
         .style("text-anchor", "end");
 
-    var q1 = d3.quantile(data.table.map(d => d.value).sort(d3.ascending), 0.25);
-    var q3 = d3.quantile(data.table.map(d => d.value).sort(d3.ascending), 0.75);
-    var q2 = (q1 + q3) / 2;
-
-    var colorScale = d3.scaleSequential(d3.interpolateOranges)
-        .domain([q1, q3]);
+    var colorScale = d3.scaleSequential(d3.interpolateRdYlBu)
+        .domain([-0.9, 0.9]);
 
     var cells = gAll.selectAll('rect')
         .data(data.table)
@@ -97,7 +82,7 @@ function DrawTable(data) {
         .attr('y', d => y(d.column) + y.bandwidth() / 2)
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
-        .style('fill', d => d.value > q2 ? 'white' : 'black')
+        .style('fill', d => Math.abs(d.value) > 0.3 ? 'white' : 'black')
         .text(d => d.value.toFixed(2))
         .style('z-index', 100);
 

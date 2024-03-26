@@ -30,6 +30,29 @@ from pygsp import graphs, filters
 from tqdm import tqdm
 from scipy.optimize import fminbound
 from scipy.sparse import csr_matrix
+import scipy
+
+
+def get_spatial_adj(adjancency_matrix, n_timestamps):
+
+    x, y = np.where(adjancency_matrix)
+    e = []
+    nodes = np.arange(adjancency_matrix.shape[0])
+    n_nodes = adjancency_matrix.shape[0]
+    
+    for t in range(n_timestamps):  # link between nodes in the same timestamp
+        e.append(np.array([x + t * n_nodes, y + t * n_nodes]).T)
+
+    e = np.concatenate(e)
+    adjancency_matrix_temporal = scipy.sparse.csr_matrix(
+        (np.ones(e.shape[0]), (e[:, 0], e[:, 1])),
+        shape=(
+            n_timestamps * adjancency_matrix.shape[0],
+            n_timestamps * adjancency_matrix.shape[0],
+        ),
+    )
+    G_H = graphs.Graph(adjancency_matrix_temporal)
+    return G_H
 
 
 def get_spatiotemporal_adj(adjancency_matrix, n_timestamps, graph_product="cartesian"):

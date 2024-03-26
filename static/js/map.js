@@ -43,6 +43,15 @@ async function loadFile() {
     };
     map.addLayer(layer);
 
+    // center map on the spatial-data source
+    var lon = data.features[0].geometry.coordinates[0][0][0];
+    var lat = data.features[0].geometry.coordinates[0][0][1];
+    map.flyTo({
+      center: [lon, lat],
+      zoom: 11
+    });
+
+
     var clicked = undefined;
 
     var popup = new mapboxgl.Popup({
@@ -66,20 +75,42 @@ async function loadFile() {
       popup.addTo(map);
     });
 
+    // reset map selection
+    $.ajax({
+      url: "/set_map_selection",
+      type: "POST",
+      data: JSON.stringify([]),
+      contentType: 'application/json',
+      success: function (dataHighlight) {
+        dataHighlight;
+      }
+    })
+
     // call time series when clicking on a polygon
     map.on('click', 'spatial-data', (e) => {
       var id = e.features[0].properties.id_poly;
-      if (clicked == id) {
-        clicked = undefined;
-        if ($("#bottomPanel").val() == "timeseries") {
-          LoadTimeSeries([]);
+      $.ajax({
+        url: "/set_map_selection",
+        type: "POST",
+        data: JSON.stringify([id]),
+        contentType: 'application/json',
+        success: function (dataHighlight) {
+          var id_poly = dataHighlight.filter(d => d.highlight).map(d => d.id_poly);
+          updateSpatialHighlight(id_poly.length > 0 ? dataHighlight : []);
+          LoadTimeSeries(id_poly);
         }
-      } else {
-        clicked = id;
-        if ($("#bottomPanel").val() == "timeseries") {
-          LoadTimeSeries([id]);
-        }
-      }
+      })
+      // if (clicked == id) {
+      //   clicked = undefined;
+      //   if ($("#bottomPanel").val() == "timeseries") {
+      //     LoadTimeSeries([]);
+      //   }
+      // } else {
+      //   clicked = id;
+      //   if ($("#bottomPanel").val() == "timeseries") {
+      //     LoadTimeSeries([id]);
+      //   }
+      // }
     });
 
     updateSpatialFill();
@@ -102,15 +133,18 @@ $('#timeslider')
 function setSlider(data) {
   var date = data.map(d => new Date(d.date).toString());
   date = date.filter((v, i, a) => a.indexOf(v) === i);
+  date = date.map(d => new Date(d));
   var nDates = date.length;
 
   var slider = $("#slider").ionRangeSlider({
     type: 'single',
     skin: 'round',
-    min: 1,
-    max: nDates,
+    min: 0,
+    max: nDates - 1,
     ticks: true,
-    value: 1,
+    snaps: true,
+    prettify: d => date[d].toISOString().split("T")[0] + " " + date[d].getHours() + "h",
+    value: 0,
     onChange: function (newRange) {
       // triger click on TimeIndicator
       d3.selectAll(".TimeIndicator").dispatch("click");
@@ -128,7 +162,7 @@ function updateSpatialFill() {
   if ($("#slider").data("ionRangeSlider") == undefined) {
     T = 0;
   } else {
-    T = $("#slider").data("ionRangeSlider").old_from - 1;
+    T = $("#slider").data("ionRangeSlider").old_from;
   }
   var type = $("#signalMap").val();
   var value = $("#valueType").val();
@@ -192,8 +226,8 @@ function updateSpatialHighlight(data) {
   });
 
   //update opacity based in highlight boolean
-  map.setPaintProperty('spatial-data', 'fill-opacity', ['case', ['get', 'highlight'], 1, 0.25]);
+  map.setPaintProperty('spatial-data', 'fill-opacity', ['case', ['get', 'highlight'], 0.75, 0.1]);
 
   //update stroke color based in highlight boolean
-  map.setPaintProperty('spatial-data', 'fill-outline-color', ['case', ['get', 'highlight'], '#C70039', '#cccccc']);
+  map.setPaintProperty('spatial-data', 'fill-outline-color', ['case', ['get', 'highlight'], '#4A0404', '#cccccc']);
 }
