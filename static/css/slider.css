@@ -17,7 +17,7 @@
 .irs--round .irs-line {
   top: 36px;
   height: 4px;
-  background-color: #2CA599;
+  background-color: #747ea1;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(40, 40, 42, 0.3);
 }
@@ -25,14 +25,14 @@
 .irs--round .irs-bar {
   top: 36px;
   height: 4px;
-  background-color: #2CA599;
+  background-color: #747ea1;
 }
 
 .irs--round .irs-handle {
   top: 31px;
   width: 14px;
   height: 14px;
-  border: 2px solid #2CA599;
+  border: 2px solid #747ea1;
   background-color: white;
   border-radius: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 255, 0.3);
@@ -62,7 +62,7 @@
   line-height: 1;
   text-shadow: none;
   padding: 2px 5px;
-  background-color: #2CA599;
+  background-color: #747ea1;
   color: white;
   border-radius: 4px;
 }
@@ -73,21 +73,25 @@
 
 #timeline {
   bottom: calc(5px + 25% + 15px); /*bottom margin + bottom container height + margin*/
-  right:0px;
+  right:5px;
   position: absolute;
   /*float: right;*/
   /*width: calc(60vw - 30px);*/
   width: calc(60% - 10px);
-  height: 40px;
+  height: 60px;
   /* margin-left: 15px; */
   border-radius: 0px;
-  flex-direction: row;
+  border: solid 1px #a5a5aa;
+  padding: 5px;
 }
 
-.timeslider {
+#timeslider {
   /*width: calc(100vw - 650px) !important;*/
-  width: 100%;
-  padding-right: 10px;
+  width: calc(100% - 40px);
+  height: 100%;
+  background-color:#ffffff;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .timestep_indicator {

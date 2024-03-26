@@ -126,9 +126,9 @@ async function loadFile() {
 }
 
 /************************************************** TIME SLIDER *********************** */
-var slider_width = document.getElementById("timeslider").clientWidth * 0.99;
+/*var slider_width = document.getElementById("timeslider").clientWidth;
 $('#timeslider')
-  .width(slider_width);
+  .width(slider_width);*/
 
 function setSlider(data) {
   var date = data.map(d => new Date(d.date).toString());
