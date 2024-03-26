@@ -33,8 +33,8 @@ function Legend(color, {
         .attr("viewBox", [0, 0, width, height])
         .style("overflow", "visible")
         .style("display", "block")
-        .style("background-color", "#e6ecfa")
-        .style("box-shadow", "3px 3px 5px #c9c9c9");
+        .style("background-color", "#ffffff")
+        .style("border-radius", "5px");
 
     let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
     let x;
@@ -139,7 +139,7 @@ function Legend(color, {
         .call(tickAdjust)
         .call(g => g.select(".domain").remove())
         .call(g => g.append("text")
-            .attr("x", marginLeft + width/2) // add half of the width to center the text
+            .attr("x", marginLeft + width / 2) // add half of the width to center the text
             .attr("y", marginTop + marginBottom - height - 6)
             .attr("fill", "currentColor")
             .attr("text-anchor", "middle")

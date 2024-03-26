@@ -44,7 +44,7 @@ function DrawProjection(data, columns) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 40, right: 10, bottom: 10, left: 10 },
+    var margin = { top: 60, right: 10, bottom: 10, left: 10 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
@@ -112,11 +112,11 @@ function DrawProjection(data, columns) {
 
     // call set_proj_selection to empty the selection
     $.ajax({
-        url : `/set_proj_selection`,
+        url: `/set_proj_selection`,
         type: "POST",
         data: JSON.stringify([]),
         contentType: 'application/json',
-        success: function(dataHighlight) {
+        success: function (dataHighlight) {
             updateSpatialHighlight([]);
             LoadTimeSeries([]);
         }
@@ -136,14 +136,14 @@ function DrawProjection(data, columns) {
 
             selected_polys = data.filter(d => verify(x(d.x), y(d.y))).map(d => d.id_poly);
         }
-        
+
 
         $.ajax({
-            url : `/set_proj_selection`,
+            url: `/set_proj_selection`,
             type: "POST",
             data: JSON.stringify(selected_polys),
             contentType: 'application/json',
-            success: function(dataHighlight) {
+            success: function (dataHighlight) {
 
                 selected_polys = dataHighlight.filter(d => d.highlight).map(d => d.id_poly);
                 updateSpatialHighlight(selected_polys.length > 0 ? dataHighlight : []);

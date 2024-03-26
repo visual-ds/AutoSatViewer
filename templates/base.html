@@ -50,7 +50,7 @@
         <div id="left-menu">
             <div id="similarity_projection" class="panel" style="flex-direction: row;height: 45%;">
                 <div class="panel" style="width: calc(55% - 5px);margin-right: 5px;">
-                    <div id="subtitle1" class="subtitle">Similarity Table</div>
+                    <div id="subtitle1" class="subtitle">Correlation Table</div>
                     <div id="similarity_table" class="panel-content chart"></div>
                 </div>
                 <div class="panel" style="width: 45%;">
@@ -61,11 +61,11 @@
                 </div>
             </div>
             <div class="panel" style="height: calc(55% - 5px); margin-top: 5px;">
-                    <div class="subtitle">Heatmap of Changes</div>
-                    <div id="heatmap" class="panel-content chart">
-                        <svg id="heatmapSVG"></svg>
-                    </div>
-                    <div id="heatmapLegend"></div>
+                <div class="subtitle">Heatmap of Changes</div>
+                <div id="heatmap" class="panel-content chart">
+                    <svg id="heatmapSVG"></svg>
+                </div>
+                <div id="heatmapLegend"></div>
             </div>
         </div>
     </div>
@@ -83,7 +83,7 @@
         <div class="shrink-button3 sign" onclick="shrinkBottom()">-</div>
         <div id="bottom-menu" style="height: 100%;">
             <div class="subtitle">Time Series</div>
-            <div class="content" id="TemporalMultivariateDiv"></div>
+            <div class="chart panel-content" id="TemporalMultivariateDiv"></div>
         </div>
     </div>
     <div class='container title-container'>
@@ -107,7 +107,8 @@
                         <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 95px;">Nº freqs.:
                             1</label><input type="range" id="nFreqs" min="1" max="4" step="1" value="1"></br>
                         <label for="threshold" id="thresholdValue" style="display: inline-block; width: 95px;">Thresh.:
-                            0.97</label><input type="range" id="threshold" min="0.6" max="1" step="0.01" value="0.97"></br>
+                            0.97</label><input type="range" id="threshold" min="0.6" max="1" step="0.01"
+                            value="0.97"></br>
                         <input type="checkbox" id="sharedColor">Shared Color</checkbox></br>
                         <input type="button" value="Update" id="heatmapUpdate" onclick="LoadOverview()"></br>
                     </form>

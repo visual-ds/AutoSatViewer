@@ -91,7 +91,7 @@ body {
 .bottom-container {
     position: fixed;
     bottom: 5px;
-    background-color: #9ba1b0;
+    background-color: rgb(155, 161, 176, 0.25);
     right: 5px;
 }
 
@@ -99,7 +99,7 @@ body {
     position: fixed;
     right: 5px;
     top: 5px;
-    background-color: #9ba1b0;
+    background-color: rgb(155, 161, 176, 0.25);
 }
 
 .left-container {
@@ -109,7 +109,7 @@ body {
     left: 5px;
     /*top: 4%;*/
     bottom: 5px;
-    background-color: #9ba1b0;
+    background-color: rgb(155, 161, 176, 0.25);
     height: 93%;
     padding: 5px;
     display: block;
@@ -131,7 +131,8 @@ body {
 
 #mapLegend {
     position: absolute;
-    top: calc(4% + 15px); /*title container + margin*/
+    top: calc(4% + 15px);
+    /*title container + margin*/
     right: 10px;
     z-index: 1px;
     height: 40px;
@@ -162,7 +163,7 @@ body {
 
 #config-menu {
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;
     height: 100%;
     width: 100%;
 }
@@ -217,12 +218,12 @@ h4 {
     justify-content: space-evenly;
 }
 
-.transparent-background{
+.transparent-background {
     background-color: transparent;
     border: solid transparent;
 }
 
-.subtitle{
+.subtitle {
     display: block;
     background-color: #c5c9d6;
     padding-left: 20px;
@@ -231,46 +232,53 @@ h4 {
     text-align: left;
     font-size: 15px;
     font-weight: bold;
-    height: 22px; /*size of font + padding top and bottom*/
+    border-radius: 10px 10px 0px 0px;
+    height: 22px;
+    /*size of font + padding top and bottom*/
 }
 
 .mini-icon {
     position: absolute;
-    top: calc(5px + 22px + 40px + 10px); /* top border + subtitle height + svg top margin + inner top padding */
-    right: calc(5px + 10px + 10px); /*right border + svg right margin + inner right padding */
-    width: 15px;
-    height: 15px;
+    top: calc(5px + 22px + 60px + 10px);
+    /* top border + subtitle height + svg top margin + inner top padding */
+    right: calc(5px + 10px + 10px);
+    /*right border + svg right margin + inner right padding */
+    width: 20px;
+    height: 20px;
+    -webkit-transform: scale(-1, -1);
 }
 
 
-.panel{
+.panel {
     /*intended as a column container for subtitle + content*/
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-
-.panel-content{
-    height: calc(100% - 25px);
-    display: block;
 }
 
- /* width */
+.panel-content {
+    height: calc(100% - 25px);
+    display: block;
+    border-radius: 0px 0px 10px 10px;
+}
+
+/* width */
 ::-webkit-scrollbar {
-  height: 8px;
+    height: 8px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+    background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+    background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
-} 
+    background: #555;
+}

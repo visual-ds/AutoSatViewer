@@ -28,7 +28,7 @@ function DrawTable(data) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 40, right: 10, bottom: 10, left: 70 },
+    var margin = { top: 60, right: 10, bottom: 10, left: 80 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
