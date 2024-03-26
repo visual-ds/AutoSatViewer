@@ -6,8 +6,8 @@ import geopandas as gpd
 import scipy.sparse
 
 
-POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][-2]
-TIME = ["Year", "Year2", "Period1", "Period2"][2]
+POLY = ["SpCenterCensus5k", "SpCenterCensus2k", "NYBlocks", "BLACities"][0]
+TIME = ["Year", "Year2", "Period1", "Period2"][3]
 
 configs = {
     "n_freqs": 4,
@@ -61,7 +61,7 @@ def get_heatmap_data(request):
     def get_high_count(df):
         df_ = df.iloc[:, 2:6]
         # calculate mean of the values that are bigger than 1e-3
-        return (df_.apply(lambda x: np.mean(x[x >= 0]), axis=0))
+        return (df_.apply(lambda x: np.mean(x[x >= 1e-3]), axis=0))
         
     coeffs = coeffs.groupby(["date", "type"]).apply(get_high_count).reset_index()
     coeffs = pd.melt(coeffs, id_vars=["date", "type"], var_name="freq", value_name="value")
