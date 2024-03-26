@@ -5,7 +5,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
     const viz_width = miDiv.offsetWidth,
         viz_height = miDiv.offsetHeight;
 
-    const margin = { top: 20, right: 10, bottom: 30, left: 20 },
+    const margin = { top: 20, right: 10, bottom: 35, left: 40 },
         width = viz_width - margin.left - margin.right,
         height = viz_height - margin.top - margin.bottom;
 
@@ -18,7 +18,8 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
     // select 4 equaly spaced dates
     var nDates = datesArray.length;
     var step = Math.floor(nDates / 4);
-    var ticks = [datesArray[0], datesArray[step], datesArray[2 * step], datesArray[3 * step]];
+    /*var ticks = [datesArray[0], datesArray[step], datesArray[2 * step], datesArray[3 * step]];*/
+    var ticks = [datesArray[0], datesArray[step], datesArray[2 * step], datesArray[3 * step], datesArray[datesArray.length - 1]];
     // verify if min date and max date are in the same year
     var sameYear = datesArray[0].getFullYear() == datesArray[nDates - 1].getFullYear();
 
@@ -31,11 +32,18 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
+    var y_max = d3.max(all_data, d => d[Column + "_3"]);
+    var y_min = d3.min(all_data, d => d[Column + "_1"]);
+
     const x = d3.scaleTime().range([0, width]).domain(d3.extent(all_data, d => d.date))
     const y = d3.scaleLinear()
         .range([height, 0])
-        .domain([d3.min(all_data, d => d[Column + "_1"]), d3.max(all_data, d => d[Column + "_3"])]);
+        .domain([y_min, y_max]);
     //.domain([0, d3.max(data, d => d[Column])]);
+
+    var y_ticks = d3.range(6).map(function(d) {
+                return y_min + d * (y_max / (5));
+            });
 
     const line = d3.line()
         .x(d => x(d.date))
@@ -48,7 +56,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .y1(d => y(d[Column + "_3"]));
 
     svg.append("g")
-        .attr("class", "x-axis")
+        .attr("class", "x-axis-s")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x)
             .tickFormat(d3.timeFormat(sameYear ? "%m/%d" : "%y/%m/%d"))
@@ -56,13 +64,21 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         )
         .selectAll("text")
         .style("text-anchor", "end")
-        .style("font-size", "9.5px")
+        .style("font-size", "8.5px")
         .style("font-weight", "bold")
-        .attr("transform", "rotate(-45)")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-30)");
 
     svg.append("g")
-        .attr("class", "y-axis")
-        .call(d3.axisLeft(y).ticks(6))
+        .attr("class", "y-axis-s")
+        .call(d3.axisLeft(y).
+            tickValues(y_ticks)
+        )
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .style("font-size", "8.0px")
+        .style("font-weight", "bold");
 
     // Draw vertical line at slider position
     var slideridx;
@@ -128,7 +144,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
     //     .style("fill", color);
 
     legend.append("text")
-        .attr("x", 0)
+        .attr("x",-20)
         .attr("y", -10)
         .attr("dy", ".35em")
         .style("text-anchor", "start")

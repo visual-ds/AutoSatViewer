@@ -34,7 +34,8 @@ function DrawOverview(data) {
     data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
     var N_SIGNALS = SIGNAL_TYPES.length;
-    var fullHeight = Math.min(50 * N_SIGNALS, parentHeight);
+    // var fullHeight = Math.min(50 * N_SIGNALS, parentHeight);
+    var fullHeight = parentHeight;
 
 
     setSlider(data);

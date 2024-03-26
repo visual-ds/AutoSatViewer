@@ -64,3 +64,15 @@
     font-family: Baloo Thambi;
 
 }
+
+/*solid axis*/
+.x-axis-s path, .x-axis-s line,.y-axis-s path, .y-axis-s line {
+    stroke-width: 0.5px;
+    stroke: gray;
+}
+.x-axis-s text, .y-axis-s text {
+    fill: #8FA2AC;
+    text-anchor: middle;
+    font-family: Baloo Thambi;
+
+}
