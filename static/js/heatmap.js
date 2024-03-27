@@ -3,7 +3,6 @@ function LoadOverview() {
     var N_FREQS = $("#nFreqs").val();
     var THRESHOLD = $("#threshold").val();
     var url = `/get_heatmap_data/${changeType}_${N_FREQS}_${THRESHOLD}`
-
     $.ajax({
         url: url,
         type: "GET",
@@ -22,6 +21,7 @@ function DrawOverview(data) {
     const element = d3.select('#heatmap');
     const parentWidth = element.node().clientWidth;
     const parentHeight = element.node().clientHeight - 70; // take 60 px reserved for color legend
+    var signalMap = $("#signalMap").val();
 
     var N_FREQS = $("#nFreqs").val();
     var sharedScale = $("#sharedColor").is(":checked");
@@ -33,6 +33,7 @@ function DrawOverview(data) {
     var MinFreq = 4 - N_FREQS;
     data = data.filter(d => d.freq >= MinFreq);
     var SIGNAL_TYPES = [...new Set(data.map(d => d.type))];
+
     var N_SIGNALS = SIGNAL_TYPES.length;
     // var fullHeight = Math.min(50 * N_SIGNALS, parentHeight);
     var fullHeight = parentHeight;
@@ -86,14 +87,28 @@ function DrawOverview(data) {
     for (let i = 0; i < N_SIGNALS; i++) {
         var g = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + (margin.top + i * (heatmapHeight + heatmapPadding)) + ")");
+
         var dataSignal = data.filter(d => d.type == SIGNAL_TYPES[i]);
         DrawOverviewHeatmap(g, dataSignal, datesArray, x, y, colorScale, heatmapHeight);
 
-        g.append("text")
+        if (SIGNAL_TYPES[i] == signalMap){
+            g.append("text")
+            .attr("y", heatmapHeight / 2)
+            .attr("x", -10)
+            .style("text-anchor", "end")
+            .text(SIGNAL_TYPES[i])
+            .style("font-weight", "bold")
+            .style("fill", "#3c5663");
+        }
+
+        else{
+            g.append("text")
             .attr("y", heatmapHeight / 2)
             .attr("x", -10)
             .style("text-anchor", "end")
             .text(SIGNAL_TYPES[i]);
+        }
+        
 
         if (i == N_SIGNALS - 1) {
             g.append("g")

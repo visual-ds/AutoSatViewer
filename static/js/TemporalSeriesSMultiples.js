@@ -149,6 +149,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .attr("dy", ".35em")
         .style("text-anchor", "start")
         .style("font-weight", Column == signalMap ? "bold" : "normal")
+        .style("fill", Column == signalMap ? "#3c5663" : "#8FA2AC")
         .text(d => d);
 
     // add border

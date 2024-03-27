@@ -110,6 +110,9 @@ window.onload = function () {
 
     $("#mapUpdateFill").on('click', function () {
         updateSpatialFill();
+        LoadTimeSeries([]);
+        LoadOverview();
+        LoadTable();
     });
 
     $("#nFreqs").on('input', function () {

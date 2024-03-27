@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ManyWaves 🌊</title>
+    <title>🌊 ManyWaves </title>
     <link rel="stylesheet" href="./static/css/styles.css">
     <link rel="stylesheet" href="./static/css/charts.css">
 
@@ -51,7 +51,8 @@
             <div id="similarity_projection" class="panel" style="flex-direction: row;height: 45%;">
                 <div class="panel" style="width: calc(55% - 5px);margin-right: 5px;">
                     <div id="subtitle1" class="subtitle">Correlation Table</div>
-                    <div id="similarity_table" class="panel-content chart"></div>
+                    <div id="similarity_table" class="panel-content chart">
+                    </div>
                 </div>
                 <div class="panel" style="width: 45%;">
                     <div class="subtitle">Wavelet Projection
@@ -72,7 +73,7 @@
     <!--</div>-->
 
     <div id="timeline">
-        <div class="timeslider" id="timeslider" style="float: right;">
+        <div id="timeslider">
             <input type='text' id='slider' name='slider' value=''></input>
         </div>
     </div>
@@ -87,7 +88,7 @@
         </div>
     </div>
     <div class='container title-container'>
-        ManyWaves 🌊
+        🌊 ManyWaves 
     </div>
     <div class="container config-container">
         <div class="shrink-button1 sign" onclick="shrinkConfig()"><span

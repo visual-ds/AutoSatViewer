@@ -14,6 +14,7 @@ function DrawTable(data) {
     const element = d3.select('#similarity_table');
     const element2 = d3.select('#similarity_projection');
     const element3 = d3.select('#subtitle1');
+    var signalMap = $("#signalMap").val();
 
     /*const fullHeight = 280;
     const fullWidth = 330;*/
@@ -21,7 +22,8 @@ function DrawTable(data) {
     const fullWidth = element.node().clientWidth;
     const fullHeight = element.node().clientHeight;
 
-    
+
+    d3.select("#similarity_table").selectAll("svg").remove();
     var svg = d3.select("#similarity_table")
         .append("svg")
         .attr("id", "similaritySVG")
@@ -50,6 +52,8 @@ function DrawTable(data) {
         .call(d3.axisTop(x))
         .selectAll("text")
         .style("text-anchor", "start")
+        .style('font-weight', d => d == signalMap ? "bold" : "normal")
+        .style("fill", d => d == signalMap ? "#3c5663" : "#8FA2AC")
         .attr("transform", "rotate(-45)");
 
     // add yAxis with labels with the anchor at the end
@@ -57,7 +61,9 @@ function DrawTable(data) {
         .attr("class", "y-axis")
         .call(d3.axisLeft(y))
         .selectAll("text")
-        .style("text-anchor", "end");
+        .style("text-anchor", "end")
+        .style('font-weight', d => d == signalMap ? "bold" : "normal")
+        .style("fill", d => d == signalMap ? "#3c5663" : "#8FA2AC");
 
     var colorScale = d3.scaleSequential(d3.interpolateRdYlBu)
         .domain([-0.9, 0.9]);
