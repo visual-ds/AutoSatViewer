@@ -134,7 +134,7 @@ function DrawProjection(data, columns) {
             gDot.selectAll(".projDot.highlight")
                 .classed("selected_proj", d => verify(x(d.x), y(d.y)));
 
-            selected_polys = data.filter(d => verify(x(d.x), y(d.y))).map(d => d.id_poly);
+            selected_polys = data.filter(d => verify(x(d.x), y(d.y)) & verifyHigh(d)).map(d => d.id_poly);
         }
 
 
