@@ -29,7 +29,7 @@ function DrawTable(data) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 60, right: 10, bottom: 10, left: 80 },
+    var margin = { top: 60, right: 10, bottom: 70, left: 80 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
@@ -117,5 +117,18 @@ function DrawTable(data) {
         .style('fill', d => Math.abs(d.value) > 0.3 ? 'white' : 'black')
         .text(d => d.value.toFixed(2))
         .style('z-index', 100);
+
+    var legendNode = legend({
+        color: colorScale,
+        title: "Correlation",
+        width: 250,
+        ticks: 6
+    });
+
+    /*var heatmapDiv = document.getElementById("heatmap");
+    heatmapDiv.appendChild(legendNode);*/
+    var legendDiv = document.getElementById('correlationLegend');
+    legendDiv.innerHTML = '';
+    legendDiv.appendChild(legendNode);
 
 }
