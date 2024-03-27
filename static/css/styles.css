@@ -142,7 +142,8 @@ body {
 #heatmapLegend {
     position: absolute;
     bottom: 30px;
-    left: calc(5px + 100px + (100% - 130px)/2 - (250px/2)); /*left border + left margin + half size - half legend width*/
+    left: calc(5px + 100px + (100% - 130px)/2 - (250px/2));
+    /*left border + left margin + half size - half legend width*/
     /*left: calc(100%/2 - 250px/2);*/
     z-index: 1px;
     height: 40px;
@@ -151,9 +152,11 @@ body {
 
 #correlationLegend {
     position: absolute;
-    left: calc(5px + 80px + (55% - 90px)/2 - 250px/2); /*left border + left margin + half size - half legend width*/
+    left: calc(5px + 60px + (55% - 90px)/2 - 250px/2);
+    /*left border + left margin + half size - half legend width*/
     /*left: calc((55% - 90px)/2 - 45px) ;*/
-    top: calc(45% - 60px); /*component height - bottom margin*/
+    top: calc(45% - 60px);
+    /*component height - bottom margin*/
     z-index: 1px;
     height: 40px;
     width: 250px;
@@ -260,9 +263,9 @@ h4 {
     font-weight: bold;
     border-radius: 10px 10px 10px 10px;
     height: 22px;
-    position:absolute;
+    position: absolute;
     top: calc(4.5% + 10px);
-    left:calc(5px + 38% + 20px);
+    left: calc(5px + 38% + 20px);
     width: 10%;
     /*size of font + padding top and bottom*/
 }
