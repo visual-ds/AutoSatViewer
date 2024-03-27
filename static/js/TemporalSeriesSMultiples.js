@@ -42,7 +42,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
     //.domain([0, d3.max(data, d => d[Column])]);
 
     var y_ticks = d3.range(6).map(function(d) {
-                return y_min + d * (y_max / (5));
+                return y_min + d * ((y_max - y_min) / (5));
             });
 
     const line = d3.line()
