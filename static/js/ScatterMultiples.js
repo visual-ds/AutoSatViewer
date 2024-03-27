@@ -54,7 +54,7 @@ function ScatterIndividual(DivID, data, Column, color) {
     const gDot = gAll.append("g")
         .attr("clip-path", "url(#clip)");
 
-    var tooltip = d3.select("#tooltiptmp");
+    var tooltip = d3.select("#tooltipscatter");
     // var tooltip = d3.select("#" + DivID);
         //.append("div")
         //.attr("class", "tooltip")
