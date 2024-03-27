@@ -22,7 +22,6 @@ function DrawTable(data) {
     const fullWidth = element.node().clientWidth;
     const fullHeight = element.node().clientHeight;
 
-
     d3.select("#similarity_table").selectAll("svg").remove();
     var svg = d3.select("#similarity_table")
         .append("svg")
@@ -30,7 +29,7 @@ function DrawTable(data) {
         .attr("width", fullWidth)
         .attr("height", fullHeight);
 
-    var margin = { top: 60, right: 10, bottom: 10, left: 80 },
+    var margin = { top: 60, right: 10, bottom: 70, left: 80 },
         width = fullWidth - margin.left - margin.right,
         height = fullHeight - margin.top - margin.bottom;
 
@@ -46,6 +45,17 @@ function DrawTable(data) {
 
     var gAll = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`)
+
+
+    // add border
+    gAll.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", "gray")
+        .style("fill", "transparent")
+        .style("stroke-width", 1);
 
     gAll.append("g")
         .attr("class", "x-axis")
@@ -68,6 +78,7 @@ function DrawTable(data) {
     var colorScale = d3.scaleSequential(d3.interpolateRdYlBu)
         .domain([-0.9, 0.9]);
 
+    var tooltip = d3.select("#tooltipcorr");
     var cells = gAll.selectAll('rect')
         .data(data.table)
         .enter()
@@ -77,7 +88,22 @@ function DrawTable(data) {
         .attr('y', d => y(d.column))
         .attr('width', x.bandwidth())
         .attr('height', y.bandwidth())
-        .style('fill', d => colorScale(d.value));
+        .style('fill', d => colorScale(d.value))
+        .on("mouseover", function (event, d) {
+            var x = event.clientX;
+            var y = event.clientY;
+            x = x - 40;
+            y = y - 60;
+
+            tooltip.style("display", "block");
+            tooltip.html('<p>' + d.value.toFixed(2) + '</p>')
+                .style("left", x + "px")
+                .style("top", y + "px");
+            console.log('aea')
+        })
+        .on("mouseout", function (d) {
+            tooltip.style("display", "none");
+        });;
 
     // add text
     gAll.selectAll('.rect_label')
@@ -92,13 +118,17 @@ function DrawTable(data) {
         .text(d => d.value.toFixed(2))
         .style('z-index', 100);
 
-    // add border
-    gAll.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("height", height)
-        .attr("width", width)
-        .style("stroke", "gray")
-        .style("fill", "transparent")
-        .style("stroke-width", 1);
+    var legendNode = legend({
+        color: colorScale,
+        title: "Correlation",
+        width: 250,
+        ticks: 6
+    });
+
+    /*var heatmapDiv = document.getElementById("heatmap");
+    heatmapDiv.appendChild(legendNode);*/
+    var legendDiv = document.getElementById('correlationLegend');
+    legendDiv.innerHTML = '';
+    legendDiv.appendChild(legendNode);
+
 }

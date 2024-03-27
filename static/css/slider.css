@@ -17,7 +17,7 @@
 .irs--round .irs-line {
   top: 36px;
   height: 4px;
-  background-color: #747ea1;
+  background-color: #7b7d85;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(40, 40, 42, 0.3);
 }
@@ -25,14 +25,14 @@
 .irs--round .irs-bar {
   top: 36px;
   height: 4px;
-  background-color: #747ea1;
+  background-color: #7b7d85;
 }
 
 .irs--round .irs-handle {
   top: 31px;
   width: 14px;
   height: 14px;
-  border: 2px solid #747ea1;
+  border: 2px solid #7b7d85;
   background-color: white;
   border-radius: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 255, 0.3);
@@ -62,7 +62,7 @@
   line-height: 1;
   text-shadow: none;
   padding: 2px 5px;
-  background-color: #747ea1;
+  background-color: #7b7d85;
   color: white;
   border-radius: 4px;
 }
