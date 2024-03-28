@@ -52,7 +52,9 @@
                 <div class="panel" style="width: calc(55% - 5px);margin-right: 5px;">
                     <div id="subtitle1" class="subtitle">Correlation Table</div>
 
-                    <div id="similarity_table" class="panel-content chart"><div id="correlationLegend"></div></div>
+                    <div id="similarity_table" class="panel-content chart">
+                        <div id="correlationLegend"></div>
+                    </div>
                 </div>
                 <div class="panel" style="width: 45%;">
                     <div class="subtitle">Wavelet Projection
@@ -88,7 +90,7 @@
         </div>
     </div>
     <div class='container title-container'>
-        🌊 ManyWaves 
+        🌊 ManyWaves
     </div>
     <div class='container floating-subtitle'>
         Map view
@@ -111,8 +113,8 @@
                         <label for="nFreqs" id="nFreqsValue" style="display: inline-block; width: 95px;">Nº freqs.:
                             1</label><input type="range" id="nFreqs" min="1" max="4" step="1" value="1"></br>
                         <label for="threshold" id="thresholdValue" style="display: inline-block; width: 95px;">Thresh.:
-                            0.97</label><input type="range" id="threshold" min="0.6" max="1" step="0.01"
-                            value="0.97"></br>
+                            0.8</label><input type="range" id="threshold" min="0.6" max="1" step="0.01"
+                            value="0.8"></br>
                         <input type="checkbox" id="sharedColor">Shared Color</checkbox></br>
                         <input type="button" value="Update" id="heatmapUpdate" onclick="LoadOverview()"></br>
                     </form>

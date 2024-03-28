@@ -41,9 +41,9 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .domain([y_min, y_max]);
     //.domain([0, d3.max(data, d => d[Column])]);
 
-    var y_ticks = d3.range(6).map(function(d) {
-                return y_min + d * ((y_max - y_min) / (5));
-            });
+    var y_ticks = d3.range(6).map(function (d) {
+        return y_min + d * ((y_max - y_min) / (5));
+    });
 
     const line = d3.line()
         .x(d => x(d.date))
@@ -79,6 +79,14 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
         .style("text-anchor", "end")
         .style("font-size", "8.0px")
         .style("font-weight", "bold");
+
+    // add white background
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("height", height)
+        .attr("width", width)
+        .style("fill", "white");
 
     // Draw vertical line at slider position
     var slideridx;
@@ -144,7 +152,7 @@ function MultivariateTimeSeries_Individual(DivID, data, all_data, Column, color)
     //     .style("fill", color);
 
     legend.append("text")
-        .attr("x",-20)
+        .attr("x", -20)
         .attr("y", -10)
         .attr("dy", ".35em")
         .style("text-anchor", "start")
